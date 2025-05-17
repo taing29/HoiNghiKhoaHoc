@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿﻿
+<!DOCTYPE html>
 
 <html>
 <head>
@@ -7,30 +8,29 @@
 
     <style>
         /* Thanh menu chính */
-        /* Thanh menu chính */
-        /* ======= NAVBAR ======= */
         .navbar {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background-color: #1B5E20; /* Xanh lá đậm */
+            background-color: #0066cc;
             padding: 10px 20px;
             color: white;
-            flex-wrap: wrap;
         }
 
+        /* Icon menu trái */
         .menu-icon {
             font-size: 24px;
             cursor: pointer;
             margin-right: 15px;
-            display: none; /* ẩn mặc định desktop */
         }
 
+        /* Logo */
         .logo img {
             height: 40px;
             margin-right: 20px;
         }
 
+        /* Menu trung tâm */
         .nav-links {
             list-style: none;
             display: flex;
@@ -38,7 +38,6 @@
             justify-content: center;
             padding: 0;
             margin: 0;
-            flex-wrap: wrap;
         }
 
             .nav-links li {
@@ -49,7 +48,7 @@
             }
 
                 .nav-links li:hover {
-                    background-color: #2E7D32; /* Hover xanh lá tươi nhưng đậm */
+                    background-color: #0055aa;
                     transform: scale(1.05);
                 }
 
@@ -61,18 +60,30 @@
                     font-size: 13px;
                 }
 
+        /* Icon người dùng bên phải */
         .user-icon img {
             height: 30px;
             width: 30px;
             border-radius: 50%;
         }
 
-        /* ======= RESPONSIVE NAVBAR ======= */
+        /* Responsive (hiển thị tốt trên mobile) */
+        (max-width: 768px) {
+            .nav-links
 
+        {
+            display: none;
+        }
 
-        /* ======= PHẦN NỘI DUNG ======= */
+        .menu-icon {
+            display: block;
+        }
+
+        }
+        /* Phần thân */
+
         .news-card {
-            background: #F1F8E9; /* Xanh nhạt nhẹ nhàng */
+            background: #f9f9f9;
             border-radius: 10px;
             padding: 20px;
             margin: 20px auto;
@@ -85,10 +96,9 @@
                 height: auto;
                 margin: 10px 0;
             }
-
-        /* ======= FOOTER ======= */
+        /*  */
         .footer-tl {
-            background-color: #1B5E20; /* Đồng bộ navbar */
+            background-color: #0066cc;
             color: white;
             padding: 20px 30px;
             font-size: 14px;
@@ -100,22 +110,18 @@
             flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
-            gap: 20px;
         }
 
         .footer-left {
-            flex: 1 1 60%;
             max-width: 60%;
         }
 
             .footer-left a {
-                color: #A5D6A7; /* Xanh lá sáng nhẹ */
+                color: #ffeb3b;
                 text-decoration: none;
             }
 
         .footer-right {
-            flex: 1 1 35%;
-            max-width: 35%;
             text-align: right;
         }
 
@@ -126,7 +132,6 @@
                 font-weight: bold;
             }
 
-        /* Icon mạng xã hội */
         .social-icons {
             margin-top: 10px;
             display: flex;
@@ -145,25 +150,19 @@
 
                 .social-icons img:hover {
                     transform: scale(1.2);
-                    box-shadow: 0 4px 8px rgba(46, 125, 50, 0.4); /* Bóng hover xanh đậm */
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
                 }
+        /* Responsive */
+        (max-width: 768px) {
+            .footer-container
 
-        /* ======= RESPONSIVE FOOTER ======= */
+        {
+            flex-direction: column;
+            align-items: flex-start;
+        }
 
         .footer-right {
             text-align: left;
-            margin-top: 15px;
-            max-width: 100%;
-            flex: 1 1 100%;
-        }
-
-        .footer-left {
-            max-width: 100%;
-            flex: 1 1 100%;
-        }
-
-        .social-icons {
-            justify-content: flex-start;
             margin-top: 15px;
         }
 
@@ -179,6 +178,7 @@
             <!-- <div class="logo"> -->
             <!-- <img src="https://upload.wikimedia.org/wikipedia/commons/2/2d/HUTECH_Logo.png" alt="tl" /> -->
             <!-- </div> -->
+     
             <nav>
                 <ul class="nav-links">
                     <li>@Html.ActionLink("TRANG CHỦ", "Index", "Home")</li>
@@ -187,25 +187,23 @@
                     <li>@Html.ActionLink("HỘI NGHỊ TRÊN THẾ GIỚI", "Global", "Home")</li>
                 </ul>
             </nav>
-            @* <div class="user-icon"> *@
-            @*     @if (Session["user"] == null) *@
-            @*     { *@
-            @*         <a href="@Url.Action("login", "Home")" title="Đăng nhập"> *@
-            @*             <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" alt="Đăng nhập" /> *@
-            @*         </a> *@
-            @*     } *@
-            @*     else *@
-            @*     { *@
-            @*         <span style="color: white; font-weight: bold;">@Session["user"]</span> *@
-            @*         <a href="@Url.Action("Logout", "Account")" style="color: white; text-decoration: underline;">Đăng xuất</a> *@
-            @*     } *@
-            @* </div> *@
+            <div class="user-icon">
+                <li>
+                    <a href="@Url.ActionLink("Login", "Account", new { area = "Identity" })">
+                        <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" alt="Đăng nhập" style="width: 20px; height: 20px;"/>
+               
+                    </a>
+                </li>
+
+
+
+            </div>
         </div>
     </header>
     <!-- Tiêu đề "Tin tức" -->
     <h1 style="text-align: center; margin: 20px;">Tin tức</h1>
     @RenderBody()
-
+    @RenderSection("Scripts", required: false)
     <footer class="footer-tl">
         <div class="footer-container" style="display: flex; flex-wrap: wrap; justify-content: space-between; max-width: 1200px; margin: auto; padding: 0 20px;">
 
@@ -239,8 +237,8 @@
                 </div>
 
                 <div class="social-icons">
-                    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384005.png" alt="Facebook" style="width: 28px; margin-right: 15px;" /></a>
-                    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt="YouTube" style="width: 28px; margin-right: 15px;" /></a>
+                    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384005.png" alt="Facebook" style="width: 28px; margin-right: 12px;" /></a>
+                    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt="YouTube" style="width: 28px; margin-right: 12px;" /></a>
                     <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/5968/5968804.png" alt="X" style="width: 28px;" /></a>
                     @*@RenderSection("Temp", true);*@
                 </div>

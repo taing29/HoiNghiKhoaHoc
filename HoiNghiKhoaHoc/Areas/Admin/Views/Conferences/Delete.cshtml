@@ -1,0 +1,60 @@
+﻿@model HoiNghiKhoaHoc.Models.Conference
+@{
+    ViewData["Title"] = "Xóa Hội nghị - Admin";
+}
+
+<style>
+    .confirmation-card {
+        width: 300px;
+        margin: 20px auto;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background: #fff;
+    }
+
+        .confirmation-card .content {
+            padding: 10px;
+        }
+
+        .confirmation-card h3 {
+            font-size: 18px;
+            margin: 0 0 10px;
+            color: #dc3545;
+        }
+
+        .confirmation-card p {
+            font-size: 14px;
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .confirmation-card .details {
+            padding: 10px;
+            background: #f8f9fa;
+        }
+
+            .confirmation-card .details .btn {
+                margin-right: 10px;
+            }
+</style>
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="confirmation-card">
+    <div class="content">
+        <h3>Bạn có chắc chắn muốn xóa hội nghị này?</h3>
+        <p><strong>Tiêu đề:</strong> @Model.Title</p>
+        <p><strong>Thời gian:</strong> @Model.StartDate.ToString("dd/MM/yyyy HH:mm") - @Model.EndDate.ToString("dd/MM/yyyy HH:mm")</p>
+        <p><strong>Địa điểm:</strong> @Model.Location</p>
+        <p><strong>Danh mục:</strong> @Model.Category.Name</p>
+    </div>
+    <div class="details">
+        <form asp-area="Admin" asp-action="Delete" method="post">
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" value="Xóa" class="btn btn-danger" />
+            <a asp-area="Admin" asp-action="Index" class="btn btn-secondary">Hủy</a>
+        </form>
+    </div>
+</div>

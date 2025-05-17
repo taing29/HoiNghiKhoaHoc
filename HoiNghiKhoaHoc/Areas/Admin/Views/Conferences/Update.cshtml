@@ -1,6 +1,6 @@
 ﻿@model HoiNghiKhoaHoc.Models.Conference
 @{
-    ViewData["Title"] = "Tạo mới Hội nghị - Admin";
+    ViewData["Title"] = "Cập nhật Hội nghị - Admin";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -43,7 +43,8 @@
 <h2>@ViewData["Title"]</h2>
 
 <div class="form-container">
-    <form asp-area="Admin" asp-action="Create" method="post">
+    <form asp-area="Admin" asp-action="Update" method="post">
+        <input type="hidden" asp-for="Id" />
         <div class="form-group">
             <label asp-for="Title" class="control-label"></label>
             <input asp-for="Title" class="form-control" />
@@ -80,10 +81,10 @@
             <span asp-validation-for="CategoryId" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <input type="submit" value="Tạo" class="btn btn-primary" />
-            <li>@Html.ActionLink("Huy", "Index", "Conferences")</li>
+            <input type="submit" value="Lưu" class="btn btn-primary" />
+            <a asp-area="Admin" asp-action="Index" class="btn btn-secondary">Hủy</a>
         </div>
-        <div class="text-danger">@ViewData["Error"]</div>
+        <div class="text-danger">@Html.ValidationSummary(true, "", new { @class = "text-danger" })</div>
     </form>
 </div>
 
