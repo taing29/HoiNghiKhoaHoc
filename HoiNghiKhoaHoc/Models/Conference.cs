@@ -1,8 +1,11 @@
-﻿namespace HoiNghiKhoaHoc.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace HoiNghiKhoaHoc.Models
 {
-    public class Conferences
+    public class Conference
     {
-        public int ConferenceID { get; set; }
+        public int Id { get; set; }
+        [Required, StringLength(100)]
         public string Title { get; set; } 
         public string Description { get; set; } 
         public DateTime StartDate { get; set; }
@@ -12,6 +15,6 @@
         public bool IsActive { get; set; } = true;
         public DateTime CreatedDate { get; set; } 
         public int CategoryId { get; set; }
-        public ConferenceCategories? ConferenceCategories { get; set; }
+        public Category? Category { get; set; }
     }
 }
