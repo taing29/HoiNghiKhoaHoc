@@ -1,11 +1,13 @@
-﻿namespace HoiNghiKhoaHoc.Repositories
+﻿using HoiNghiKhoaHoc.Models;
+
+namespace HoiNghiKhoaHoc.Repositories
 {
     public interface ICategoryRepository
     {
-        Task<IEnumerable<ICategoryRepository>> GetAllCategoriesAsync();
-        Task<ICategoryRepository> GetCategoryByIdAsync(int id);
-        Task AddCategoryAsync(ICategoryRepository category);
-        Task UpdateCategoryAsync(ICategoryRepository category);
+        Task<IEnumerable<Category>> GetAllCategoriesAsync();
+        Task<Category> GetCategoryByIdAsync(int id);
+        Task AddCategoryAsync(Category category);
+        Task UpdateCategoryAsync(Category category);
         Task DeleteCategoryAsync(int id);
     }
 }

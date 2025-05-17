@@ -1,31 +1,48 @@
 ﻿
+using HoiNghiKhoaHoc.Models;
+using Microsoft.EntityFrameworkCore;
+
 namespace HoiNghiKhoaHoc.Repositories
 {
     public class EFCategoryRepository : ICategoryRepository
     {
-        public Task AddCategoryAsync(ICategoryRepository category)
+        private readonly ApplicationDbContext _context;
+
+        public EFCategoryRepository(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public Task DeleteCategoryAsync(int id)
+        public async Task AddCategoryAsync(Category category)
         {
-            throw new NotImplementedException();
+            _context.Categories.Add(category);
+            await _context.SaveChangesAsync();
         }
 
-        public Task<IEnumerable<ICategoryRepository>> GetAllCategoriesAsync()
+        public async Task DeleteCategoryAsync(int id)
         {
-            throw new NotImplementedException();
+            var category = await _context.Categories.FindAsync(id);
+            if (category != null)
+            {
+                _context.Categories.Remove(category);
+                await _context.SaveChangesAsync();
+            }
         }
 
-        public Task<ICategoryRepository> GetCategoryByIdAsync(int id)
+        public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Categories.ToListAsync();
         }
 
-        public Task UpdateCategoryAsync(ICategoryRepository category)
+        public async Task<Category> GetCategoryByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Categories.FindAsync(id);
+        }
+
+        public async Task UpdateCategoryAsync(Category category)
+        {
+            _context.Categories.Update(category);
+            await _context.SaveChangesAsync();
         }
     }
 }

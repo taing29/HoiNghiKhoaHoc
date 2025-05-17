@@ -15,7 +15,13 @@ namespace HoiNghiKhoaHoc.Controllers
         }
         public  async Task<IActionResult> Index()
         {
-            return View();
+            // Nếu là Admin, chuyển hướng qua Admin Area
+            if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Index", "Conferences", new { area = "Admin" });
+            }
+            var references = await _conferenceRepository.GetAllConferencesAsync();
+            return View(references);
         }
     }
 }

@@ -95,15 +95,20 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication(); //them
 app.UseAuthorization();
 app.UseAuthentication();
 
 app.MapStaticAssets();
 
 app.MapControllerRoute(
-	name: "default",
-	pattern: "{controller=Conferences}/{action=Index}/{id?}")
-	.WithStaticAssets();
+    name: "areas",
+    pattern: "{area:exists}/{controller=Conferences}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Conferences}/{action=Index}/{id?}")
+    .WithStaticAssets();
 
 app.MapRazorPages();
 
