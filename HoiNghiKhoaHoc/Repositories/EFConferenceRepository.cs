@@ -1,9 +1,17 @@
 ﻿using HoiNghiKhoaHoc.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace HoiNghiKhoaHoc.Repositories
 {
     public class EFConferenceRepository : IConferenceRepository
     {
+        private readonly ApplicationDbContext _context;
+
+        public EFConferenceRepository(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         public Task AddConferenceAsync(Conference conference)
         {
             throw new NotImplementedException();
@@ -14,9 +22,11 @@ namespace HoiNghiKhoaHoc.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Conference>> GetAllConferencesAsync()
+        public async Task<IEnumerable<Conference>> GetAllConferencesAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Conferences
+            .Include(c => c.Category) // load luôn thông tin Category
+            .ToListAsync();
         }
 
         public Task<Conference> GetConferenceByIdAsync(int id)

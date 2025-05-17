@@ -1,8 +1,11 @@
 ﻿using HoiNghiKhoaHoc.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HoiNghiKhoaHoc.Controllers
+namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
 {
+    [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class ConferencesController : Controller
     {
         private readonly IConferenceRepository _conferenceRepository;
@@ -13,15 +16,10 @@ namespace HoiNghiKhoaHoc.Controllers
             _conferenceRepository = conferenceRepository;
             _categoryRepository = categoryRepository;
         }
-        public  async Task<IActionResult> Index()
+        public async Task<IActionResult> Index()
         {
-            // Nếu là Admin, chuyển hướng qua Admin Area
-            if (User.IsInRole("Admin"))
-            {
-                return RedirectToAction("Index", "Conferences", new { area = "Admin" });
-            }
-            var references = await _conferenceRepository.GetAllConferencesAsync();
-            return View(references);
+            var refences = await _conferenceRepository.GetAllConferencesAsync();
+            return View(refences);
         }
     }
 }

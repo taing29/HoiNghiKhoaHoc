@@ -1,9 +1,45 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-    <h1>Đây là trang chủ của Website Hội Nghị Khoa Học</h1>
+﻿@model IEnumerable<HoiNghiKhoaHoc.Models.Conference>
+
+@{
+    ViewData["Title"] = "Danh sách hội nghị";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h2 class="mb-4">Danh sách hội nghị</h2>
+
+@if (!Model.Any())
+{
+    <p>Hiện chưa có hội nghị nào.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>Tiêu đề</th>
+                    <th>Mô tả</th>
+                    <th>Thời gian</th>
+                    <th>Địa điểm</th>
+                    <th>Đơn vị tổ chức</th>
+                    <th>Chủ đề</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Title</td>
+                        <td>@item.Description</td>
+                        <td>
+                            @item.StartDate.ToString("dd/MM/yyyy") - @item.EndDate.ToString("dd/MM/yyyy")
+                        </td>
+                        <td>@item.Location</td>
+                        <td>@item.Organizer</td>
+                        <td>@item.Category?.Name</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
