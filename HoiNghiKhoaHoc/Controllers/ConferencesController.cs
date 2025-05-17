@@ -1,10 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using HoiNghiKhoaHoc.Repositories;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HoiNghiKhoaHoc.Controllers
 {
     public class ConferencesController : Controller
     {
-        public IActionResult Index()
+        private readonly IConferenceRepository _conferenceRepository;
+        private readonly ICategoryRepository _categoryRepository;
+
+        public ConferencesController(IConferenceRepository conferenceRepository, ICategoryRepository categoryRepository)
+        {
+            _conferenceRepository = conferenceRepository;
+            _categoryRepository = categoryRepository;
+        }
+        public  async Task<IActionResult> Index()
         {
             return View();
         }
