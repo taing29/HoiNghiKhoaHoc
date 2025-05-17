@@ -1,63 +1,46 @@
 ﻿using HoiNghiKhoaHoc.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using NuGet.Versioning;
 
 namespace HoiNghiKhoaHoc.Repositories
 {
-    public class EFUserRepository : IUserRepository
-    {
-        private readonly ApplicationDbContext _context;
+	public class EFUserRepository : IUserRepository
+	{
+		private readonly UserManager<ApplicationUser> _userManager; 
+		public EFUserRepository(UserManager<ApplicationUser> userManager)
+		{
+			_userManager = userManager;
+		}
 
-        public EFUserRepository(ApplicationDbContext context)
-        {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-        }
+		public async Task<IEnumerable<ApplicationUser>> GetAllUsersAsync()
+		{
+			return await _userManager.Users.ToListAsync();
+		}
 
-        public async Task<ApplicationUser> AddUserAsync(ApplicationUser user)
-        {
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
-            return user;
-        }
+		public async Task<ApplicationUser> GetByIdAsync(string id)
+		{
+			return await _userManager.FindByIdAsync(id);
+		}
 
-        public async Task<ApplicationUser> DeleteUserAsync(int id)
-        {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-            {
-                throw new Exception("User not found.");
-            }
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-            return user;
-        }
+		public async Task AddUserAsync(ApplicationUser user)
+		{
+			throw new NotImplementedException();
+		}
 
-        public async Task<IEnumerable<ApplicationUser>> GetAllUsersAsync()
-        {
-            return await _context.Users.ToListAsync();
-        }
+		public async Task UpdateUserAsync(ApplicationUser user)
+		{
+			await _userManager.UpdateAsync(user); // OK
+		}
 
-        public async Task<ApplicationUser> GetByIdAsync(int id)
-        {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-            {
-                throw new Exception("User not found.");
-            }
-            return user;
-        }
-
-        public async Task<ApplicationUser> UpdateUserAsync(ApplicationUser user)
-        {
-            var existingUser = await _context.Users.FindAsync(user.Id);
-            if (existingUser == null)
-            {
-                throw new Exception("User not found.");
-            }
-            _context.Entry(existingUser).CurrentValues.SetValues(user);
-            await _context.SaveChangesAsync();
-            return existingUser;
-        }
-    }
+		public async Task DeleteUserAsync(string id)
+		{
+			var user = await _userManager.FindByIdAsync(id);
+			if (user != null)
+			{
+				await _userManager.DeleteAsync(user);
+			}
+		}
+	}
 }

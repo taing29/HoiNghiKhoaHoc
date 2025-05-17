@@ -1,83 +1,59 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using HoiNghiKhoaHoc.Models;
+using HoiNghiKhoaHoc.Repositories;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HoiNghiKhoaHoc.Controllers
 {
 	public class UserController : Controller
 	{
-		// GET: UserController
-		public ActionResult Index()
+		private readonly IUserRepository _userRepository;
+
+		public UserController(IUserRepository userRepository)
 		{
-			return View();
+			_userRepository = userRepository;
 		}
 
-		// GET: UserController/Details/5
-		public ActionResult Details(int id)
+		public async Task<IActionResult> Index()
 		{
-			return View();
+			var users = await _userRepository.GetAllUsersAsync();
+			return View(users);
 		}
 
-		// GET: UserController/Create
-		public ActionResult Create()
+		public async Task<IActionResult> Edit(string id)
 		{
-			return View();
+			var user = await _userRepository.GetByIdAsync(id);
+			if (user == null) return NotFound();
+
+			var model = new UserView
+			{
+				FullName = user.FullName,
+				Email = user.Email,
+				PhoneNumber = user.PhoneNumber
+			};
+
+			return View(model);
 		}
 
-		// POST: UserController/Create
 		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public ActionResult Create(IFormCollection collection)
+		public async Task<IActionResult> Edit(UserView model)
 		{
-			try
-			{
-				return RedirectToAction(nameof(Index));
-			}
-			catch
-			{
-				return View();
-			}
+			var user = await _userRepository.GetByIdAsync(model.Id);
+			if (user == null) return NotFound();
+
+			user.FullName = model.FullName;
+			user.Email = model.Email;
+			user.PhoneNumber = model.PhoneNumber;
+
+			await _userRepository.UpdateUserAsync(user);
+			return RedirectToAction("Index");
 		}
 
-		// GET: UserController/Edit/5
-		public ActionResult Edit(int id)
-		{
-			return View();
-		}
-
-		// POST: UserController/Edit/5
 		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public ActionResult Edit(int id, IFormCollection collection)
+		public async Task<IActionResult> Delete(string id)
 		{
-			try
-			{
-				return RedirectToAction(nameof(Index));
-			}
-			catch
-			{
-				return View();
-			}
-		}
-
-		// GET: UserController/Delete/5
-		public ActionResult Delete(int id)
-		{
-			return View();
-		}
-
-		// POST: UserController/Delete/5
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public ActionResult Delete(int id, IFormCollection collection)
-		{
-			try
-			{
-				return RedirectToAction(nameof(Index));
-			}
-			catch
-			{
-				return View();
-			}
+			await _userRepository.DeleteUserAsync(id);
+			return RedirectToAction("Index");
 		}
 	}
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HoiNghiKhoaHoc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250517205017_KhoiTaoMoi")]
-    partial class KhoiTaoMoi
+    [Migration("20250517152713_KhoiTaoMoDel")]
+    partial class KhoiTaoMoDel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
