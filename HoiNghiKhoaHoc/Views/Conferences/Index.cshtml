@@ -1,50 +1,55 @@
 ﻿@model IEnumerable<HoiNghiKhoaHoc.Models.Conference>
 
 @{
-    ViewData["Title"] = "Danh sách hội nghị";
+    ViewData["Title"] = "Danh sách Hội nghị";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2 class="mb-4">Danh sách hội nghị</h2>
+<h2>@ViewData["Title"]</h2>
 
-@if (!Model.Any())
-{
-    <p>Hiện chưa có hội nghị nào.</p>
-}
-else
-{
-    <div class="table-responsive">
-        <table class="table table-bordered table-striped">
-            <thead class="table-dark">
-                <tr>
-                    <th>Tiêu đề</th>
-                    <th>Mô tả</th>
-                    <th>Thời gian</th>
-                    <th>Địa điểm</th>
-                    <th>Đơn vị tổ chức</th>
-                    <th>Chủ đề</th>
-                    <th>Chi tiết</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>@item.Title</td>
-                        <td>@item.Description</td>
-                        <td>
-                            @item.StartDate.ToString("dd/MM/yyyy") - @item.EndDate.ToString("dd/MM/yyyy")
-                        </td>
-                        <td>@item.Location</td>
-                        <td>@item.Organizer</td>
-                        <td>@item.Category?.Name</td>
-                        <td>
-                            <a asp-action="Details" asp-route-id="@item.Id">Xem chi tiết</a>
-                        </td>
-
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-}
+<p>
+    <a asp-action="Create" class="btn btn-primary">Tạo mới</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StartDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Location)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category.Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Location)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category.Name)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Chi tiết</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Sửa</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

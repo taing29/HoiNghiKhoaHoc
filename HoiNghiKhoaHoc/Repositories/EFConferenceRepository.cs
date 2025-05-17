@@ -1,5 +1,7 @@
 ﻿using HoiNghiKhoaHoc.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace HoiNghiKhoaHoc.Repositories
 {
@@ -9,34 +11,54 @@ namespace HoiNghiKhoaHoc.Repositories
 
         public EFConferenceRepository(ApplicationDbContext context)
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public Task AddConferenceAsync(Conference conference)
+        public async Task AddConferenceAsync(Conference conference)
         {
-            throw new NotImplementedException();
+            await _context.Conferences.AddAsync(conference);
+            await _context.SaveChangesAsync();
         }
 
-        public Task DeleteConferenceAsync(int id)
+        public async Task DeleteConferenceAsync(int id)
         {
-            throw new NotImplementedException();
+            var conference = await _context.Conferences.FindAsync(id);
+            if (conference == null)
+            {
+                throw new Exception("Conference not found.");
+            }
+            _context.Conferences.Remove(conference);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Conference>> GetAllConferencesAsync()
         {
             return await _context.Conferences
-            .Include(c => c.Category) // load luôn thông tin Category
-            .ToListAsync();
+                .Include(c => c.Category) // Load thông tin Category
+                .ToListAsync();
         }
 
-        public Task<Conference> GetConferenceByIdAsync(int id)
+        public async Task<Conference> GetConferenceByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var conference = await _context.Conferences
+                .Include(c => c.Category) // Load thông tin Category
+                .FirstOrDefaultAsync(c => c.Id == id);
+            if (conference == null)
+            {
+                throw new Exception("Conference not found.");
+            }
+            return conference;
         }
 
-        public Task UpdateConferenceAsync(Conference conference)
+        public async Task UpdateConferenceAsync(Conference conference)
         {
-            throw new NotImplementedException();
+            var existingConference = await _context.Conferences.FindAsync(conference.Id);
+            if (existingConference == null)
+            {
+                throw new Exception("Conference not found.");
+            }
+            _context.Entry(existingConference).CurrentValues.SetValues(conference);
+            await _context.SaveChangesAsync();
         }
     }
 }

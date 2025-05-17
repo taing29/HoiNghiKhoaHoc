@@ -1,53 +1,251 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+
+<html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - HoiNghiKhoaHoc</title>
-    <script type="importmap"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/HoiNghiKhoaHoc.styles.css" asp-append-version="true" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+
+    <style>
+        /* Thanh menu chính */
+        /* Thanh menu chính */
+        /* ======= NAVBAR ======= */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #1B5E20; /* Xanh lá đậm */
+            padding: 10px 20px;
+            color: white;
+            flex-wrap: wrap;
+        }
+
+        .menu-icon {
+            font-size: 24px;
+            cursor: pointer;
+            margin-right: 15px;
+            display: none; /* ẩn mặc định desktop */
+        }
+
+        .logo img {
+            height: 40px;
+            margin-right: 20px;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            flex: 1;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+            flex-wrap: wrap;
+        }
+
+            .nav-links li {
+                margin: 0 10px;
+                padding: 10px 15px;
+                border-radius: 6px;
+                transition: 0.3s;
+            }
+
+                .nav-links li:hover {
+                    background-color: #2E7D32; /* Hover xanh lá tươi nhưng đậm */
+                    transform: scale(1.05);
+                }
+
+                .nav-links li a {
+                    text-decoration: none;
+                    color: white;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    font-size: 13px;
+                }
+
+        .user-icon img {
+            height: 30px;
+            width: 30px;
+            border-radius: 50%;
+        }
+
+        /* ======= RESPONSIVE NAVBAR ======= */
+
+
+        /* ======= PHẦN NỘI DUNG ======= */
+        .news-card {
+            background: #F1F8E9; /* Xanh nhạt nhẹ nhàng */
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 800px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+            .news-card img {
+                width: 100%;
+                height: auto;
+                margin: 10px 0;
+            }
+
+        /* ======= FOOTER ======= */
+        .footer-tl {
+            background-color: #1B5E20; /* Đồng bộ navbar */
+            color: white;
+            padding: 20px 30px;
+            font-size: 14px;
+            margin-top: 40px;
+        }
+
+        .footer-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .footer-left {
+            flex: 1 1 60%;
+            max-width: 60%;
+        }
+
+            .footer-left a {
+                color: #A5D6A7; /* Xanh lá sáng nhẹ */
+                text-decoration: none;
+            }
+
+        .footer-right {
+            flex: 1 1 35%;
+            max-width: 35%;
+            text-align: right;
+        }
+
+            .footer-right a {
+                color: white;
+                text-decoration: none;
+                margin: 0 5px;
+                font-weight: bold;
+            }
+
+        /* Icon mạng xã hội */
+        .social-icons {
+            margin-top: 10px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+        }
+
+            .social-icons img {
+                height: 28px;
+                width: 28px;
+                cursor: pointer;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                border-radius: 50%;
+            }
+
+                .social-icons img:hover {
+                    transform: scale(1.2);
+                    box-shadow: 0 4px 8px rgba(46, 125, 50, 0.4); /* Bóng hover xanh đậm */
+                }
+
+        /* ======= RESPONSIVE FOOTER ======= */
+
+        .footer-right {
+            text-align: left;
+            margin-top: 15px;
+            max-width: 100%;
+            flex: 1 1 100%;
+        }
+
+        .footer-left {
+            max-width: 100%;
+            flex: 1 1 100%;
+        }
+
+        .social-icons {
+            justify-content: flex-start;
+            margin-top: 15px;
+        }
+
+        }
+    </style>
 </head>
 <body>
+    <!-- Thanh điều hướng -->
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">HoiNghiKhoaHoc</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Conferences" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item ms-auto">
-                            <partial name= "_LoginPartial" />
-                        </li>
-                    </ul>
+        <div class="navbar">
+            <div class="menu-icon">&#9776;</div>
+            <!--          -->
+            <!-- <div class="logo"> -->
+            <!-- <img src="https://upload.wikimedia.org/wikipedia/commons/2/2d/HUTECH_Logo.png" alt="tl" /> -->
+            <!-- </div> -->
+            <nav>
+                <ul class="nav-links">
+                    <li>@Html.ActionLink("TRANG CHỦ", "Index", "Home")</li>
+                    <li>@Html.ActionLink("HỘI NGHỊ SẮP DIỄN RA", "Create", "Home")</li>
+                    <li>@Html.ActionLink("HỘI NGHỊ ĐÃ DIỄN RA", "Past", "Home")</li>
+                    <li>@Html.ActionLink("HỘI NGHỊ TRÊN THẾ GIỚI", "Global", "Home")</li>
+                </ul>
+            </nav>
+            @* <div class="user-icon"> *@
+            @*     @if (Session["user"] == null) *@
+            @*     { *@
+            @*         <a href="@Url.Action("login", "Home")" title="Đăng nhập"> *@
+            @*             <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" alt="Đăng nhập" /> *@
+            @*         </a> *@
+            @*     } *@
+            @*     else *@
+            @*     { *@
+            @*         <span style="color: white; font-weight: bold;">@Session["user"]</span> *@
+            @*         <a href="@Url.Action("Logout", "Account")" style="color: white; text-decoration: underline;">Đăng xuất</a> *@
+            @*     } *@
+            @* </div> *@
+        </div>
+    </header>
+    <!-- Tiêu đề "Tin tức" -->
+    <h1 style="text-align: center; margin: 20px;">Tin tức</h1>
+    @RenderBody()
+
+    <footer class="footer-tl">
+        <div class="footer-container" style="display: flex; flex-wrap: wrap; justify-content: space-between; max-width: 1200px; margin: auto; padding: 0 20px;">
+
+            <!-- Bản đồ bên trái -->
+            <div class="footer-map" style="flex: 1; min-width: 300px; margin-bottom: 20px;">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.1265614720305!2d106.70969229678956!3d10.801617500000011!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317528d9f01a6ef7%3A0x1e4d04b2f5772d3b!2sHUTECH!5e0!3m2!1svi!2s!4v1713502248467!5m2!1svi!2s"
+                        width="100%"
+                        height="250"
+                        style="border:0; border-radius: 10px;"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+
+            <!-- Thông tin bên phải -->
+            <div class="footer-right">
+                <h3>📍 PHÒNG KHOA HỌC CÔNG NGHỆ</h3>
+                <p><strong>Phòng:</strong> B.02-01</p>
+                <p>📍 <strong>Địa chỉ:</strong> 475A, Điện Biên Phủ, P.25, Q.Bình Thạnh, TP.HCM</p>
+                <p>📞 <strong>Điện thoại:</strong> 028 5445 4886 - 0818 437 136</p>
+                <p>
+                    ✉️ <strong>Email:</strong>
+                    <a href="mailto:khcn@tl.edu.vn" style="color: #ffdd57; text-decoration: none;">khcn@tl.edu.vn</a>
+                </p>
+
+                <div>
+                    <a href="#" style="color: #ffffff; margin-right: 15px; text-decoration: underline;">Trang chủ</a>
+                    <a href="#" style="color: #ffffff; margin-right: 15px; text-decoration: underline;">Sơ đồ</a>
+                    <a href="#" style="color: #ffffff; text-decoration: underline;">Liên hệ</a>
+                </div>
+
+                <div class="social-icons">
+                    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384005.png" alt="Facebook" style="width: 28px; margin-right: 15px;" /></a>
+                    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt="YouTube" style="width: 28px; margin-right: 15px;" /></a>
+                    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/5968/5968804.png" alt="X" style="width: 28px;" /></a>
+                    @*@RenderSection("Temp", true);*@
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - HoiNghiKhoaHoc - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
