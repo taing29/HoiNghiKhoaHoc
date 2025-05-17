@@ -13,7 +13,7 @@ namespace HoiNghiKhoaHoc.Controllers
             _conferenceRepository = conferenceRepository;
             _categoryRepository = categoryRepository;
         }
-        public  async Task<IActionResult> Index()
+        public async Task<IActionResult> Index()
         {
             // Nếu là Admin, chuyển hướng qua Admin Area
             if (User.IsInRole("Admin"))

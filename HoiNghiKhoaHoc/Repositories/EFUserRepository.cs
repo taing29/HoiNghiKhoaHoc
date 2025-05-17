@@ -1,39 +1,46 @@
 ﻿using HoiNghiKhoaHoc.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using NuGet.Versioning;
 
 namespace HoiNghiKhoaHoc.Repositories
 {
 	public class EFUserRepository : IUserRepository
 	{
-		private readonly ApplicationDbContext _context;
-		public EFUserRepository(ApplicationDbContext context)
+		private readonly UserManager<ApplicationUser> _userManager; 
+		public EFUserRepository(UserManager<ApplicationUser> userManager)
 		{
-			_context = context;
-		}
-		public Task<ApplicationUser> AddUserAsync(ApplicationUser user)
-		{
-			_context.Users.Add(user);
-			throw new NotImplementedException();
+			_userManager = userManager;
 		}
 
-		public Task<ApplicationUser> DeleteUserAsync(int id)
+		public async Task<IEnumerable<ApplicationUser>> GetAllUsersAsync()
 		{
-			throw new NotImplementedException();
+			return await _userManager.Users.ToListAsync();
 		}
 
-		public Task<IEnumerable<ApplicationUser>> GetAllUsersAsync()
+		public async Task<ApplicationUser> GetByIdAsync(string id)
 		{
-			throw new NotImplementedException();
+			return await _userManager.FindByIdAsync(id);
 		}
 
-		public Task<ApplicationUser> GetByIdAsync(int id)
+		public async Task AddUserAsync(ApplicationUser user)
 		{
 			throw new NotImplementedException();
 		}
 
-		public Task<ApplicationUser> UpdateUserAsync(ApplicationUser user)
+		public async Task UpdateUserAsync(ApplicationUser user)
 		{
-			_context.Update(user);
-			throw new NotImplementedException();
+			await _userManager.UpdateAsync(user); // OK
+		}
+
+		public async Task DeleteUserAsync(string id)
+		{
+			var user = await _userManager.FindByIdAsync(id);
+			if (user != null)
+			{
+				await _userManager.DeleteAsync(user);
+			}
 		}
 	}
 }

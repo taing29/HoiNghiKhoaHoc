@@ -80,6 +80,8 @@ builder.Services.AddRazorPages();
 //c�c services cho c�c repository
 builder.Services.AddScoped<IConferenceRepository, EFConferenceRepository>();
 builder.Services.AddScoped<ICategoryRepository, EFCategoryRepository>();
+builder.Services.AddScoped<IUserRepository, EFUserRepository>();
+
 
 var app = builder.Build();
 

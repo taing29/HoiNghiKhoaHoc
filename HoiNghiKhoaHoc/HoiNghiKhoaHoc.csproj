@@ -48,7 +48,6 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Views\Admin\" />
-    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,40 @@
+﻿@model IEnumerable<HoiNghiKhoaHoc.Models.UserView>
+@using HoiNghiKhoaHoc.Models
+@using Microsoft.AspNetCore.Identity
+
+@{
+	ViewData["Title"] = "Quản lý người dùng";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p>
+	<a asp-controller="Users" asp-action="CreateUser" asp-area="Admin" class="btn btn-success">Thêm mới</a>
+</p>
+<table class="table">
+	<thead>
+		<tr>
+			<th>@Html.DisplayNameFor(model => model.UserName)</th>
+			<th>@Html.DisplayNameFor(model => model.FullName)</th>
+			<th>@Html.DisplayNameFor(model => model.Age)</th>
+			<th>@Html.DisplayNameFor(model => model.Email)</th>
+			<th>@Html.DisplayNameFor(model => model.PhoneNumber)</th>
+			<th>Thao tác</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>@Html.DisplayFor(modelItem => item.UserName)</td>
+				<td>@Html.DisplayFor(modelItem => item.FullName)</td>
+				<td>@Html.DisplayFor(modelItem => item.Age)</td>
+				<td>@Html.DisplayFor(modelItem => item.Email)</td>
+				<td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
+				<td>
+					<a asp-controller="Users" asp-action="EditUser"asp-area="Admin"asp-route-id="@item.Id"class="btn btn-primary">Sửa</a>
+					<a asp-controller="Users"asp-action="DeleteConfirmed"asp-area="Admin"asp-route-id="@item.Id"class="btn btn-danger">Xóa</a>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

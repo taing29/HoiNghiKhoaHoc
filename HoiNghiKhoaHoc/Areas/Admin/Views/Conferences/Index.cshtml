@@ -5,17 +5,15 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
-
-<div class="mb-3">
+@* <div class="mb-3">
     <a asp-action="Create" asp-controller="Conferences" asp-area="Admin" class="btn btn-primary">
         Thêm Hội Nghị
     </a>
-</div>
+</div> *@
 <a href="/Admin/Conferences/Create" class="btn btn-primary">Thêm Hội Nghị</a>
-
+<a href="/Admin/Users/Index" class="btn btn-primary">Quản lý người dùng</a>
 <table class="table">
-    <thead>
+    <thead> 
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Title)

@@ -22,7 +22,8 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
         {
             var refences = await _conferenceRepository.GetAllConferencesAsync();
             return View(refences);
-        }
+            throw new NotImplementedException();
+		}
         public async Task<IActionResult> Create()
         {
             var categories = await _categoryRepository.GetAllCategoriesAsync();
