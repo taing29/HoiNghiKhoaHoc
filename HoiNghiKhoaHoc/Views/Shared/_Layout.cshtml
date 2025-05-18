@@ -176,7 +176,6 @@
             <div class="menu-icon">&#9776;</div>
             <!--          -->
             <!-- <div class="logo"> -->
-            <!-- <img src="https://upload.wikimedia.org/wikipedia/commons/2/2d/HUTECH_Logo.png" alt="tl" /> -->
             <!-- </div> -->
      
             <nav>
@@ -187,16 +186,13 @@
                     <li>@Html.ActionLink("HỘI NGHỊ TRÊN THẾ GIỚI", "Global", "Home")</li>
                 </ul>
             </nav>
-            <div class="user-icon">
-                <li>
-                    <a href="@Url.ActionLink("Login", "Account", new { area = "Identity" })">
-                        <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" alt="Đăng nhập" style="width: 20px; height: 20px;"/>
-               
-                    </a>
-                </li>
-
-
-
+                <div class="user-icon" onclick="toggleDropdown()">
+                    <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" alt="Đăng nhập" />
+                    <div class="dropdown" id="userDropdown">
+                        <a href="@Url.Action("Login", "Account", new { area = "Identity" })">Đăng nhập</a>
+                        <a href="@Url.Action("Logout", "Account", new { area = "Identity" })">Đăng xuất</a>
+                        <a href="@Url.Action("Manage", "Account", new { area = "Identity" })">Hồ sơ</a>
+                    </div>
             </div>
         </div>
     </header>

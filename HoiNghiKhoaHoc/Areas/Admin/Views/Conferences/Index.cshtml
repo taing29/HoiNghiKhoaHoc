@@ -1,8 +1,8 @@
 ﻿@model IEnumerable<HoiNghiKhoaHoc.Models.Conference>
 
 @{
-    ViewData["Title"] = "Danh sách Hội nghị - Admin";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Danh sách Hội nghị";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
 
 <style>
@@ -32,7 +32,7 @@
         .conference-card h3 {
             font-size: 18px;
             margin: 0 0 10px;
-            color: #007bff;
+            color: #fff;
         }
 
         .conference-card p {
@@ -51,14 +51,11 @@
 
             .conference-card .details a {
                 text-decoration: none;
-                color: #007bff;
+                color: #fff;
                 font-weight: bold;
                 margin-left: 5px;
             }
 
-                .conference-card .details a:hover {
-                    text-decoration: underline;
-                }
 </style>
 
 <h2>@ViewData["Title"]</h2>
@@ -86,10 +83,9 @@
             <div class="details">
                 <div>
                     @* <a asp-area="Admin" asp-action="Create" class="btn btn-primary">Thêm</a> *@
-                    <a asp-area="Conferences" asp-action="Update" asp-route-id="@item.Id" class="btn btn-warning">Sửa</a>
-                    <a href="@Url.Action("Delete", "Conferences", new { area = "Admin",id = item.Id })"> Xoa </a>
-                    <a asp-area="Conferences" asp-action="ConferenceDetails" asp-route-id="@item.Id" class="btn btn-info">Xem chi tiết</a>
-                
+                    <a asp-area="Conferences" asp-action="Update" asp-route-id="@item.Id" class="btn btn-success">Sửa</a>
+                    <a class="btn btn-danger" href="@Url.Action("Delete", "Conferences", new { area = "Admin",id = item.Id  })"> Xóa </a>
+                    <a asp-area="dConferences" asp-action="ConferenceDetails" asp-route-id="@item.Id" class="btn btn-info">Chi tiết</a>
                 </div>
             </div>
         </div>
