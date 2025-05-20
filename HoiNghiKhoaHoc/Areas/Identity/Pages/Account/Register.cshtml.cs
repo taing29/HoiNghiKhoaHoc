@@ -109,6 +109,9 @@ namespace HoiNghiKhoaHoc.Areas.Identity.Pages.Account
 
             public string? Role { get; set; }
             [ValidateNever]
+
+            [Display(Name = "Avatar")]
+            public IFormFile Avatar { get; set; }
             public IEnumerable<SelectListItem> RoleList { get; set; }
         }
 
@@ -138,20 +141,44 @@ namespace HoiNghiKhoaHoc.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
 
                 user.FullName = Input.FullName;
+
+                // 👉 Xử lý lưu ảnh avatar nếu người dùng chọn ảnh
+                if (Input.Avatar != null && Input.Avatar.Length > 0)
+                {
+                    var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "avatars");
+                    Directory.CreateDirectory(folderPath); // tạo thư mục nếu chưa tồn tại
+
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(Input.Avatar.FileName);
+                    var filePath = Path.Combine(folderPath, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await Input.Avatar.CopyToAsync(stream);
+                    }
+
+                    // Gán đường dẫn ảo để hiển thị ảnh
+                    user.AvatarPath = "/avatars/" + fileName;
+                }
+
+                // Thiết lập username và email
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
+                // Tạo tài khoản
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    if (!String.IsNullOrEmpty(Input.Role))
+                    // Gán quyền (role)
+                    if (!string.IsNullOrEmpty(Input.Role))
                     {
                         await _userManager.AddToRoleAsync(user, Input.Role);
                     }
@@ -160,9 +187,11 @@ namespace HoiNghiKhoaHoc.Areas.Identity.Pages.Account
                         await _userManager.AddToRoleAsync(user, SD.Role_User);
                     }
 
-                        var userId = await _userManager.GetUserIdAsync(user);
+                    // Gửi email xác nhận
+                    var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
                         pageHandler: null,
@@ -172,6 +201,7 @@ namespace HoiNghiKhoaHoc.Areas.Identity.Pages.Account
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
+                    // Đăng nhập hoặc chuyển đến trang xác nhận
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
@@ -182,15 +212,18 @@ namespace HoiNghiKhoaHoc.Areas.Identity.Pages.Account
                         return LocalRedirect(returnUrl);
                     }
                 }
+
+                // Nếu có lỗi khi tạo user
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
 
-            // If we got this far, something failed, redisplay form
+            // Trường hợp không hợp lệ: hiển thị lại form
             return Page();
         }
+
 
         private ApplicationUser CreateUser()
         {

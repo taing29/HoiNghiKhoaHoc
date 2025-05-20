@@ -47,7 +47,7 @@
 							<p><a id="forgot-password" class="login-link-item" asp-page="./ForgotPassword">Quên mật khẩu?</a></p>
 							<p><a class="login-link-item" asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Tạo tài khoản</a></p>
 							@* <p><a id="resend-confirmation" class="login-link-item" asp-page="./ResendEmailConfirmation">Resend email confirmation</a></p> *@
-							<p><a class="login-link-item" asp-controller="Conferences" asp-action="Index">Quay lại</a></p>
+							<a class="btn btn-danger" href="@Url.Action("Index", "Conferences", new { area = "Views"})"> QuayLai </a>
 						</div>
 					</form>
 				</div>

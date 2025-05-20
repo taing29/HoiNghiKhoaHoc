@@ -36,6 +36,9 @@ namespace HoiNghiKhoaHoc.Migrations
                     b.Property<string>("Age")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("AvatarPath")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -135,6 +138,9 @@ namespace HoiNghiKhoaHoc.Migrations
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");

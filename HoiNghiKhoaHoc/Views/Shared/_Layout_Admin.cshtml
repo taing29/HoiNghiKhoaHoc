@@ -213,34 +213,45 @@
             <div class="menu-icon">☰</div>
             <nav>
                 <ul class="nav-links">
+
                     <li>@Html.ActionLink("TRANG CHỦ", "", "")</li>
                     <li>@Html.ActionLink("HỘI NGHỊ SẮP DIỄN RA", "", "")</li>
                     <li>@Html.ActionLink("HỘI NGHỊ ĐÃ DIỄN RA", "", "")</li>
                     <li>@Html.ActionLink("HỘI NGHỊ TRÊN THẾ GIỚI", "", "")</li>
+                    @{
+                        var currentUser = SignInManager.IsSignedIn(User) ? await UserManager.GetUserAsync(User) : null;
+                        var avatarUrl = currentUser?.AvatarPath ?? "https://cdn-icons-png.flaticon.com/512/747/747376.png";
+                        var fullName = currentUser?.FullName ?? "Người dùng";
+                    }
+
                     @if (SignInManager.IsSignedIn(User))
                     {
-
-                        <li><a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Xin chào @UserManager.GetUserName(User)!</a></li>
-
+                        <li class="d-flex align-items-center">
+                            <img src="@avatarUrl" alt="Avatar" class="rounded-circle me-2" style="width: 32px; height: 32px; object-fit: cover;" />
+                            <span class="text-white fw-bold">Xin chào, @fullName!</span>
+                        </li>
                     }
                     else
                     {
-                        <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Đăng ký</a>
-                        <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Đăng nhập</a>
+                        <li><a class="nav-link text-white" asp-area="Identity" asp-page="/Account/Register">Đăng ký</a></li>
+                        <li><a class="nav-link text-white" asp-area="Identity" asp-page="/Account/Login">Đăng nhập</a></li>
                     }
+
                 </ul>
                 
             </nav>
-            <div class="user-icon" onclick="toggleDropdown()">
-                <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" alt="Đăng nhập" />
-                <div class="dropdown" id="userDropdown">
-                    <a href="@Url.Action("Index", "Users", new { area = "Admin" })">Quản lý người dùng </a>
-                    <a href="@Url.Action("Logout", "Account", new { area = "Identity" })">Đăng xuất</a>
+          <div class="user-icon" onclick="toggleDropdown()">
+                <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" alt="Ảnh đại diện" />
+              <div class="dropdown" id="userDropdown">
+              <a href="@Url.Action("Index", "Users", new { area = "Admin" })">Quản lý người dùng</a>
+              <a href="@Url.Action("Logout", "Account", new { area = "Identity" })">Đăng xuất</a>
+             </div>
+             </div>
 
                     @* <a href="@Url.Action("Login", "Account", new { area = "Identity" })">Đăng nhập</a>
                     <a href="@Url.Action("Logout", "Account", new { area = "Identity" })">Đăng xuất</a>
                     <a href="@Url.Action("Manage", "Account", new { area = "Identity" })">Hồ sơ</a> *@
-                </div>
+            
             </div>
         </div>
     </header>

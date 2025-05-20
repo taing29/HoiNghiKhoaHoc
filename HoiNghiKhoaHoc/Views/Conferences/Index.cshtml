@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Danh sách Hội nghị";
-    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <style>
@@ -31,7 +31,7 @@
         .conference-card h3 {
             font-size: 18px;
             margin: 0 0 10px;
-            color: #fff;
+            color: #000;
         }
 
         .conference-card p {
@@ -72,7 +72,7 @@
     @foreach (var item in Model)
     {
         <div class="conference-card">
-            <img src="https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/avatar-anh-meo-cute-3.jpg" alt="Conference Image" />
+            <img src="https://file1.hutech.edu.vn/file/editor/homepage1/926045-banner-gsets2025-1000x525-resize.jpg" alt="Conference Image" />
             <div class="content">
                 <h3>@item.Title</h3>
                 <p>Thời gian: @item.StartDate.ToString("dd/MM/yyyy HH:mm") - @item.EndDate.ToString("dd/MM/yyyy HH:mm")</p>

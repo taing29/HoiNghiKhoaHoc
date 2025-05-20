@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HoiNghiKhoaHoc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250517235110_init")]
-    partial class init
+    [Migration("20250520170929_khoitao")]
+    partial class khoitao
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,6 +37,9 @@ namespace HoiNghiKhoaHoc.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Age")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AvatarPath")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -138,6 +141,9 @@ namespace HoiNghiKhoaHoc.Migrations
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
