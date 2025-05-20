@@ -93,6 +93,7 @@ if (!app.Environment.IsDevelopment())
 	app.UseHsts();
 }
 
+app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 app.UseRouting();
@@ -111,7 +112,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Conferences}/{action=Index}/{id?}")
     .WithStaticAssets();
-
+app.MapDefaultControllerRoute();
 app.MapRazorPages();
 
 app.Run();

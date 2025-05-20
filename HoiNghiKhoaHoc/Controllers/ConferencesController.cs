@@ -1,4 +1,5 @@
-﻿using HoiNghiKhoaHoc.Repositories;
+﻿using HoiNghiKhoaHoc.Models.ViewModels;
+using HoiNghiKhoaHoc.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HoiNghiKhoaHoc.Controllers
@@ -23,5 +24,24 @@ namespace HoiNghiKhoaHoc.Controllers
             var references = await _conferenceRepository.GetAllConferencesAsync();
             return View(references);
         }
-    }
+
+		public async Task<IActionResult> Details(int id)
+		{
+			var conference = await _conferenceRepository.GetConferenceByIdAsync(id);
+			if (conference == null)
+			{
+				return NotFound();
+			}
+
+            var relatedConferences = await _conferenceRepository.GetConferenceByIdCategory(conference);
+
+			var viewModel = new ConferenceDetailViewModel
+			{
+				CurrentConference = conference,
+				RelatedConferences = relatedConferences
+			};
+
+			return View(viewModel);
+		}
+	}
 }

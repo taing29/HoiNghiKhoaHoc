@@ -12,6 +12,7 @@ namespace HoiNghiKhoaHoc.Models
         //khai báo các bảng trong cơ sở dữ liệu
         public DbSet<Conference> Conferences { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<HoiNghiKhoaHoc.Models.UserView> UserView { get; set; } = default!;
+		public DbSet<ConferenceImage> ConferenceImages { get; set; }
+		public DbSet<HoiNghiKhoaHoc.Models.UserView> UserView { get; set; } = default!;
     }
 }
