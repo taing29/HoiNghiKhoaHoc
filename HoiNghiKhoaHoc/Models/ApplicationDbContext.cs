@@ -13,6 +13,8 @@ namespace HoiNghiKhoaHoc.Models
         public DbSet<Conference> Conferences { get; set; }
         public DbSet<Category> Categories { get; set; }
 		public DbSet<ConferenceImage> ConferenceImages { get; set; }
-		public DbSet<HoiNghiKhoaHoc.Models.UserView> UserView { get; set; } = default!;
+        public DbSet<Favorite> Favorites { get; set; }
+
+        public DbSet<HoiNghiKhoaHoc.Models.UserView> UserView { get; set; } = default!;
     }
 }

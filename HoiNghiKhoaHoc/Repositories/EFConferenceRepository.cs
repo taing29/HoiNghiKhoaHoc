@@ -69,5 +69,34 @@ namespace HoiNghiKhoaHoc.Repositories
             _context.Entry(existingConference).CurrentValues.SetValues(conference);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<Conference>> GetUpcomingConferencesAsync()
+        {
+            var now = DateTime.Now;
+            return await _context.Conferences
+                .Where(c => c.StartDate > now)
+                .Include(c => c.Category)
+                .Include(c => c.Images)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Conference>> GetPastConferencesAsync()
+        {
+            var now = DateTime.Now;
+            return await _context.Conferences
+                .Where(c => c.EndDate < now)
+                .Include(c => c.Category)
+                .Include(c => c.Images)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Conference>> GetInternationalConferencesAsync()
+        {
+            return await _context.Conferences
+                .Where(c => c.IsInternational)
+                .Include(c => c.Category)
+                .Include(c => c.Images)
+                .ToListAsync();
+        }
     }
 }

@@ -49,8 +49,9 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Views\Admin\" />
+
+	  <Folder Include="wwwroot\avatars\" />
     <Folder Include="wwwroot\images\" />
-    <Folder Include="wwwroot\uploads\" />
   </ItemGroup>
 
 </Project>

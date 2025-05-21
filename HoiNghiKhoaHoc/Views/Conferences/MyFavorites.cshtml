@@ -1,0 +1,41 @@
+﻿@model IEnumerable<HoiNghiKhoaHoc.Models.Favorite>
+
+@{
+    ViewData["Title"] = "Hội nghị yêu thích";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-center text-primary">❤️ Danh sách hội nghị yêu thích</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center">Bạn chưa thêm hội nghị nào vào danh sách yêu thích.</div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var favorite in Model)
+            {
+                var item = favorite.Conference;
+                <div class="col">
+                    <div class="card h-100 shadow-sm border-primary">
+                        <img src="@Url.Content("~/uploads/" + item.BannerImage)" class="card-img-top" alt="@item.Title">
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Title</h5>
+                            <p class="card-text"><strong>Địa điểm:</strong> @item.Location</p>
+                            <p class="card-text"><strong>Thời gian:</strong> @item.StartDate.ToString("dd/MM/yyyy") - @item.EndDate.ToString("dd/MM/yyyy")</p>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <a asp-controller="Conferences" asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm">Xem chi tiết</a>
+                            <form asp-controller="Conferences" asp-action="RemoveFromFavorites" method="post" class="d-inline">
+                                <input type="hidden" name="conferenceId" value="@item.Id" />
+                                <button type="submit" class="btn btn-outline-danger btn-sm">Bỏ yêu thích</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

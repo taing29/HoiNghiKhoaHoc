@@ -145,10 +145,10 @@ namespace HoiNghiKhoaHoc.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsInternational")
                         .HasColumnType("bit");
 
                     b.Property<string>("Location")
@@ -194,6 +194,33 @@ namespace HoiNghiKhoaHoc.Migrations
                     b.HasIndex("ConferenceId");
 
                     b.ToTable("ConferenceImages");
+                });
+
+            modelBuilder.Entity("HoiNghiKhoaHoc.Models.Favorite", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ConferenceId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateAdded")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConferenceId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Favorites");
                 });
 
             modelBuilder.Entity("HoiNghiKhoaHoc.Models.UserView", b =>
@@ -379,6 +406,25 @@ namespace HoiNghiKhoaHoc.Migrations
                         .IsRequired();
 
                     b.Navigation("Conference");
+                });
+
+            modelBuilder.Entity("HoiNghiKhoaHoc.Models.Favorite", b =>
+                {
+                    b.HasOne("HoiNghiKhoaHoc.Models.Conference", "Conference")
+                        .WithMany()
+                        .HasForeignKey("ConferenceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HoiNghiKhoaHoc.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Conference");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
