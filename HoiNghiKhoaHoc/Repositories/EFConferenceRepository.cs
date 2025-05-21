@@ -38,7 +38,33 @@ namespace HoiNghiKhoaHoc.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Conference> GetConferenceByIdAsync(int id)
+		public async Task<IEnumerable<Conference>> GetAllConferencesGlobalAsync()
+		{
+			return await _context.Conferences
+				.Include(c => c.Country)
+				.Where(c => c.Country != null && !c.Country.IsVietnam)
+				.OrderByDescending(c => c.StartDate)
+				.ToListAsync();
+		}
+
+		public async Task<IEnumerable<Conference>> GetAllConferencesPastAsync()
+		{
+			return await _context.Conferences
+				.Where(c => c.EndDate < DateTime.Now)
+				.OrderByDescending(c => c.EndDate)
+				.Include(c => c.Category)
+				.ToListAsync();
+		}
+
+		public async Task<IEnumerable<Conference>> GetAllConferencesUpcomingAsync()
+		{
+			return await _context.Conferences
+				.Where(c => c.StartDate > DateTime.Now)
+				.OrderBy(c => c.StartDate)
+				.ToListAsync();
+		}
+
+		public async Task<Conference> GetConferenceByIdAsync(int id)
         {
             var conference = await _context.Conferences
                 .Include(c => c.Category) // Load thông tin Category
@@ -50,7 +76,7 @@ namespace HoiNghiKhoaHoc.Repositories
             return conference;
         }
 
-        public async Task<IEnumerable<Conference>> GetConferenceByIdCategory(Conference conference)
+		public async Task<IEnumerable<Conference>> GetConferenceByIdCategoryAsync(Conference conference)
         {
 			return await _context.Conferences
 		.Where(c => c.Id != conference.Id && c.CategoryId == conference.CategoryId)

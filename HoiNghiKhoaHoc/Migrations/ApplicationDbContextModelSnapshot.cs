@@ -132,6 +132,9 @@ namespace HoiNghiKhoaHoc.Migrations
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("CountryId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -165,6 +168,8 @@ namespace HoiNghiKhoaHoc.Migrations
 
                     b.HasIndex("CategoryId");
 
+                    b.HasIndex("CountryId");
+
                     b.ToTable("Conferences");
                 });
 
@@ -188,6 +193,27 @@ namespace HoiNghiKhoaHoc.Migrations
                     b.HasIndex("ConferenceId");
 
                     b.ToTable("ConferenceImages");
+                });
+
+            modelBuilder.Entity("HoiNghiKhoaHoc.Models.Country", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsVietnam")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Countries");
                 });
 
             modelBuilder.Entity("HoiNghiKhoaHoc.Models.UserView", b =>
@@ -361,7 +387,15 @@ namespace HoiNghiKhoaHoc.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("HoiNghiKhoaHoc.Models.Country", "Country")
+                        .WithMany("Conferences")
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Category");
+
+                    b.Navigation("Country");
                 });
 
             modelBuilder.Entity("HoiNghiKhoaHoc.Models.ConferenceImage", b =>
@@ -434,6 +468,11 @@ namespace HoiNghiKhoaHoc.Migrations
             modelBuilder.Entity("HoiNghiKhoaHoc.Models.Conference", b =>
                 {
                     b.Navigation("Images");
+                });
+
+            modelBuilder.Entity("HoiNghiKhoaHoc.Models.Country", b =>
+                {
+                    b.Navigation("Conferences");
                 });
 #pragma warning restore 612, 618
         }

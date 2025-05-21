@@ -24,6 +24,24 @@ namespace HoiNghiKhoaHoc.Controllers
             var references = await _conferenceRepository.GetAllConferencesAsync();
             return View(references);
         }
+		public async Task<IActionResult> Past()
+		{
+			var conferences = await _conferenceRepository.GetAllConferencesPastAsync();
+			return View(conferences);
+		}
+
+		public async Task<IActionResult> Upcoming()
+		{
+			var upcomingConferences = await _conferenceRepository.GetAllConferencesUpcomingAsync();
+			return View(upcomingConferences);
+		}
+
+		public async Task<IActionResult> Global()
+		{
+			var globalConferences = await _conferenceRepository.GetAllConferencesGlobalAsync();
+			return View(globalConferences);
+		}
+
 
 		public async Task<IActionResult> Details(int id)
 		{
@@ -33,7 +51,7 @@ namespace HoiNghiKhoaHoc.Controllers
 				return NotFound();
 			}
 
-            var relatedConferences = await _conferenceRepository.GetConferenceByIdCategory(conference);
+            var relatedConferences = await _conferenceRepository.GetConferenceByIdCategoryAsync(conference);
 
 			var viewModel = new ConferenceDetailViewModel
 			{

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.Metrics;
 
 namespace HoiNghiKhoaHoc.Models
 {
@@ -12,12 +13,14 @@ namespace HoiNghiKhoaHoc.Models
 		public string? BannerImage { get; set; }
 		public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string Location { get; set; } 
+        public string Location { get; set; }
         public string Organizer { get; set; } 
         public bool IsActive { get; set; } = true;
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public int CategoryId { get; set; }
+		public int CountryId { get; set; } 
 		public ICollection<ConferenceImage>? Images { get; set; }
 		public Category? Category { get; set; }
-    }
+		public Country Country { get; set; }
+	}
 }
