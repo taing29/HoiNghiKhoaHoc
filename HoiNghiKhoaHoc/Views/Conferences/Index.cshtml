@@ -72,14 +72,15 @@
     @foreach (var item in Model)
     {
         <div class="conference-card">
-            <img src="https://file1.hutech.edu.vn/file/editor/homepage1/926045-banner-gsets2025-1000x525-resize.jpg" alt="Conference Image" />
+            <img src="@Url.Content("~/uploads/" + item.BannerImage)" alt="Conference Image" />
             <div class="content">
                 <h3>@item.Title</h3>
                 <p>Thời gian: @item.StartDate.ToString("dd/MM/yyyy HH:mm") - @item.EndDate.ToString("dd/MM/yyyy HH:mm")</p>
                 <p>Địa điểm: @item.Location</p>
-                <p>We invite you to submit your work to the International Conference on Environmental Design (ICED2025), 1-2 November 2025, Heraklion, Crete, Greece and Virtual.</p>
+                <p>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Xem chi tiết</a>
+                </p>
             </div>
         </div>
     }
-    @* <a asp-area="Admin" asp-action="Create" class="btn btn-primary">Tạo mới</a> *@
 </div>

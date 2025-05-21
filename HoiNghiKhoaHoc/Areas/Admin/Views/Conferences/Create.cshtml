@@ -1,94 +1,53 @@
-﻿@model HoiNghiKhoaHoc.Models.Conference
-@{
-    ViewData["Title"] = "Tạo mới Hội nghị - Admin";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-
-<style>
-    .form-container {
-        max-width: 600px;
-        margin: 20px auto;
-        padding: 20px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        background: #fff;
-    }
-
-    .form-group {
-        margin-bottom: 15px;
-    }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .form-group .text-danger {
-            color: #dc3545;
-        }
-
-    .btn {
-        padding: 10px 20px;
-        margin-right: 10px;
-    }
-</style>
-
-<h2>@ViewData["Title"]</h2>
-
-<div class="form-container">
-    <form asp-area="Admin" asp-action="Create" method="post">
-        <div class="form-group">
-            <label asp-for="Title" class="control-label"></label>
-            <input asp-for="Title" class="form-control" />
-            <span asp-validation-for="Title" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="Description" class="control-label"></label>
-            <textarea asp-for="Description" class="form-control"></textarea>
-            <span asp-validation-for="Description" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="StartDate" class="control-label"></label>
-            <input asp-for="StartDate" type="datetime-local" class="form-control" />
-            <span asp-validation-for="StartDate" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="EndDate" class="control-label"></label>
-            <input asp-for="EndDate" type="datetime-local" class="form-control" />
-            <span asp-validation-for="EndDate" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="Location" class="control-label"></label>
-            <input asp-for="Location" class="form-control" />
-            <span asp-validation-for="Location" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="Organizer" class="control-label"></label>
-            <input asp-for="Organizer" class="form-control" />
-            <span asp-validation-for="Organizer" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="CategoryId" class="control-label"></label>
-            <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
-            <span asp-validation-for="CategoryId" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <input type="submit" value="Tạo" class="btn btn-primary" />
-            <li>@Html.ActionLink("Huy", "Index", "Conferences")</li>
-        </div>
-        <div class="text-danger">@ViewData["Error"]</div>
-    </form>
+﻿<div class="form-group">
+    <label asp-for="Title"></label>
+    <input asp-for="Title" class="form-control" placeholder="Nhập tiêu đề hội nghị" />
+    <span asp-validation-for="Title" class="text-danger"></span>
 </div>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}
+<div class="form-group">
+    <label asp-for="Description"></label>
+    <textarea asp-for="Description" class="form-control" placeholder="Nhập mô tả ngắn"></textarea>
+</div>
+
+<div class="form-group">
+    <label asp-for="Content"></label>
+    <textarea asp-for="Content" class="form-control" placeholder="Nhập nội dung chi tiết"></textarea>
+</div>
+
+<div class="form-group">
+    <label asp-for="StartDate"></label>
+    <input asp-for="StartDate" class="form-control" type="datetime-local" />
+</div>
+
+<div class="form-group">
+    <label asp-for="EndDate"></label>
+    <input asp-for="EndDate" class="form-control" type="datetime-local" />
+</div>
+
+<div class="form-group">
+    <label asp-for="Location"></label>
+    <input asp-for="Location" class="form-control" placeholder="Nhập địa điểm tổ chức" />
+</div>
+
+<div class="form-group">
+    <label asp-for="Organizer"></label>
+    <input asp-for="Organizer" class="form-control" placeholder="Nhập đơn vị tổ chức" />
+</div>
+
+<div class="form-group">
+    <label asp-for="CategoryId" class="control-label"></label>
+    <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-control">
+        <option value="">-- Chọn danh mục --</option>
+    </select>
+    <span asp-validation-for="CategoryId" class="text-danger"></span>
+</div>
+
+<div class="form-group">
+    <label>Hiển thị</label>
+    <input asp-for="IsActive" />
+</div>
+
+<div class="form-group">
+    <label>Ảnh banner</label>
+    <input type="file" name="BannerImage" class="form-control-file" />
+</div>

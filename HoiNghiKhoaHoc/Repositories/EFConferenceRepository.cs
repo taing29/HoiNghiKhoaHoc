@@ -50,7 +50,16 @@ namespace HoiNghiKhoaHoc.Repositories
             return conference;
         }
 
-        public async Task UpdateConferenceAsync(Conference conference)
+        public async Task<IEnumerable<Conference>> GetConferenceByIdCategory(Conference conference)
+        {
+			return await _context.Conferences
+		.Where(c => c.Id != conference.Id && c.CategoryId == conference.CategoryId)
+		.OrderByDescending(c => c.StartDate)
+		.Take(4)
+		.ToListAsync();
+		}
+
+		public async Task UpdateConferenceAsync(Conference conference)
         {
             var existingConference = await _context.Conferences.FindAsync(conference.Id);
             if (existingConference == null)

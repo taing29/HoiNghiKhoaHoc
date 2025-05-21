@@ -8,14 +8,16 @@ namespace HoiNghiKhoaHoc.Models
         [Required, StringLength(100)]
         public string Title { get; set; } 
         public string Description { get; set; }
-        public string? ImageUrl { get; set; }
-        public DateTime StartDate { get; set; }
+		public string? Content { get; set; }
+		public string? BannerImage { get; set; }
+		public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string Location { get; set; } 
         public string Organizer { get; set; } 
         public bool IsActive { get; set; } = true;
-        public DateTime CreatedDate { get; set; } 
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
         public int CategoryId { get; set; }
-        public Category? Category { get; set; }
+		public ICollection<ConferenceImage>? Images { get; set; }
+		public Category? Category { get; set; }
     }
 }
