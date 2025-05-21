@@ -125,7 +125,7 @@
                 <li>@Html.ActionLink("Trang chủ", "Index", "Conferences")</li>
                 <li>@Html.ActionLink("Hội nghị sắp diễn ra", "Upcoming", "Conferences")</li>
                 <li>@Html.ActionLink("Hội nghị đã diễn ra", "Past", "Conferences")</li>
-                <li>@Html.ActionLink("Hội nghị trên thế giới", "Global", "Conferences")</li>
+                <li>@Html.ActionLink("Hội nghị trên thế giới", "International", "Conferences")</li>
             </ul>
 
             <div class="user-icon" onclick="toggleDropdown()">
@@ -143,8 +143,8 @@
     <a asp-area="Identity" asp-page="/Account/Manage/Index">Tài khoản</a>
 
     <!-- ✅ Thêm liên kết danh sách yêu thích -->
-<a asp-controller="Conferences" asp-action="MyFavorites">❤️ Danh sách yêu thích</a>
-<a asp-controller="Conferences" asp-action="MyRegistrations">❤️ Danh sách yêu thích</a>
+<a asp-controller="Conferences" asp-action="MyFavorites">Danh sách yêu thích❤️</a>
+<a asp-controller="Conferences" asp-action="MyRegistrations">Danh sách đăng kí❤️</a>
     <form method="post" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/">
         <button type="submit">Đăng xuất</button>
     </form>
