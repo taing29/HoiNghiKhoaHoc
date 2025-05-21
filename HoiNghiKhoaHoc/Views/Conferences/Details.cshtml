@@ -1,4 +1,5 @@
-﻿@model HoiNghiKhoaHoc.Models.ViewModels.ConferenceDetailViewModel
+﻿@using System.Text.RegularExpressions
+@model HoiNghiKhoaHoc.Models.ViewModels.ConferenceDetailViewModel
 
 @{
     ViewData["Title"] = Model.CurrentConference.Title;
@@ -11,6 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@Model.CurrentConference.Title</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/css/style.css" rel="stylesheet" />
     <style>
         .card {
             margin: 15px 0;
@@ -26,7 +28,6 @@
     </style>
 </head>
 <body>
-
     <div class="container-fluid">
         <!-- Banner -->
         <img src="~/uploads/@Model.CurrentConference.BannerImage" class="img-fluid mb-4" width="100%" alt="Banner">
@@ -46,11 +47,28 @@
                         </div>
                     </div>
 
-                    <p>@Model.CurrentConference.Description</p>
-
                     @if (!string.IsNullOrEmpty(Model.CurrentConference.Content))
                     {
-                        <div>@Html.Raw(Model.CurrentConference.Content)</div>
+                        var paragraphs = Regex.Split(Model.CurrentConference.Content, @"<\/p\s*>", RegexOptions.IgnoreCase)
+                      .Where(p => !string.IsNullOrWhiteSpace(p))
+                      .ToList();
+                        var images = Model.CurrentConference.Images?.ToList() ?? new List<ConferenceImage>();
+                        var imgIndex = 0;
+
+                        <div class="conference-content">
+                            @for (int i = 0; i < paragraphs.Count; i++)
+{
+    <p class="rich-content">@Html.Raw(paragraphs[i])</p>
+
+    if (imgIndex < images.Count)
+    {
+        <div class="text-center my-3">
+            <img src="@Url.Content("~/uploads/" + images[imgIndex].ImageUrl)" class="img-fluid w-50 rounded shadow-sm" alt="Ảnh minh họa" />
+        </div>
+        imgIndex++;
+    }
+}
+                        </div>
                     }
                     <!-- Thông tin bổ sung -->
                     <div class="mt-4">
@@ -69,8 +87,33 @@
                         </p>
                         <p><strong>Chuyên mục:</strong> @Model.CurrentConference.Category?.Name</p>
                     </div>
+                    @if (Model.Sessions != null && Model.Sessions.Any())
+{
+    <div class="mt-5">
+        <h4 class="mb-3">Các phiên hội nghị</h4>
+        <ul class="list-group">
+            @foreach (var session in Model.Sessions.OrderBy(s => s.StartTime))
+            {
+                <li class="list-group-item">
+                    <h5>@session.Title</h5>
+                    <p class="mb-1">
+                        <strong>Thời gian:</strong>
+                        @session.StartTime.ToString("HH:mm dd/MM/yyyy") - @session.EndTime.ToString("HH:mm dd/MM/yyyy")
+                    </p>
+                    <p class="mb-1">
+                        <strong>Phòng:</strong> @session.Location
+                    </p>
+                    @if (!string.IsNullOrWhiteSpace(session.Description))
+                    {
+                        <p>@session.Description</p>
+                    }
+                </li>
+            }
+        </ul>
+    </div>
+}
 
-
+                    
                     <!-- Từ khóa -->
                     <div class="mb-3 mt-4">
                         <span class="badge bg-secondary">AI</span>
@@ -99,16 +142,42 @@
                 </div>
             </div>
 
-            <!-- Thông tin tác giả -->
-            <div class="col-md-4 mb-4">
-                <div class="bg-white rounded shadow p-4">
-                    <h4>Thông tin tác giả</h4>
-                    <div class="d-flex align-items-center border p-3 rounded shadow-sm">
-                        <img src="https://bootdey.com/img/Content/avatar/avatar6.png" width="60" height="60" alt="Author Avatar" class="me-3 rounded-circle">
-                        <h6 class="mb-0">@Model.CurrentConference.Organizer</h6>
+            
+            <!-- Diễn giả hội nghị -->
+@if (Model.Speakers?.Any() == true)
+{
+    <div class="col-md-4 mb-4">
+        <div class="bg-white rounded shadow p-4">
+            <h4 class="mb-4 text-center">Diễn giả hội nghị</h4>
+            @foreach (var item in Model.Speakers)
+            {
+                <div class="text-center mb-4">
+                    <img src="@(!string.IsNullOrEmpty(item.Speaker.PhotoUrl) ? Url.Content("~/uploads/" + item.Speaker.PhotoUrl) : "https://bootdey.com/img/Content/avatar/avatar1.png")"
+                         alt="Ảnh diễn giả"
+                         class="rounded-circle mb-2"
+                         style="width: 80px; height: 80px; object-fit: cover;" />
+                    <h6 class="mb-1 text-primary">@item.Speaker.FullName</h6>
+                    @if (!string.IsNullOrWhiteSpace(item.Speaker.Title))
+                    {
+                        <p class="text-muted mb-1" style="font-size: 0.9rem;">@item.Speaker.Title</p>
+                    }
+                    <div>
+                        @if (item.IsKeynote)
+                        {
+                            <span class="badge bg-success mb-1">Keynote</span>
+                        }
+                        @if (item.IsPanelist)
+                        {
+                            <span class="badge bg-info text-dark mb-1">Panelist</span>
+                        }
                     </div>
+                    <hr />
                 </div>
-            </div>
+            }
+        </div>
+    </div>
+}
+
         </div>
     </div>
 
@@ -133,25 +202,8 @@
             }
         </div>
     </div>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 
-
-
-@* @if (Model.CurrentConference.Images != null && Model.CurrentConference.Images.Any())
-{
-    <div class="mt-4">
-        <h5>Hình ảnh liên quan</h5>
-        <div class="row">
-            @foreach (var img in Model.CurrentConference.Images)
-            {
-                <div class="col-6 col-md-4 mb-3">
-                    <img src="@Url.Content("~/uploads/" + img.ImagePath)" class="img-fluid rounded shadow-sm" alt="Ảnh hội nghị">
-                </div>
-            }
-        </div>
-    </div>
-} *@

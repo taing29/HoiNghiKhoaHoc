@@ -9,9 +9,14 @@ namespace HoiNghiKhoaHoc.Repositories
 		Task<IEnumerable<Conference>> GetAllConferencesUpcomingAsync();
 		Task<IEnumerable<Conference>> GetAllConferencesGlobalAsync();
 		Task<IEnumerable<Conference>> GetConferenceByIdCategoryAsync(Conference conference);
+		Task<Conference?> GetPastConferenceDetailsByIdAsync(int id);
+
 		Task<Conference> GetConferenceByIdAsync(int id);
 		Task AddConferenceAsync(Conference conference);
         Task UpdateConferenceAsync(Conference conference);
         Task DeleteConferenceAsync(int id);
-    }
+
+		Task<IEnumerable<ConferenceImage>> GetImagesByConferenceIdAsync(int conferenceId);
+
+	}
 }

@@ -14,6 +14,7 @@ namespace HoiNghiKhoaHoc.Models
 		public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string Location { get; set; }
+        public string Address { get; set; }
         public string Organizer { get; set; } 
         public bool IsActive { get; set; } = true;
         public DateTime CreatedDate { get; set; } = DateTime.Now;

@@ -10,3 +10,19 @@
         color: #0a58ca; /* Màu đậm hơn khi rê chuột */
     }
 /*Login*/
+
+/*
+Details
+*/
+.rich-content img {
+    width: 100%;
+    height: auto;
+    margin: 15px 0;
+    border-radius: 10px;
+    display: block;
+}
+
+/*
+Details
+*/
+
