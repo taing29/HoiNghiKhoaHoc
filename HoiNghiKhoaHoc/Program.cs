@@ -24,6 +24,8 @@ builder.Services.AddScoped<IConferenceRepository, EFConferenceRepository>();
 builder.Services.AddScoped<ICategoryRepository, EFCategoryRepository>();
 builder.Services.AddScoped<IUserRepository, EFUserRepository>();
 builder.Services.AddScoped<IFavoriteRepository, EFFavoriteRepository>();
+builder.Services.AddScoped<IRegistrationRepository, EFRegistrationRepository>();
+
 
 // 5. Middleware
 var app = builder.Build();

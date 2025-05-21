@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HoiNghiKhoaHoc.Migrations
 {
     /// <inheritdoc />
-    public partial class KhoiTao : Migration
+    public partial class @new : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -240,6 +240,33 @@ namespace HoiNghiKhoaHoc.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ConferenceRegistrations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ConferenceId = table.Column<int>(type: "int", nullable: false),
+                    RegisteredDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ConferenceRegistrations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ConferenceRegistrations_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ConferenceRegistrations_Conferences_ConferenceId",
+                        column: x => x.ConferenceId,
+                        principalTable: "Conferences",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Favorites",
                 columns: table => new
                 {
@@ -311,6 +338,16 @@ namespace HoiNghiKhoaHoc.Migrations
                 column: "ConferenceId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ConferenceRegistrations_ConferenceId",
+                table: "ConferenceRegistrations",
+                column: "ConferenceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ConferenceRegistrations_UserId",
+                table: "ConferenceRegistrations",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Conferences_CategoryId",
                 table: "Conferences",
                 column: "CategoryId");
@@ -346,6 +383,9 @@ namespace HoiNghiKhoaHoc.Migrations
 
             migrationBuilder.DropTable(
                 name: "ConferenceImages");
+
+            migrationBuilder.DropTable(
+                name: "ConferenceRegistrations");
 
             migrationBuilder.DropTable(
                 name: "Favorites");

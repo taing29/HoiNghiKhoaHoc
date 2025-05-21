@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HoiNghiKhoaHoc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250521062615_KhoiTao")]
-    partial class KhoiTao
+    [Migration("20250521090950_new")]
+    partial class @new
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -197,6 +197,33 @@ namespace HoiNghiKhoaHoc.Migrations
                     b.HasIndex("ConferenceId");
 
                     b.ToTable("ConferenceImages");
+                });
+
+            modelBuilder.Entity("HoiNghiKhoaHoc.Models.ConferenceRegistration", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ConferenceId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("RegisteredDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConferenceId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ConferenceRegistrations");
                 });
 
             modelBuilder.Entity("HoiNghiKhoaHoc.Models.Favorite", b =>
@@ -409,6 +436,25 @@ namespace HoiNghiKhoaHoc.Migrations
                         .IsRequired();
 
                     b.Navigation("Conference");
+                });
+
+            modelBuilder.Entity("HoiNghiKhoaHoc.Models.ConferenceRegistration", b =>
+                {
+                    b.HasOne("HoiNghiKhoaHoc.Models.Conference", "Conference")
+                        .WithMany()
+                        .HasForeignKey("ConferenceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HoiNghiKhoaHoc.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Conference");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("HoiNghiKhoaHoc.Models.Favorite", b =>

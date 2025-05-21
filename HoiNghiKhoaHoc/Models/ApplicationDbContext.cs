@@ -9,11 +9,12 @@ namespace HoiNghiKhoaHoc.Models
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
-        //khai báo các bảng trong cơ sở dữ liệu
+    
         public DbSet<Conference> Conferences { get; set; }
         public DbSet<Category> Categories { get; set; }
 		public DbSet<ConferenceImage> ConferenceImages { get; set; }
         public DbSet<Favorite> Favorites { get; set; }
+        public DbSet<ConferenceRegistration> ConferenceRegistrations { get; set; }
 
         public DbSet<HoiNghiKhoaHoc.Models.UserView> UserView { get; set; } = default!;
     }
