@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<HoiNghiKhoaHoc.Models.Conference>
 
 @{
-    ViewData["Title"] = "Danh sách Hội nghị";
+    ViewData["Title"] = "Hội nghị đã diễn ra";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -69,18 +69,25 @@
 }
 
 <div>
-    @foreach (var item in Model)
+    @if (Model != null && Model.Any())
     {
-        <div class="conference-card">
-            <img src="@Url.Content("~/uploads/" + item.BannerImage)" alt="Conference Image" />
-            <div class="content">
-                <h3>@item.Title</h3>
-                <p>Thời gian: @item.StartDate.ToString("dd/MM/yyyy HH:mm") - @item.EndDate.ToString("dd/MM/yyyy HH:mm")</p>
-                <p>Địa điểm: @item.Location</p>
-                <p>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Xem chi tiết</a>
-                </p>
+        @foreach (var item in Model)
+        {
+            <div class="conference-card">
+                <img src="@Url.Content("~/uploads/" + item.BannerImage)" alt="Conference Image" />
+                <div class="content">
+                    <h3>@item.Title</h3>
+                    <p>Thời gian: @item.StartDate.ToString("dd/MM/yyyy HH:mm") - @item.EndDate.ToString("dd/MM/yyyy HH:mm")</p>
+                    <p>Địa điểm: @item.Location</p>
+                    <p>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Xem chi tiết</a>
+                    </p>
+                </div>
             </div>
-        </div>
+        }
+    }
+    else
+    {
+        <p>Không có hội nghị đã diễn ra.</p>
     }
 </div>

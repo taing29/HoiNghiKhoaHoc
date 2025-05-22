@@ -27,7 +27,7 @@ namespace HoiNghiKhoaHoc.Repositories
             {
                 throw new Exception("Conference not found.");
             }
-            _context.Conferences.Remove(conference);
+            _context.Conferences.Remove(conference);    
             await _context.SaveChangesAsync();
         }
 
@@ -110,5 +110,73 @@ namespace HoiNghiKhoaHoc.Repositories
             _context.Entry(existingConference).CurrentValues.SetValues(conference);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<Conference>> GetUpcomingConferencesAsync()
+        {
+            var now = DateTime.Now;
+            return await _context.Conferences
+                .Where(c => c.StartDate > now)
+                .Include(c => c.Category)
+                .Include(c => c.Images)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Conference>> GetPastConferencesAsync()
+        {
+            var now = DateTime.Now;
+            return await _context.Conferences
+                .Where(c => c.EndDate < now)
+                .Include(c => c.Category)
+                .Include(c => c.Images)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Conference>> GetInternationalConferencesAsync()
+        {
+            return await _context.Conferences
+                .Where(c => c.IsInternational)
+                .Include(c => c.Category)
+                .Include(c => c.Images)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Conference>> SearchConferencesAsync(string searchTerm)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+                return await GetAllConferencesAsync();
+
+            string normalized = RemoveDiacritics(searchTerm.ToLower());
+
+            var all = await _context.Conferences.ToListAsync();
+
+            return all.Where(c =>
+                RemoveDiacritics(c.Title).ToLower().Contains(normalized) ||
+                RemoveDiacritics(c.Description ?? "").ToLower().Contains(normalized) ||
+                RemoveDiacritics(c.Location ?? "").ToLower().Contains(normalized) ||
+                RemoveDiacritics(c.Organizer ?? "").ToLower().Contains(normalized));
+        }
+
+    
+        private string RemoveDiacritics(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return "";
+
+            var normalized = text.Normalize(System.Text.NormalizationForm.FormD);
+            var sb = new System.Text.StringBuilder();
+
+            foreach (var ch in normalized)
+            {
+                if (System.Globalization.CharUnicodeInfo.GetUnicodeCategory(ch) != System.Globalization.UnicodeCategory.NonSpacingMark)
+                {
+                    sb.Append(ch);
+                }
+            }
+
+            return sb.ToString().Normalize(System.Text.NormalizationForm.FormC);
+        }
+
+
+
+
     }
 }

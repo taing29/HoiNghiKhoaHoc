@@ -15,8 +15,6 @@ namespace HoiNghiKhoaHoc.Repositories
 		Task AddConferenceAsync(Conference conference);
         Task UpdateConferenceAsync(Conference conference);
         Task DeleteConferenceAsync(int id);
-
-		Task<IEnumerable<ConferenceImage>> GetImagesByConferenceIdAsync(int conferenceId);
-
-	}
+        Task<IEnumerable<Conference>> SearchConferencesAsync(string searchTerm);
+    }
 }

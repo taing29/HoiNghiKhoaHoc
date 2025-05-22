@@ -17,6 +17,9 @@ namespace HoiNghiKhoaHoc.Models
         public string Address { get; set; }
         public string Organizer { get; set; } 
         public bool IsActive { get; set; } = true;
+        //để phân biệt trong nước hay quốc tế
+        public bool IsInternational { get; set; }
+        //
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public int CategoryId { get; set; }
 		public int CountryId { get; set; } 

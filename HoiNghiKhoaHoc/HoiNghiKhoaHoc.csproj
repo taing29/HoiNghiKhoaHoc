@@ -51,6 +51,7 @@
     <Folder Include="Areas\Admin\Views\Admin\" />
     <Folder Include="Migrations\" />
     <Folder Include="wwwroot\Image\" />
+	  <Folder Include="wwwroot\avatars\" />
   </ItemGroup>
 
   <ItemGroup>

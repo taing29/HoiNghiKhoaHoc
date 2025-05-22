@@ -1,94 +1,228 @@
 ﻿using HoiNghiKhoaHoc.Models;
 using HoiNghiKhoaHoc.Models.ViewModels;
 using HoiNghiKhoaHoc.Repositories;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HoiNghiKhoaHoc.Controllers
 {
     public class ConferencesController : Controller
     {
-        private readonly IConferenceRepository _conferenceRepository;
-        private readonly ICategoryRepository _categoryRepository;
-		private readonly IConferenceSpeakerRepository _conferenceSpeakerRepository;
-		private readonly IConferenceSessionRepository _conferenceSessionRepository;
+        private readonly IConferenceRepository _conferenceRepo;
+        private readonly IFavoriteRepository _favoriteRepo;
+        private readonly IRegistrationRepository _registrationRepo;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IConferenceSpeakerRepository _conferenceSpeakerRepository
+        private readonly ICategoryRepository _categoryRepository
 
-
-        public ConferencesController(IConferenceRepository conferenceRepository, ICategoryRepository categoryRepository, IConferenceSpeakerRepository conferenceSpeakerRepository, IConferenceSessionRepository conferenceSessionRepository)
+        public ConferencesController(
+            IConferenceRepository conferenceRepo,
+            IFavoriteRepository favoriteRepo,
+            IRegistrationRepository registrationRepo,
+            UserManager<ApplicationUser> userManager,
+            ICategoryRepository categoryRepository,
+            IConferenceSpeakerRepository conferenceSpeakerRepository
+            )
         {
-            _conferenceRepository = conferenceRepository;
+            _conferenceRepo = conferenceRepo;
             _categoryRepository = categoryRepository;
-			_conferenceSpeakerRepository = conferenceSpeakerRepository;
-			_conferenceSessionRepository = conferenceSessionRepository;
+            _conferenceSpeakerRepository = conferenceSpeakerRepository;
+            _favoriteRepo = favoriteRepo;
+            _registrationRepo = registrationRepo;
+            _userManager = userManager;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? searchString)
         {
-            // Nếu là Admin, chuyển hướng qua Admin Area
+            // Nếu là Admin, chuyển hướng sang Area Admin
             if (User.IsInRole("Admin"))
             {
                 return RedirectToAction("Index", "Conferences", new { area = "Admin" });
             }
-            var references = await _conferenceRepository.GetAllConferencesAsync();
-            return View(references);
+            var results = await _conferenceRepo.SearchConferencesAsync(searchString ?? "");
+            var favoriteIds = new List<int>();
+            if (User.Identity.IsAuthenticated && User.IsInRole("User"))
+            {
+                var userId = _userManager.GetUserId(User);
+                var favorites = await _favoriteRepo.GetFavoritesByUserIdAsync(userId);
+                favoriteIds = favorites.Select(f => f.ConferenceId).ToList();
+            }
+
+            ViewBag.FavoriteIds = favoriteIds;
+            ViewBag.Search = searchString;
+            return View(results);
+
+          
+        }
+
+
+
+
+        public async Task<IActionResult> Upcoming()
+        {
+            var list = await _conferenceRepo.GetUpcomingConferencesAsync();
+            return View(list);
         }
 		public async Task<IActionResult> Past()
 		{
 			var conferences = await _conferenceRepository.GetAllConferencesPastAsync();
 			return View(conferences);
 		}
-
-		public async Task<IActionResult> Upcoming()
-		{
-			var upcomingConferences = await _conferenceRepository.GetAllConferencesUpcomingAsync();
-			return View(upcomingConferences);
-		}
-
-		public async Task<IActionResult> Global()
-		{
-			var globalConferences = await _conferenceRepository.GetAllConferencesGlobalAsync();
-			return View(globalConferences);
-		}
+        public async Task<IActionResult> Global()
+        {
+            var globalConferences = await _conferenceRepository.GetAllConferencesGlobalAsync();
+            return View(globalConferences);
+        }
 
 
-		public async Task<IActionResult> Details(int id)
-		{
-			var conference = await _conferenceRepository.GetConferenceByIdAsync(id);
-			if (conference == null)
-			{
-				return NotFound();
-			}
+        public async Task<IActionResult> Details(int id)
+        {
+            var conference = await _conferenceRepo.GetConferenceByIdAsync(id);
+            if (conference == null) return NotFound();
 
-			var relatedConferences = await _conferenceRepository.GetConferenceByIdCategoryAsync(conference);
-			var speakers = await _conferenceSpeakerRepository.GetSpeakersByConferenceIdAsync(id);
-			var sessions = await _conferenceSessionRepository.GetByConferenceId(id);
-			var viewModel = new ConferenceDetailViewModel
-			{
-				CurrentConference = conference,
-				RelatedConferences = relatedConferences,
-				Speakers = speakers,
-				Sessions = sessions
-			};
+            var related = await _conferenceRepo.GetConferenceByIdCategory(conference);
+            var speakers = await _conferenceSpeakerRepository.GetSpeakersByConferenceIdAsync(id);
+            var userId = _userManager.GetUserId(User);
+            var isFavorite = false;
+            var isRegistered = false;
 
-			return View("Details", viewModel);
-		}
+            if (!string.IsNullOrEmpty(userId))
+            {
+                var favorite = await _favoriteRepo.GetFavoriteAsync(userId, id);
+                isFavorite = favorite != null;
 
-		public async Task<IActionResult> PastConferenceDetails(int id)
-		{
-			var conference = await _conferenceRepository.GetPastConferenceDetailsByIdAsync(id);
-			Console.WriteLine("Ảnh liên quan: " + conference?.Images?.Count);
-			if (conference == null)
-			{
-				return NotFound();
-			}
+                var registration = await _registrationRepo.GetRegistrationAsync(userId, id);
+                isRegistered = registration != null;
+            }
 
-			var related = await _conferenceRepository.GetConferenceByIdCategoryAsync(conference);
+            return View(new ConferenceDetailViewModel
+            {
+                CurrentConference = conference,
+                RelatedConferences = related,
+                Speakers = speakers,
+                IsFavorite = isFavorite,
+                IsRegistered = isRegistered
+            });
+        }
 
-			var viewModel = new ConferenceDetailViewModel
-			{
-				CurrentConference = conference,
-				RelatedConferences = related,
-			};
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> MyFavorites()
+        {
+            var userId = _userManager.GetUserId(User);
+            var favorites = await _favoriteRepo.GetFavoritesByUserIdAsync(userId);
+            return View(favorites);
+        }
 
-			return View(viewModel);
-		}
-	}
+        [Authorize(Roles = "User")]
+        [HttpPost]
+        public async Task<IActionResult> AddToFavorites(int conferenceId)
+        {
+            var userId = _userManager.GetUserId(User);
+            var existing = await _favoriteRepo.GetFavoriteAsync(userId, conferenceId);
+            if (existing == null)
+            {
+                await _favoriteRepo.AddFavoriteAsync(new Favorite
+                {
+                    UserId = userId,
+                    ConferenceId = conferenceId,
+                    DateAdded = DateTime.Now
+                });
+            }
+            return RedirectToAction("Details", new { id = conferenceId });
+        }
+
+        [Authorize(Roles = "User")]
+        [HttpPost]
+        public async Task<IActionResult> RemoveFromFavorites(int conferenceId)
+        {
+            var userId = _userManager.GetUserId(User);
+            var favorite = await _favoriteRepo.GetFavoriteAsync(userId, conferenceId);
+            if (favorite != null)
+            {
+                await _favoriteRepo.RemoveFavoriteAsync(favorite.Id);
+            }
+            return RedirectToAction("Details", new { id = conferenceId });
+        }
+
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> MyRegistrations()
+        {
+            var userId = _userManager.GetUserId(User);
+            var registrations = await _registrationRepo.GetRegistrationsByUserIdAsync(userId);
+            return View(registrations);
+        }
+
+        [Authorize(Roles = "User")]
+        [HttpPost]
+        public async Task<IActionResult> Register(int conferenceId)
+        {
+            var userId = _userManager.GetUserId(User);
+            var existing = await _registrationRepo.GetRegistrationAsync(userId, conferenceId);
+            if (existing == null)
+            {
+                await _registrationRepo.RegisterAsync(new ConferenceRegistration
+                {
+                    UserId = userId,
+                    ConferenceId = conferenceId,
+                    RegisteredDate = DateTime.Now
+                });
+            }
+            return RedirectToAction("Details", new { id = conferenceId });
+        }
+
+
+
+
+
+
+        //[Authorize(Roles = "User")]
+        //[HttpPost]
+        //public async Task<IActionResult> Registerr(int conferenceId)
+        //{
+        //    var userId = _userManager.GetUserId(User);
+        //    var existing = await _registrationRepo.GetRegistrationAsync(userId, conferenceId);
+        //    if (existing == null)
+        //    {
+        //        await _registrationRepo.RegisterAsync(new ConferenceRegistration
+        //        {
+        //            UserId = userId,
+        //            ConferenceId = conferenceId,
+        //            RegisteredDate = DateTime.Now
+        //        });
+        //    }
+
+           
+        //    return RedirectToAction("RegistrationConfirmation", new { conferenceId });
+        //}
+        //[Authorize(Roles = "User")]
+        //public async Task<IActionResult> RegistrationConfirmation(int conferenceId)
+        //{
+        //    var userId = _userManager.GetUserId(User);
+        //    var registration = await _registrationRepo.GetRegistrationAsync(userId, conferenceId);
+
+        //    if (registration == null)
+        //        return RedirectToAction("Details", new { id = conferenceId }); 
+
+        //    var conference = await _conferenceRepo.GetConferenceByIdAsync(conferenceId);
+        //    if (conference == null) return NotFound();
+
+        //    ViewBag.RegisteredDate = registration.RegisteredDate;
+        //    return View(conference); 
+        //}
+
+
+
+        [Authorize(Roles = "User")]
+        [HttpPost]
+        public async Task<IActionResult> CancelRegistration(int conferenceId)
+        {
+            var userId = _userManager.GetUserId(User);
+            var reg = await _registrationRepo.GetRegistrationAsync(userId, conferenceId);
+            if (reg != null)
+            {
+                await _registrationRepo.CancelAsync(reg.Id);
+            }
+            return RedirectToAction("Details", new { id = conferenceId });
+        }
+    }
 }
