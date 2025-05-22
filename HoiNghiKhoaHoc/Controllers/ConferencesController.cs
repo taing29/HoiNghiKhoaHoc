@@ -23,5 +23,14 @@ namespace HoiNghiKhoaHoc.Controllers
             var references = await _conferenceRepository.GetAllConferencesAsync();
             return View(references);
         }
+        public async Task<IActionResult> Display(int id)
+        {
+            var conference = await _conferenceRepository.DisplayConferenceAsync(id);
+            if (conference == null)
+            {
+                return NotFound();
+            }
+            return View(conference);
+        }
     }
 }

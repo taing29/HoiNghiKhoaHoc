@@ -21,7 +21,6 @@ else
                     <th>Mô tả</th>
                     <th>Thời gian</th>
                     <th>Địa điểm</th>
-                    <th>Đơn vị tổ chức</th>
                     <th>Chủ đề</th>
                     <th>Chi tiết</th>
                 </tr>
@@ -36,10 +35,9 @@ else
                             @item.StartDate.ToString("dd/MM/yyyy") - @item.EndDate.ToString("dd/MM/yyyy")
                         </td>
                         <td>@item.Location</td>
-                        <td>@item.Organizer</td>
                         <td>@item.Category?.Name</td>
                         <td>
-                            <a asp-action="Details" asp-route-id="@item.Id">Xem chi tiết</a>
+                            <a asp-action="Display" asp-route-id="@item.Id">Xem chi tiết</a>
                         </td>
 
                     </tr>

@@ -44,6 +44,5 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
             ViewBag.CategoryId = new SelectList(categories, "Id", "Name", conference.CategoryId);
             return View(conference);
         }
-
     }
 }

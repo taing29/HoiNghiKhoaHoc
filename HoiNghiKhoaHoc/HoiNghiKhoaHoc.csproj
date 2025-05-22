@@ -23,6 +23,11 @@
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Views\Admin\" />
     <Folder Include="Migrations\" />
+    <Folder Include="wwwroot\Image\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\ckeditor5-build-classic-19.0.0\.github\PULL_REQUEST_TEMPLATE.md" />
   </ItemGroup>
 
 </Project>

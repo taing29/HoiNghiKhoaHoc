@@ -1,5 +1,7 @@
 ﻿@model HoiNghiKhoaHoc.Models.Conference
 
+<script src="~/ckeditor5-build-classic-19.0.0/build/ckeditor.js"></script>
+
 @{
     ViewData["Title"] = "Tạo Hội Nghị Mới";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -9,33 +11,29 @@
 
 <form asp-action="Create" method="post">
     <div class="form-group">
-        <label asp-for="Title"></label>
+        <label asp-for="Title">Tiêu đề</label>
         <input asp-for="Title" class="form-control" />
     </div>
 
+    <!-- Ô nhập nội dung dùng CKEditor -->
     <div class="form-group">
-        <label asp-for="Description"></label>
-        <input asp-for="Description" class="form-control" />
+        <label asp-for="Description">Nội dung</label>
+        <textarea asp-for="Description" id="Description" class="form-control"></textarea>
     </div>
 
     <div class="form-group">
-        <label asp-for="StartDate"></label>
+        <label asp-for="StartDate">Ngày bắt đầu</label>
         <input asp-for="StartDate" class="form-control" type="date" />
     </div>
 
     <div class="form-group">
-        <label asp-for="EndDate"></label>
+        <label asp-for="EndDate">Ngày kết thúc</label>
         <input asp-for="EndDate" class="form-control" type="date" />
     </div>
 
     <div class="form-group">
-        <label asp-for="Location"></label>
+        <label asp-for="Location">Địa điểm</label>
         <input asp-for="Location" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Organizer"></label>
-        <input asp-for="Organizer" class="form-control" />
     </div>
 
     <div class="form-group">
@@ -43,21 +41,88 @@
         <select asp-for="CategoryId" asp-items="ViewBag.CategoryId" class="form-control"></select>
     </div>
 
-    <div class="form-group">
-        <label asp-for="Content">Nội dung chi tiết</label>
-        <textarea asp-for="Content" class="form-control" id="Content" rows="10"></textarea>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Lưu</button>
+    <button type="submit" class="btn btn-primary">Thêm hội nghị</button>
 </form>
 
-@section Scripts {
-    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
-    <script>
-        ClassicEditor
-            .create(document.querySelector('#Content'))
-            .catch(error => {
-                console.error(error);
+<!-- Kích hoạt CKEditor -->
+<script>
+    class MyUploadAdapter {
+        constructor(loader) {
+            this.loader = loader;
+        }
+
+        upload() {
+            return this.loader.file
+                .then(file => new Promise((resolve, reject) => {
+                    this._initRequest();
+                    this._initListeners(resolve, reject, file);
+                    this._sendRequest(file);
+                }));
+        }
+
+        abort() {
+            if (this.xhr) {
+                this.xhr.abort();
+            }
+        }
+
+        _initRequest() {
+            const xhr = this.xhr = new XMLHttpRequest();
+            xhr.open('POST', '@Url.Action("UploadImage", "ImageUpload", new { area = "Admin" })', true);
+            xhr.responseType = 'json';
+        }
+
+        _initListeners(resolve, reject, file) {
+            const xhr = this.xhr;
+            const loader = this.loader;
+            const genericErrorText = `Couldn't upload file: ${file.name}.`;
+
+            xhr.addEventListener('error', () => reject(genericErrorText));
+            xhr.addEventListener('abort', () => reject());
+            xhr.addEventListener('load', () => {
+                const response = xhr.response;
+
+                if (!response || response.error) {
+                    return reject(response && response.error ? response.error.message : genericErrorText);
+                }
+
+                resolve({
+                    default: response.url
+                });
             });
-    </script>
-}
+
+            if (xhr.upload) {
+                xhr.upload.addEventListener('progress', evt => {
+                    if (evt.lengthComputable) {
+                        loader.uploadTotal = evt.total;
+                        loader.uploaded = evt.loaded;
+                    }
+                });
+            }
+        }
+
+        _sendRequest(file) {
+            const data = new FormData();
+            data.append('upload', file);
+            this.xhr.send(data);
+        }
+    }
+
+    function MyCustomUploadAdapterPlugin(editor) {
+        editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+            return new MyUploadAdapter(loader);
+        };
+    }
+
+    ClassicEditor
+        .create(document.querySelector('#Description'), {
+            extraPlugins: [MyCustomUploadAdapterPlugin]
+        })
+        .then(editor => {
+            window.editor = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+</script>
+

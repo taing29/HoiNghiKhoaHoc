@@ -126,9 +126,6 @@ namespace HoiNghiKhoaHoc.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -143,10 +140,6 @@ namespace HoiNghiKhoaHoc.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Location")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Organizer")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

@@ -12,14 +12,27 @@ namespace HoiNghiKhoaHoc.Repositories
             _context = context;
         }
 
-        public Task AddConferenceAsync(Conference conference)
+        public async Task AddConferenceAsync(Conference conference)
         {
-            throw new NotImplementedException();
+            _context.Conferences.Add(conference);
+            await _context.SaveChangesAsync();
         }
 
-        public Task DeleteConferenceAsync(int id)
+        public async Task DeleteConferenceAsync(int id)
         {
-            throw new NotImplementedException();
+            var conference = await _context.Conferences.FindAsync(id);
+            if (conference != null)
+            {
+                _context.Conferences.Remove(conference);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<Conference> DisplayConferenceAsync(int id)
+        {
+            return await _context.Conferences
+                         .Include(c => c.Category) 
+                         .FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<IEnumerable<Conference>> GetAllConferencesAsync()
@@ -29,14 +42,17 @@ namespace HoiNghiKhoaHoc.Repositories
             .ToListAsync();
         }
 
-        public Task<Conference> GetConferenceByIdAsync(int id)
+        public async Task<Conference> GetConferenceByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Conferences
+            .Include(c => c.Category)
+            .FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public Task UpdateConferenceAsync(Conference conference)
+        public async Task UpdateConferenceAsync(Conference conference)
         {
-            throw new NotImplementedException();
+            _context.Conferences.Update(conference);
+            await _context.SaveChangesAsync();
         }
     }
 }

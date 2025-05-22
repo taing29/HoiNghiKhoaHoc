@@ -9,5 +9,7 @@ namespace HoiNghiKhoaHoc.Repositories
         Task AddConferenceAsync(Conference conference);
         Task UpdateConferenceAsync(Conference conference);
         Task DeleteConferenceAsync(int id);
+        Task<Conference> DisplayConferenceAsync(int id);
+
     }
 }
