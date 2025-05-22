@@ -40,6 +40,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+//thêm đường dẫn đến thư mục wwwroot
+app.UseWebSockets();
 
 app.UseRouting();
 app.UseAuthentication();

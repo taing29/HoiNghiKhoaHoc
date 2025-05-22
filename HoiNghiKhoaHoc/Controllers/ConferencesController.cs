@@ -55,9 +55,6 @@ namespace HoiNghiKhoaHoc.Controllers
           
         }
 
-
-
-
         public async Task<IActionResult> Upcoming()
         {
             var list = await _conferenceRepository.GetAllConferencesUpcomingAsync();
@@ -170,11 +167,6 @@ namespace HoiNghiKhoaHoc.Controllers
             return RedirectToAction("Details", new { id = conferenceId });
         }
 
-
-
-
-
-
         //[Authorize(Roles = "User")]
         //[HttpPost]
         //public async Task<IActionResult> Registerr(int conferenceId)
@@ -209,8 +201,6 @@ namespace HoiNghiKhoaHoc.Controllers
         //    ViewBag.RegisteredDate = registration.RegisteredDate;
         //    return View(conference); 
         //}
-
-
 
         [Authorize(Roles = "User")]
         [HttpPost]
