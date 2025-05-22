@@ -12,13 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HoiNghiKhoaHoc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-<<<<<<<< HEAD:HoiNghiKhoaHoc/Migrations/20250520150514_Init.Designer.cs
-    [Migration("20250520150514_Init")]
-    partial class Init
-========
-    [Migration("20250521170409_AddConferenceSession")]
-    partial class AddConferenceSession
->>>>>>>> 825836bf3fe0e4c3400319f4856c88952359e52b:HoiNghiKhoaHoc/Migrations/20250521170409_AddConferenceSession.Designer.cs
+    [Migration("20250522152047_KhoiTaoModel")]
+    partial class KhoiTaoModel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -164,6 +159,10 @@ namespace HoiNghiKhoaHoc.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Organizer")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
