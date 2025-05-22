@@ -98,5 +98,44 @@ namespace HoiNghiKhoaHoc.Repositories
                 .Include(c => c.Images)
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Conference>> SearchConferencesAsync(string searchTerm)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+                return await GetAllConferencesAsync();
+
+            string normalized = RemoveDiacritics(searchTerm.ToLower());
+
+            var all = await _context.Conferences.ToListAsync();
+
+            return all.Where(c =>
+                RemoveDiacritics(c.Title).ToLower().Contains(normalized) ||
+                RemoveDiacritics(c.Description ?? "").ToLower().Contains(normalized) ||
+                RemoveDiacritics(c.Location ?? "").ToLower().Contains(normalized) ||
+                RemoveDiacritics(c.Organizer ?? "").ToLower().Contains(normalized));
+        }
+
+    
+        private string RemoveDiacritics(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return "";
+
+            var normalized = text.Normalize(System.Text.NormalizationForm.FormD);
+            var sb = new System.Text.StringBuilder();
+
+            foreach (var ch in normalized)
+            {
+                if (System.Globalization.CharUnicodeInfo.GetUnicodeCategory(ch) != System.Globalization.UnicodeCategory.NonSpacingMark)
+                {
+                    sb.Append(ch);
+                }
+            }
+
+            return sb.ToString().Normalize(System.Text.NormalizationForm.FormC);
+        }
+
+
+
+
     }
 }

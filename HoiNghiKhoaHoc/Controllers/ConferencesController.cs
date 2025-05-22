@@ -25,12 +25,31 @@ namespace HoiNghiKhoaHoc.Controllers
             _registrationRepo = registrationRepo;
             _userManager = userManager;
         }
-
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? searchString)
         {
-            var list = await _conferenceRepo.GetUpcomingConferencesAsync();
-            return View(list);
+            // Nếu là Admin, chuyển hướng sang Area Admin
+            if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Index", "Conferences", new { area = "Admin" });
+            }
+            var results = await _conferenceRepo.SearchConferencesAsync(searchString ?? "");
+            var favoriteIds = new List<int>();
+            if (User.Identity.IsAuthenticated && User.IsInRole("User"))
+            {
+                var userId = _userManager.GetUserId(User);
+                var favorites = await _favoriteRepo.GetFavoritesByUserIdAsync(userId);
+                favoriteIds = favorites.Select(f => f.ConferenceId).ToList();
+            }
+
+            ViewBag.FavoriteIds = favoriteIds;
+            ViewBag.Search = searchString;
+            return View(results);
+
+          
         }
+
+
+
 
         public async Task<IActionResult> Upcoming()
         {

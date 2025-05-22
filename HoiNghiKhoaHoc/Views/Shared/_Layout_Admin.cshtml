@@ -213,11 +213,11 @@
             <div class="menu-icon">☰</div>
             <nav>
                 <ul class="nav-links">
-
-                    <li>@Html.ActionLink("TRANG CHỦ", "", "")</li>
-                    <li>@Html.ActionLink("HỘI NGHỊ SẮP DIỄN RA", "", "")</li>
-                    <li>@Html.ActionLink("HỘI NGHỊ ĐÃ DIỄN RA", "", "")</li>
-                    <li>@Html.ActionLink("HỘI NGHỊ TRÊN THẾ GIỚI", "", "")</li>
+                    
+                    <li>@Html.ActionLink("Trang chủ", "Index", "Conferences")</li>
+                    <li>@Html.ActionLink("Hội nghị sắp diễn ra", "Upcoming", "Conferences")</li>
+                    <li>@Html.ActionLink("Hội nghị đã diễn ra", "Past", "Conferences")</li>
+                    <li>@Html.ActionLink("Hội nghị trên thế giới", "International", "Conferences")</li>
                     @{
                         var currentUser = SignInManager.IsSignedIn(User) ? await UserManager.GetUserAsync(User) : null;
                         var avatarUrl = currentUser?.AvatarPath ?? "https://cdn-icons-png.flaticon.com/512/747/747376.png";
@@ -236,7 +236,7 @@
                         <li><a class="nav-link text-white" asp-area="Identity" asp-page="/Account/Register">Đăng ký</a></li>
                         <li><a class="nav-link text-white" asp-area="Identity" asp-page="/Account/Login">Đăng nhập</a></li>
                     }
-
+                    
                 </ul>
                 
             </nav>

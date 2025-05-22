@@ -14,5 +14,9 @@ namespace HoiNghiKhoaHoc.Repositories
         Task<IEnumerable<Conference>> GetUpcomingConferencesAsync(); 
         Task<IEnumerable<Conference>> GetPastConferencesAsync();    
         Task<IEnumerable<Conference>> GetInternationalConferencesAsync();
+        Task<IEnumerable<Conference>> SearchConferencesAsync(string searchTerm);
+
+
+
     }
 }
