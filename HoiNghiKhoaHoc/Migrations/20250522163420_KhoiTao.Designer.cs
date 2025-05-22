@@ -12,13 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HoiNghiKhoaHoc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-<<<<<<<< HEAD:HoiNghiKhoaHoc/Migrations/20250522152047_KhoiTaoModel.Designer.cs
-    [Migration("20250522152047_KhoiTaoModel")]
-    partial class KhoiTaoModel
-========
-    [Migration("20250521090950_new")]
-    partial class @new
->>>>>>>> 565c271fb4d624bdfa7d8454bea7429808a79b1a:HoiNghiKhoaHoc/Migrations/20250521090950_new.Designer.cs
+    [Migration("20250522163420_KhoiTao")]
+    partial class KhoiTao
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -213,11 +208,7 @@ namespace HoiNghiKhoaHoc.Migrations
                     b.ToTable("ConferenceImages");
                 });
 
-<<<<<<<< HEAD:HoiNghiKhoaHoc/Migrations/20250522152047_KhoiTaoModel.Designer.cs
-            modelBuilder.Entity("HoiNghiKhoaHoc.Models.ConferenceSession", b =>
-========
             modelBuilder.Entity("HoiNghiKhoaHoc.Models.ConferenceRegistration", b =>
->>>>>>>> 565c271fb4d624bdfa7d8454bea7429808a79b1a:HoiNghiKhoaHoc/Migrations/20250521090950_new.Designer.cs
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -228,7 +219,33 @@ namespace HoiNghiKhoaHoc.Migrations
                     b.Property<int>("ConferenceId")
                         .HasColumnType("int");
 
-<<<<<<<< HEAD:HoiNghiKhoaHoc/Migrations/20250522152047_KhoiTaoModel.Designer.cs
+                    b.Property<DateTime>("RegisteredDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConferenceId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ConferenceRegistrations");
+                });
+
+            modelBuilder.Entity("HoiNghiKhoaHoc.Models.ConferenceSession", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ConferenceId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -246,32 +263,15 @@ namespace HoiNghiKhoaHoc.Migrations
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-========
-                    b.Property<DateTime>("RegisteredDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
->>>>>>>> 565c271fb4d624bdfa7d8454bea7429808a79b1a:HoiNghiKhoaHoc/Migrations/20250521090950_new.Designer.cs
 
                     b.HasKey("Id");
 
                     b.HasIndex("ConferenceId");
 
-<<<<<<<< HEAD:HoiNghiKhoaHoc/Migrations/20250522152047_KhoiTaoModel.Designer.cs
                     b.ToTable("ConferenceSessions");
                 });
 
             modelBuilder.Entity("HoiNghiKhoaHoc.Models.ConferenceSpeaker", b =>
-========
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ConferenceRegistrations");
-                });
-
-            modelBuilder.Entity("HoiNghiKhoaHoc.Models.Favorite", b =>
->>>>>>>> 565c271fb4d624bdfa7d8454bea7429808a79b1a:HoiNghiKhoaHoc/Migrations/20250521090950_new.Designer.cs
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -282,7 +282,6 @@ namespace HoiNghiKhoaHoc.Migrations
                     b.Property<int>("ConferenceId")
                         .HasColumnType("int");
 
-<<<<<<<< HEAD:HoiNghiKhoaHoc/Migrations/20250522152047_KhoiTaoModel.Designer.cs
                     b.Property<bool>("IsKeynote")
                         .HasColumnType("bit");
 
@@ -294,20 +293,11 @@ namespace HoiNghiKhoaHoc.Migrations
 
                     b.Property<int>("SpeakerId")
                         .HasColumnType("int");
-========
-                    b.Property<DateTime>("DateAdded")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
->>>>>>>> 565c271fb4d624bdfa7d8454bea7429808a79b1a:HoiNghiKhoaHoc/Migrations/20250521090950_new.Designer.cs
 
                     b.HasKey("Id");
 
                     b.HasIndex("ConferenceId");
 
-<<<<<<<< HEAD:HoiNghiKhoaHoc/Migrations/20250522152047_KhoiTaoModel.Designer.cs
                     b.HasIndex("SpeakerId");
 
                     b.ToTable("ConferenceSpeakers");
@@ -332,6 +322,33 @@ namespace HoiNghiKhoaHoc.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Countries");
+                });
+
+            modelBuilder.Entity("HoiNghiKhoaHoc.Models.Favorite", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ConferenceId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateAdded")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConferenceId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Favorites");
                 });
 
             modelBuilder.Entity("HoiNghiKhoaHoc.Models.Speaker", b =>
@@ -368,11 +385,6 @@ namespace HoiNghiKhoaHoc.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Speakers");
-========
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Favorites");
->>>>>>>> 565c271fb4d624bdfa7d8454bea7429808a79b1a:HoiNghiKhoaHoc/Migrations/20250521090950_new.Designer.cs
                 });
 
             modelBuilder.Entity("HoiNghiKhoaHoc.Models.UserView", b =>
@@ -568,11 +580,7 @@ namespace HoiNghiKhoaHoc.Migrations
                     b.Navigation("Conference");
                 });
 
-<<<<<<<< HEAD:HoiNghiKhoaHoc/Migrations/20250522152047_KhoiTaoModel.Designer.cs
-            modelBuilder.Entity("HoiNghiKhoaHoc.Models.ConferenceSession", b =>
-========
             modelBuilder.Entity("HoiNghiKhoaHoc.Models.ConferenceRegistration", b =>
->>>>>>>> 565c271fb4d624bdfa7d8454bea7429808a79b1a:HoiNghiKhoaHoc/Migrations/20250521090950_new.Designer.cs
                 {
                     b.HasOne("HoiNghiKhoaHoc.Models.Conference", "Conference")
                         .WithMany()
@@ -580,25 +588,29 @@ namespace HoiNghiKhoaHoc.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-<<<<<<<< HEAD:HoiNghiKhoaHoc/Migrations/20250522152047_KhoiTaoModel.Designer.cs
+                    b.HasOne("HoiNghiKhoaHoc.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Conference");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("HoiNghiKhoaHoc.Models.ConferenceSession", b =>
+                {
+                    b.HasOne("HoiNghiKhoaHoc.Models.Conference", "Conference")
+                        .WithMany()
+                        .HasForeignKey("ConferenceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Conference");
                 });
 
             modelBuilder.Entity("HoiNghiKhoaHoc.Models.ConferenceSpeaker", b =>
-========
-                    b.HasOne("HoiNghiKhoaHoc.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Conference");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("HoiNghiKhoaHoc.Models.Favorite", b =>
->>>>>>>> 565c271fb4d624bdfa7d8454bea7429808a79b1a:HoiNghiKhoaHoc/Migrations/20250521090950_new.Designer.cs
                 {
                     b.HasOne("HoiNghiKhoaHoc.Models.Conference", "Conference")
                         .WithMany()
@@ -606,25 +618,34 @@ namespace HoiNghiKhoaHoc.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-<<<<<<<< HEAD:HoiNghiKhoaHoc/Migrations/20250522152047_KhoiTaoModel.Designer.cs
                     b.HasOne("HoiNghiKhoaHoc.Models.Speaker", "Speaker")
                         .WithMany("ConferenceSpeakers")
                         .HasForeignKey("SpeakerId")
-========
-                    b.HasOne("HoiNghiKhoaHoc.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
->>>>>>>> 565c271fb4d624bdfa7d8454bea7429808a79b1a:HoiNghiKhoaHoc/Migrations/20250521090950_new.Designer.cs
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Conference");
 
-<<<<<<<< HEAD:HoiNghiKhoaHoc/Migrations/20250522152047_KhoiTaoModel.Designer.cs
                     b.Navigation("Speaker");
-========
+                });
+
+            modelBuilder.Entity("HoiNghiKhoaHoc.Models.Favorite", b =>
+                {
+                    b.HasOne("HoiNghiKhoaHoc.Models.Conference", "Conference")
+                        .WithMany()
+                        .HasForeignKey("ConferenceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HoiNghiKhoaHoc.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Conference");
+
                     b.Navigation("User");
->>>>>>>> 565c271fb4d624bdfa7d8454bea7429808a79b1a:HoiNghiKhoaHoc/Migrations/20250521090950_new.Designer.cs
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

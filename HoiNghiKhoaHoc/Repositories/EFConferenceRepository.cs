@@ -68,7 +68,6 @@ namespace HoiNghiKhoaHoc.Repositories
         {
             var conference = await _context.Conferences
                 .Include(c => c.Category) // Load thông tin Category
-                .Include(c => c.Images)
                 .FirstOrDefaultAsync(c => c.Id == id);
             if (conference == null)
             {
@@ -94,7 +93,6 @@ namespace HoiNghiKhoaHoc.Repositories
 		public async Task<Conference?> GetPastConferenceDetailsByIdAsync(int id)
 		{
 			return await _context.Conferences
-				.Include(c => c.Images)
 				.Include(c => c.Category)
 				.Include(c => c.Country)
 				.FirstOrDefaultAsync(c => c.Id == id && c.EndDate < DateTime.Now);
@@ -117,7 +115,6 @@ namespace HoiNghiKhoaHoc.Repositories
             return await _context.Conferences
                 .Where(c => c.StartDate > now)
                 .Include(c => c.Category)
-                .Include(c => c.Images)
                 .ToListAsync();
         }
 
@@ -127,7 +124,6 @@ namespace HoiNghiKhoaHoc.Repositories
             return await _context.Conferences
                 .Where(c => c.EndDate < now)
                 .Include(c => c.Category)
-                .Include(c => c.Images)
                 .ToListAsync();
         }
 
@@ -136,7 +132,6 @@ namespace HoiNghiKhoaHoc.Repositories
             return await _context.Conferences
                 .Where(c => c.IsInternational)
                 .Include(c => c.Category)
-                .Include(c => c.Images)
                 .ToListAsync();
         }
 

@@ -17,10 +17,8 @@ namespace HoiNghiKhoaHoc.Models
 		public DbSet<HoiNghiKhoaHoc.Models.UserView> UserView { get; set; } = default!;
 		public DbSet<Speaker> Speakers { get; set; }
 		public DbSet<ConferenceSpeaker> ConferenceSpeakers { get; set; }
-        public DbSet<ConferenceSession> ConferenceSessions { get; set; }
         public DbSet<Favorite> Favorites { get; set; }
         public DbSet<ConferenceRegistration> ConferenceRegistrations { get; set; }
 
-        public DbSet<HoiNghiKhoaHoc.Models.UserView> UserView { get; set; } = default!;
     }
 }

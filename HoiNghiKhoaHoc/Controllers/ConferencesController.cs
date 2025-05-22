@@ -9,28 +9,28 @@ namespace HoiNghiKhoaHoc.Controllers
 {
     public class ConferencesController : Controller
     {
-        private readonly IConferenceRepository _conferenceRepo;
-        private readonly IFavoriteRepository _favoriteRepo;
-        private readonly IRegistrationRepository _registrationRepo;
+        private readonly IConferenceRepository _conferenceRepository;
+        private readonly IFavoriteRepository _favoriteRepository;
+        private readonly IRegistrationRepository _registrationRepository;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IConferenceSpeakerRepository _conferenceSpeakerRepository
-        private readonly ICategoryRepository _categoryRepository
+        private readonly IConferenceSpeakerRepository _conferenceSpeakerRepository;
+        private readonly ICategoryRepository _categoryRepository;
 
         public ConferencesController(
-            IConferenceRepository conferenceRepo,
-            IFavoriteRepository favoriteRepo,
-            IRegistrationRepository registrationRepo,
+            IConferenceRepository conferenceRepository,
+            IFavoriteRepository favoriteRepository,
+            IRegistrationRepository registrationRepository,
             UserManager<ApplicationUser> userManager,
             ICategoryRepository categoryRepository,
             IConferenceSpeakerRepository conferenceSpeakerRepository
             )
         {
-            _conferenceRepo = conferenceRepo;
+            _conferenceRepository = conferenceRepository;
+            _favoriteRepository = favoriteRepository;
+            _registrationRepository = registrationRepository;
+            _userManager = userManager;
             _categoryRepository = categoryRepository;
             _conferenceSpeakerRepository = conferenceSpeakerRepository;
-            _favoriteRepo = favoriteRepo;
-            _registrationRepo = registrationRepo;
-            _userManager = userManager;
         }
         public async Task<IActionResult> Index(string? searchString)
         {
@@ -39,12 +39,12 @@ namespace HoiNghiKhoaHoc.Controllers
             {
                 return RedirectToAction("Index", "Conferences", new { area = "Admin" });
             }
-            var results = await _conferenceRepo.SearchConferencesAsync(searchString ?? "");
+            var results = await _conferenceRepository.SearchConferencesAsync(searchString ?? "");
             var favoriteIds = new List<int>();
             if (User.Identity.IsAuthenticated && User.IsInRole("User"))
             {
                 var userId = _userManager.GetUserId(User);
-                var favorites = await _favoriteRepo.GetFavoritesByUserIdAsync(userId);
+                var favorites = await _favoriteRepository.GetFavoritesByUserIdAsync(userId);
                 favoriteIds = favorites.Select(f => f.ConferenceId).ToList();
             }
 
@@ -60,7 +60,7 @@ namespace HoiNghiKhoaHoc.Controllers
 
         public async Task<IActionResult> Upcoming()
         {
-            var list = await _conferenceRepo.GetUpcomingConferencesAsync();
+            var list = await _conferenceRepository.GetAllConferencesUpcomingAsync();
             return View(list);
         }
 		public async Task<IActionResult> Past()
@@ -77,10 +77,10 @@ namespace HoiNghiKhoaHoc.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            var conference = await _conferenceRepo.GetConferenceByIdAsync(id);
+            var conference = await _conferenceRepository.GetConferenceByIdAsync(id);
             if (conference == null) return NotFound();
 
-            var related = await _conferenceRepo.GetConferenceByIdCategory(conference);
+            var related = await _conferenceRepository.GetConferenceByIdCategoryAsync(conference);
             var speakers = await _conferenceSpeakerRepository.GetSpeakersByConferenceIdAsync(id);
             var userId = _userManager.GetUserId(User);
             var isFavorite = false;
@@ -88,10 +88,10 @@ namespace HoiNghiKhoaHoc.Controllers
 
             if (!string.IsNullOrEmpty(userId))
             {
-                var favorite = await _favoriteRepo.GetFavoriteAsync(userId, id);
+                var favorite = await _favoriteRepository.GetFavoriteAsync(userId, id);
                 isFavorite = favorite != null;
 
-                var registration = await _registrationRepo.GetRegistrationAsync(userId, id);
+                var registration = await _registrationRepository.GetRegistrationAsync(userId, id);
                 isRegistered = registration != null;
             }
 
@@ -109,7 +109,7 @@ namespace HoiNghiKhoaHoc.Controllers
         public async Task<IActionResult> MyFavorites()
         {
             var userId = _userManager.GetUserId(User);
-            var favorites = await _favoriteRepo.GetFavoritesByUserIdAsync(userId);
+            var favorites = await _favoriteRepository.GetFavoritesByUserIdAsync(userId);
             return View(favorites);
         }
 
@@ -118,10 +118,10 @@ namespace HoiNghiKhoaHoc.Controllers
         public async Task<IActionResult> AddToFavorites(int conferenceId)
         {
             var userId = _userManager.GetUserId(User);
-            var existing = await _favoriteRepo.GetFavoriteAsync(userId, conferenceId);
+            var existing = await _favoriteRepository.GetFavoriteAsync(userId, conferenceId);
             if (existing == null)
             {
-                await _favoriteRepo.AddFavoriteAsync(new Favorite
+                await _favoriteRepository.AddFavoriteAsync(new Favorite
                 {
                     UserId = userId,
                     ConferenceId = conferenceId,
@@ -136,10 +136,10 @@ namespace HoiNghiKhoaHoc.Controllers
         public async Task<IActionResult> RemoveFromFavorites(int conferenceId)
         {
             var userId = _userManager.GetUserId(User);
-            var favorite = await _favoriteRepo.GetFavoriteAsync(userId, conferenceId);
+            var favorite = await _favoriteRepository.GetFavoriteAsync(userId, conferenceId);
             if (favorite != null)
             {
-                await _favoriteRepo.RemoveFavoriteAsync(favorite.Id);
+                await _favoriteRepository.RemoveFavoriteAsync(favorite.Id);
             }
             return RedirectToAction("Details", new { id = conferenceId });
         }
@@ -148,7 +148,7 @@ namespace HoiNghiKhoaHoc.Controllers
         public async Task<IActionResult> MyRegistrations()
         {
             var userId = _userManager.GetUserId(User);
-            var registrations = await _registrationRepo.GetRegistrationsByUserIdAsync(userId);
+            var registrations = await _registrationRepository.GetRegistrationsByUserIdAsync(userId);
             return View(registrations);
         }
 
@@ -157,10 +157,10 @@ namespace HoiNghiKhoaHoc.Controllers
         public async Task<IActionResult> Register(int conferenceId)
         {
             var userId = _userManager.GetUserId(User);
-            var existing = await _registrationRepo.GetRegistrationAsync(userId, conferenceId);
+            var existing = await _registrationRepository.GetRegistrationAsync(userId, conferenceId);
             if (existing == null)
             {
-                await _registrationRepo.RegisterAsync(new ConferenceRegistration
+                await _registrationRepository.RegisterAsync(new ConferenceRegistration
                 {
                     UserId = userId,
                     ConferenceId = conferenceId,
@@ -180,10 +180,10 @@ namespace HoiNghiKhoaHoc.Controllers
         //public async Task<IActionResult> Registerr(int conferenceId)
         //{
         //    var userId = _userManager.GetUserId(User);
-        //    var existing = await _registrationRepo.GetRegistrationAsync(userId, conferenceId);
+        //    var existing = await _registrationRepository.GetRegistrationAsync(userId, conferenceId);
         //    if (existing == null)
         //    {
-        //        await _registrationRepo.RegisterAsync(new ConferenceRegistration
+        //        await _registrationRepository.RegisterAsync(new ConferenceRegistration
         //        {
         //            UserId = userId,
         //            ConferenceId = conferenceId,
@@ -198,7 +198,7 @@ namespace HoiNghiKhoaHoc.Controllers
         //public async Task<IActionResult> RegistrationConfirmation(int conferenceId)
         //{
         //    var userId = _userManager.GetUserId(User);
-        //    var registration = await _registrationRepo.GetRegistrationAsync(userId, conferenceId);
+        //    var registration = await _registrationRepository.GetRegistrationAsync(userId, conferenceId);
 
         //    if (registration == null)
         //        return RedirectToAction("Details", new { id = conferenceId }); 
@@ -217,10 +217,10 @@ namespace HoiNghiKhoaHoc.Controllers
         public async Task<IActionResult> CancelRegistration(int conferenceId)
         {
             var userId = _userManager.GetUserId(User);
-            var reg = await _registrationRepo.GetRegistrationAsync(userId, conferenceId);
+            var reg = await _registrationRepository.GetRegistrationAsync(userId, conferenceId);
             if (reg != null)
             {
-                await _registrationRepo.CancelAsync(reg.Id);
+                await _registrationRepository.CancelAsync(reg.Id);
             }
             return RedirectToAction("Details", new { id = conferenceId });
         }

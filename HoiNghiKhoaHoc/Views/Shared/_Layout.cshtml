@@ -119,12 +119,7 @@
 <body>
     <header>
         <div class="navbar">
-            <ul class="nav-links">
-                <li>@Html.ActionLink("Trang chủ", "Index", "Conferences")</li>
-                <li>@Html.ActionLink("Hội nghị sắp diễn ra", "Upcoming", "Conferences")</li>
-                <li>@Html.ActionLink("Hội nghị đã diễn ra", "Past", "Conferences")</li>
-                <li>@Html.ActionLink("Hội nghị trên thế giới", "Global", "Conferences")</li>
-            </ul>
+            
 
             @* User section *@
             @{
@@ -133,24 +128,7 @@
                 var fullName = currentUser?.FullName ?? "Khách";
             }
 
-            <div class="user-icon" onclick="toggleDropdown()">
-                <img src="@avatarUrl" alt="Avatar" />
-                <div class="dropdown" id="userDropdown">
-                    @if (SignInManager.IsSignedIn(User))
-                    {
-                        <div class="px-3 py-2 text-white fw-bold">Xin chào, @fullName!</div>
-                        <a asp-area="Identity" asp-page="/Account/Manage/Index">Tài khoản</a>
-
-                        <form method="post" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/">
-                            <button type="submit">Đăng xuất</button>
-                        </form>
-                    }
-                    else
-                    {
-                        <a asp-area="Identity" asp-page="/Account/Register">Đăng ký</a>
-                        <a asp-area="Identity" asp-page="/Account/Login">Đăng nhập</a>
-                    }
-                </div>
+            
             <ul class="nav-links">
                 <li>@Html.ActionLink("Trang chủ", "Index", "Conferences")</li>
                 <li>@Html.ActionLink("Hội nghị sắp diễn ra", "Upcoming", "Conferences")</li>

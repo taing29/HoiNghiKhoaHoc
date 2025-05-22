@@ -23,7 +23,6 @@ namespace HoiNghiKhoaHoc.Models
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public int CategoryId { get; set; }
 		public int CountryId { get; set; } 
-		public ICollection<ConferenceImage>? Images { get; set; }
 		public Category? Category { get; set; }
 		public Country Country { get; set; }
 	}

@@ -35,7 +35,7 @@
 
     <div class="row px-3 px-md-4">
         <!-- Nội dung chính -->
-        <div class="col-md-8 mb-4">
+@*         <div class="col-md-8 mb-4">
             <div class="bg-white rounded shadow p-4 h-100">
                 <h2 class="mb-4">@Model.CurrentConference.Title</h2>
 
@@ -69,7 +69,8 @@
     }
 }
                         </div>
-                    }
+                    } *@
+@* Content *@
                 @if (User.Identity.IsAuthenticated && User.IsInRole("User"))
 {
     <!-- Nút yêu thích -->
@@ -125,7 +126,9 @@
                         </p>
                         <p><strong>Chuyên mục:</strong> @Model.CurrentConference.Category?.Name</p>
                     </div>
-                    @if (Model.Sessions != null && Model.Sessions.Any())
+@*       
+    Content
+    @if (Model.Sessions != null && Model.Sessions.Any())
 {
     <div class="mt-5">
         <h4 class="mb-3">Các phiên hội nghị</h4>
@@ -148,7 +151,7 @@
                 </li>
             }
         </ul>
-    </div>
+    </div> *@
 }
 
                     
