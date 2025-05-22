@@ -1,11 +1,22 @@
 ﻿@model IEnumerable<HoiNghiKhoaHoc.Models.Conference>
 
 @{
-    ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Danh sách Hội nghị";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
 
-<h1>Index</h1>
+<style>
+    .conference-card {
+        display: inline-block;
+        width: 300px;
+        margin: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background: #fff;
+        vertical-align: top;
+    }
 
 <div class="mb-3">
     <a asp-action="Create" asp-controller="Conferences" asp-area="Admin" class="btn btn-primary">

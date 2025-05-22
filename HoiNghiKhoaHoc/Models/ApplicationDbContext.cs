@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using HoiNghiKhoaHoc.Models;
 
 namespace HoiNghiKhoaHoc.Models
 {
@@ -11,5 +12,11 @@ namespace HoiNghiKhoaHoc.Models
         //khai báo các bảng trong cơ sở dữ liệu
         public DbSet<Conference> Conferences { get; set; }
         public DbSet<Category> Categories { get; set; }
-    }
+		public DbSet<ConferenceImage> ConferenceImages { get; set; }
+		public DbSet<Country> Countries { get; set; }
+		public DbSet<HoiNghiKhoaHoc.Models.UserView> UserView { get; set; } = default!;
+		public DbSet<Speaker> Speakers { get; set; }
+		public DbSet<ConferenceSpeaker> ConferenceSpeakers { get; set; }
+        public DbSet<ConferenceSession> ConferenceSessions { get; set; }
+	}
 }

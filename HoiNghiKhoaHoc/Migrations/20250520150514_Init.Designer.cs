@@ -12,8 +12,13 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HoiNghiKhoaHoc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
+<<<<<<<< HEAD:HoiNghiKhoaHoc/Migrations/20250520150514_Init.Designer.cs
     [Migration("20250520150514_Init")]
     partial class Init
+========
+    [Migration("20250521170409_AddConferenceSession")]
+    partial class AddConferenceSession
+>>>>>>>> 825836bf3fe0e4c3400319f4856c88952359e52b:HoiNghiKhoaHoc/Migrations/20250521170409_AddConferenceSession.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,6 +42,9 @@ namespace HoiNghiKhoaHoc.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Age")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AvatarPath")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -126,7 +134,20 @@ namespace HoiNghiKhoaHoc.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BannerImage")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CountryId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedDate")
@@ -158,7 +179,186 @@ namespace HoiNghiKhoaHoc.Migrations
 
                     b.HasIndex("CategoryId");
 
+                    b.HasIndex("CountryId");
+
                     b.ToTable("Conferences");
+                });
+
+            modelBuilder.Entity("HoiNghiKhoaHoc.Models.ConferenceImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ConferenceId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConferenceId");
+
+                    b.ToTable("ConferenceImages");
+                });
+
+            modelBuilder.Entity("HoiNghiKhoaHoc.Models.ConferenceSession", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ConferenceId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConferenceId");
+
+                    b.ToTable("ConferenceSessions");
+                });
+
+            modelBuilder.Entity("HoiNghiKhoaHoc.Models.ConferenceSpeaker", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ConferenceId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsKeynote")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsPanelist")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SpeakerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConferenceId");
+
+                    b.HasIndex("SpeakerId");
+
+                    b.ToTable("ConferenceSpeakers");
+                });
+
+            modelBuilder.Entity("HoiNghiKhoaHoc.Models.Country", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsVietnam")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Countries");
+                });
+
+            modelBuilder.Entity("HoiNghiKhoaHoc.Models.Speaker", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Affiliation")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Bio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("PhotoUrl")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Speakers");
+                });
+
+            modelBuilder.Entity("HoiNghiKhoaHoc.Models.UserView", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Age")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserView");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -302,7 +502,56 @@ namespace HoiNghiKhoaHoc.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("HoiNghiKhoaHoc.Models.Country", "Country")
+                        .WithMany("Conferences")
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Category");
+
+                    b.Navigation("Country");
+                });
+
+            modelBuilder.Entity("HoiNghiKhoaHoc.Models.ConferenceImage", b =>
+                {
+                    b.HasOne("HoiNghiKhoaHoc.Models.Conference", "Conference")
+                        .WithMany("Images")
+                        .HasForeignKey("ConferenceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Conference");
+                });
+
+            modelBuilder.Entity("HoiNghiKhoaHoc.Models.ConferenceSession", b =>
+                {
+                    b.HasOne("HoiNghiKhoaHoc.Models.Conference", "Conference")
+                        .WithMany()
+                        .HasForeignKey("ConferenceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Conference");
+                });
+
+            modelBuilder.Entity("HoiNghiKhoaHoc.Models.ConferenceSpeaker", b =>
+                {
+                    b.HasOne("HoiNghiKhoaHoc.Models.Conference", "Conference")
+                        .WithMany()
+                        .HasForeignKey("ConferenceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HoiNghiKhoaHoc.Models.Speaker", "Speaker")
+                        .WithMany("ConferenceSpeakers")
+                        .HasForeignKey("SpeakerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Conference");
+
+                    b.Navigation("Speaker");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -359,6 +608,21 @@ namespace HoiNghiKhoaHoc.Migrations
             modelBuilder.Entity("HoiNghiKhoaHoc.Models.Category", b =>
                 {
                     b.Navigation("Conference");
+                });
+
+            modelBuilder.Entity("HoiNghiKhoaHoc.Models.Conference", b =>
+                {
+                    b.Navigation("Images");
+                });
+
+            modelBuilder.Entity("HoiNghiKhoaHoc.Models.Country", b =>
+                {
+                    b.Navigation("Conferences");
+                });
+
+            modelBuilder.Entity("HoiNghiKhoaHoc.Models.Speaker", b =>
+                {
+                    b.Navigation("ConferenceSpeakers");
                 });
 #pragma warning restore 612, 618
         }
