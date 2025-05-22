@@ -85,10 +85,6 @@ namespace HoiNghiKhoaHoc.Repositories
 		.ToListAsync();
 		}
 
-		public Task<IEnumerable<ConferenceImage>> GetImagesByConferenceIdAsync(int conferenceId)
-		{
-			throw new NotImplementedException();
-		}
 
 		public async Task<Conference?> GetPastConferenceDetailsByIdAsync(int id)
 		{

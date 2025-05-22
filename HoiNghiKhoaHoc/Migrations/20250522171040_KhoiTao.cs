@@ -260,26 +260,6 @@ namespace HoiNghiKhoaHoc.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ConferenceImages",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ConferenceId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ConferenceImages", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ConferenceImages_Conferences_ConferenceId",
-                        column: x => x.ConferenceId,
-                        principalTable: "Conferences",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ConferenceRegistrations",
                 columns: table => new
                 {
@@ -300,30 +280,6 @@ namespace HoiNghiKhoaHoc.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ConferenceRegistrations_Conferences_ConferenceId",
-                        column: x => x.ConferenceId,
-                        principalTable: "Conferences",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ConferenceSessions",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ConferenceId = table.Column<int>(type: "int", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ConferenceSessions", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ConferenceSessions_Conferences_ConferenceId",
                         column: x => x.ConferenceId,
                         principalTable: "Conferences",
                         principalColumn: "Id",
@@ -426,11 +382,6 @@ namespace HoiNghiKhoaHoc.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ConferenceImages_ConferenceId",
-                table: "ConferenceImages",
-                column: "ConferenceId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ConferenceRegistrations_ConferenceId",
                 table: "ConferenceRegistrations",
                 column: "ConferenceId");
@@ -449,11 +400,6 @@ namespace HoiNghiKhoaHoc.Migrations
                 name: "IX_Conferences_CountryId",
                 table: "Conferences",
                 column: "CountryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ConferenceSessions_ConferenceId",
-                table: "ConferenceSessions",
-                column: "ConferenceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ConferenceSpeakers_ConferenceId",
@@ -495,13 +441,7 @@ namespace HoiNghiKhoaHoc.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "ConferenceImages");
-
-            migrationBuilder.DropTable(
                 name: "ConferenceRegistrations");
-
-            migrationBuilder.DropTable(
-                name: "ConferenceSessions");
 
             migrationBuilder.DropTable(
                 name: "ConferenceSpeakers");

@@ -183,28 +183,6 @@ namespace HoiNghiKhoaHoc.Migrations
                     b.ToTable("Conferences");
                 });
 
-            modelBuilder.Entity("HoiNghiKhoaHoc.Models.ConferenceImage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ConferenceId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ConferenceId");
-
-                    b.ToTable("ConferenceImages");
-                });
-
             modelBuilder.Entity("HoiNghiKhoaHoc.Models.ConferenceRegistration", b =>
                 {
                     b.Property<int>("Id")
@@ -230,42 +208,6 @@ namespace HoiNghiKhoaHoc.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("ConferenceRegistrations");
-                });
-
-            modelBuilder.Entity("HoiNghiKhoaHoc.Models.ConferenceSession", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ConferenceId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ConferenceId");
-
-                    b.ToTable("ConferenceSessions");
                 });
 
             modelBuilder.Entity("HoiNghiKhoaHoc.Models.ConferenceSpeaker", b =>
@@ -566,17 +508,6 @@ namespace HoiNghiKhoaHoc.Migrations
                     b.Navigation("Country");
                 });
 
-            modelBuilder.Entity("HoiNghiKhoaHoc.Models.ConferenceImage", b =>
-                {
-                    b.HasOne("HoiNghiKhoaHoc.Models.Conference", "Conference")
-                        .WithMany("Images")
-                        .HasForeignKey("ConferenceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Conference");
-                });
-
             modelBuilder.Entity("HoiNghiKhoaHoc.Models.ConferenceRegistration", b =>
                 {
                     b.HasOne("HoiNghiKhoaHoc.Models.Conference", "Conference")
@@ -594,17 +525,6 @@ namespace HoiNghiKhoaHoc.Migrations
                     b.Navigation("Conference");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("HoiNghiKhoaHoc.Models.ConferenceSession", b =>
-                {
-                    b.HasOne("HoiNghiKhoaHoc.Models.Conference", "Conference")
-                        .WithMany()
-                        .HasForeignKey("ConferenceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Conference");
                 });
 
             modelBuilder.Entity("HoiNghiKhoaHoc.Models.ConferenceSpeaker", b =>
@@ -699,11 +619,6 @@ namespace HoiNghiKhoaHoc.Migrations
             modelBuilder.Entity("HoiNghiKhoaHoc.Models.Category", b =>
                 {
                     b.Navigation("Conference");
-                });
-
-            modelBuilder.Entity("HoiNghiKhoaHoc.Models.Conference", b =>
-                {
-                    b.Navigation("Images");
                 });
 
             modelBuilder.Entity("HoiNghiKhoaHoc.Models.Country", b =>
