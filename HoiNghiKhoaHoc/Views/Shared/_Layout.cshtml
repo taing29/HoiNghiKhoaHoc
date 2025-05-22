@@ -127,7 +127,7 @@
 
             <form asp-controller="Conferences" asp-action="Index" method="get" class="d-flex me-3">
                 <input type="text" name="searchString" value="@ViewBag.Search" class="form-control form-control-sm rounded-pill me-2" placeholder="🔍 Tìm kiếm..." />
-                <button type="submit" class="btn btn-light btn-sm rounded-pill">Tìm</button>
+                <button type="submit" class="btn btn-light btn-sm rounded-pill">🔍 </button>
             </form>
 
             <div class="user-icon" onclick="toggleDropdown()">
@@ -144,6 +144,7 @@
                     <a asp-area="Identity" asp-page="/Account/Manage/Index">Tài khoản</a>
                     <a asp-controller="Conferences" asp-action="MyFavorites">❤️ Yêu thích</a>
                     <a asp-controller="Conferences" asp-action="MyRegistrations">📋 Đăng ký</a>
+
                     <form method="post" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/">
                         <button type="submit">Đăng xuất</button>
                     </form>

@@ -1,0 +1,19 @@
+﻿@model HoiNghiKhoaHoc.Models.Conference
+
+@{
+    ViewData["Title"] = "Giấy xác nhận đăng ký";
+    var date = (DateTime?)ViewBag.RegisteredDate ?? DateTime.Now;
+}
+
+<div class="container mt-5 text-center border p-4 shadow rounded" style="max-width: 650px;">
+    <h3 class="text-success mb-4">🎉 BẠN ĐÃ ĐĂNG KÝ THÀNH CÔNG</h3>
+
+    <p><strong>Hội nghị:</strong> @Model.Title</p>
+    <p><strong>Thời gian:</strong> @Model.StartDate:dd/MM/yyyy - @Model.EndDate:dd/MM/yyyy</p>
+    <p><strong>Địa điểm:</strong> @Model.Location</p>
+    <p><strong>Ngày đăng ký:</strong> @date.ToString("dd/MM/yyyy HH:mm")</p>
+    <hr />
+    <p>💡 Vui lòng lưu lại hoặc in giấy xác nhận này khi tham dự hội nghị.</p>
+
+    <a asp-action="Index" class="btn btn-outline-primary mt-3">⬅ Quay lại danh sách</a>
+</div>

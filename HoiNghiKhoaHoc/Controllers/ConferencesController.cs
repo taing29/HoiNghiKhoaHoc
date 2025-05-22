@@ -136,7 +136,6 @@ namespace HoiNghiKhoaHoc.Controllers
             return RedirectToAction("Details", new { id = conferenceId });
         }
 
-
         [Authorize(Roles = "User")]
         public async Task<IActionResult> MyRegistrations()
         {
@@ -144,9 +143,6 @@ namespace HoiNghiKhoaHoc.Controllers
             var registrations = await _registrationRepo.GetRegistrationsByUserIdAsync(userId);
             return View(registrations);
         }
-
-
-
 
         [Authorize(Roles = "User")]
         [HttpPost]
@@ -165,6 +161,48 @@ namespace HoiNghiKhoaHoc.Controllers
             }
             return RedirectToAction("Details", new { id = conferenceId });
         }
+
+
+
+
+
+
+        //[Authorize(Roles = "User")]
+        //[HttpPost]
+        //public async Task<IActionResult> Registerr(int conferenceId)
+        //{
+        //    var userId = _userManager.GetUserId(User);
+        //    var existing = await _registrationRepo.GetRegistrationAsync(userId, conferenceId);
+        //    if (existing == null)
+        //    {
+        //        await _registrationRepo.RegisterAsync(new ConferenceRegistration
+        //        {
+        //            UserId = userId,
+        //            ConferenceId = conferenceId,
+        //            RegisteredDate = DateTime.Now
+        //        });
+        //    }
+
+           
+        //    return RedirectToAction("RegistrationConfirmation", new { conferenceId });
+        //}
+        //[Authorize(Roles = "User")]
+        //public async Task<IActionResult> RegistrationConfirmation(int conferenceId)
+        //{
+        //    var userId = _userManager.GetUserId(User);
+        //    var registration = await _registrationRepo.GetRegistrationAsync(userId, conferenceId);
+
+        //    if (registration == null)
+        //        return RedirectToAction("Details", new { id = conferenceId }); 
+
+        //    var conference = await _conferenceRepo.GetConferenceByIdAsync(conferenceId);
+        //    if (conference == null) return NotFound();
+
+        //    ViewBag.RegisteredDate = registration.RegisteredDate;
+        //    return View(conference); 
+        //}
+
+
 
         [Authorize(Roles = "User")]
         [HttpPost]

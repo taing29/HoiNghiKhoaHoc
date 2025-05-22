@@ -27,7 +27,7 @@ namespace HoiNghiKhoaHoc.Repositories
             {
                 throw new Exception("Conference not found.");
             }
-            _context.Conferences.Remove(conference);
+            _context.Conferences.Remove(conference);    
             await _context.SaveChangesAsync();
         }
 
