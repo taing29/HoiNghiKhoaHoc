@@ -1,63 +1,13 @@
 ﻿@model IEnumerable<HoiNghiKhoaHoc.Models.Conference>
-
 @{
     ViewData["Title"] = "Hội nghị đã diễn ra";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var favorites = ViewBag.FavoriteIds as List<int> ?? new List<int>();
 }
 
-<style>
-    .conference-card {
-        display: inline-block;
-        width: 300px;
-        margin: 15px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        overflow: hidden;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        background: #fff;
-        vertical-align: top;
-    }
-
-        .conference-card img {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-        }
-
-        .conference-card .content {
-            padding: 10px;
-        }
-
-        .conference-card h3 {
-            font-size: 18px;
-            margin: 0 0 10px;
-            color: #000;
-        }
-
-        .conference-card p {
-            font-size: 14px;
-            margin: 5px 0;
-            color: #666;
-        }
-
-        .conference-card .details {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            background: #f8f9fa;
-        }
-
-            .conference-card .details a {
-                text-decoration: none;
-                color: #fff;
-                font-weight: bold;
-                margin-left: 5px;
-            }
-
-</style>
-
-<h2>@ViewData["Title"]</h2>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+<link rel="stylesheet" href="/css/style.css" />
 
 @if (!string.IsNullOrEmpty(ViewBag.SuccessMessage as string))
 {
@@ -67,27 +17,54 @@
 {
     <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
 }
+<div class="container-fluid px-0">
 
-<div>
-    @if (Model != null && Model.Any())
-    {
+    <h2 class="text-center my-4 fw-bold">@ViewData["Title"]</h2>
+    <div class="row g-4 mx-0 px-3">
+        <!-- Nếu cần padding nhẹ cho cột -->
         @foreach (var item in Model)
         {
-            <div class="conference-card">
-                <img src="@Url.Content("~/uploads/" + item.BannerImage)" alt="Conference Image" />
-                <div class="content">
-                    <h3>@item.Title</h3>
-                    <p>Thời gian: @item.StartDate.ToString("dd/MM/yyyy HH:mm") - @item.EndDate.ToString("dd/MM/yyyy HH:mm")</p>
-                    <p>Địa điểm: @item.Location</p>
-                    <p>
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Xem chi tiết</a>
-                    </p>
+            var isFavorite = favorites.Contains(item.Id);
+            <div class="col-sm-6 col-md-4 col-lg-4 d-flex ">
+                <div class="conference-card w-100 d-flex flex-column p-0">
+                    <div class="card-image-wrapper">
+                        <img src="@Url.Content("~/uploads/" + item.BannerImage)" class="conference-image" alt="Conference Image" />
+                    </div>
+                    <div class="p-3 flex-grow-1 d-flex flex-column">
+                        <h5 class="conference-title">@item.Title</h5>
+                        <p class="conference-info">
+                            @item.StartDate.ToString("dd/MM/yyyy hh:mm tt") - @item.EndDate.ToString("dd/MM/yyyy hh:mm tt")
+                        </p>
+
+                        <p class="conference-description text-muted">@item.Description</p>
+                        <p class="conference-info"><i class="bi bi-geo-alt"></i> @item.Location</p>
+                        <div class="mt-auto d-flex justify-content-between align-items-center">
+                            @if (isFavorite)
+                            {
+                                <form asp-action="RemoveFromFavorites" method="post" class="d-inline">
+                                    <input type="hidden" name="conferenceId" value="@item.Id" />
+                                    <button type="submit" class="btn btn-link text-danger p-0" title="Bỏ yêu thích">
+                                        <i class="bi bi-heart-fill"></i>
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-action="AddToFavorites" method="post" class="d-inline">
+                                    <input type="hidden" name="conferenceId" value="@item.Id" />
+                                    <button type="submit" class="btn btn-link text-muted p-0" title="Thêm yêu thích">
+                                        <i class="bi bi-heart"></i>
+                                    </button>
+                                </form>
+                            }
+
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Xem chi tiết</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         }
-    }
-    else
-    {
-        <p>Không có hội nghị đã diễn ra.</p>
-    }
+    </div>
 </div>
+
+

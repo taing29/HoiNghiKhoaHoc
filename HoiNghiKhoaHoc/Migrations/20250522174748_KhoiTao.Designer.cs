@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HoiNghiKhoaHoc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250522171040_KhoiTao")]
+    [Migration("20250522174748_KhoiTao")]
     partial class KhoiTao
     {
         /// <inheritdoc />

@@ -123,14 +123,6 @@ namespace HoiNghiKhoaHoc.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Conference>> GetInternationalConferencesAsync()
-        {
-            return await _context.Conferences
-                .Where(c => c.IsInternational)
-                .Include(c => c.Category)
-                .ToListAsync();
-        }
-
         public async Task<IEnumerable<Conference>> SearchConferencesAsync(string searchTerm)
         {
             if (string.IsNullOrWhiteSpace(searchTerm))
