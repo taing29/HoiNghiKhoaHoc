@@ -65,11 +65,11 @@ namespace HoiNghiKhoaHoc.Controllers
 			var conferences = await _conferenceRepository.GetAllConferencesPastAsync();
 			return View(conferences);
 		}
-        //public async Task<IActionResult> Global()
-        //{
-        //    var globalConferences = await _conferenceRepository.GetAllConferencesGlobalAsync();
-        //    return View(globalConferences);
-        //}
+        public async Task<IActionResult> Global()
+        {
+            var globalConferences = await _conferenceRepository.GetAllConferencesGlobalAsync();
+            return View(globalConferences);
+        }
 
 
         public async Task<IActionResult> Details(int id)

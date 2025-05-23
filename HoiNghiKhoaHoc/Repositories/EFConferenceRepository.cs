@@ -38,16 +38,15 @@ namespace HoiNghiKhoaHoc.Repositories
                 .ToListAsync();
         }
 
-		//public async Task<IEnumerable<Conference>> GetAllConferencesGlobalAsync()
-		//{
-		//	return await _context.Conferences
-		//		.Include(c => c.Country)
-		//		.Where(c => c.Country != null && !c.Country.IsVietnam)
-		//		.OrderByDescending(c => c.StartDate)
-		//		.ToListAsync();
-		//}
+        public async Task<IEnumerable<Conference>> GetAllConferencesGlobalAsync()
+        {
+            return await _context.Conferences
+                .Where(c => c.IsInternational == true)
+                .OrderByDescending(c => c.StartDate)
+                .ToListAsync();
+        }
 
-		public async Task<IEnumerable<Conference>> GetAllConferencesPastAsync()
+        public async Task<IEnumerable<Conference>> GetAllConferencesPastAsync()
 		{
 			return await _context.Conferences
 				.Where(c => c.EndDate < DateTime.Now)
