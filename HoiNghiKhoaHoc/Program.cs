@@ -1,6 +1,8 @@
 using HoiNghiKhoaHoc.Models;
 using HoiNghiKhoaHoc.Repositories;
+using HoiNghiKhoaHoc.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +14,7 @@ builder.Services.AddRazorPages();
 // 2. Cấu hình DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 // 3. Cấu hình Identity với ApplicationUser
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -26,7 +29,8 @@ builder.Services.AddScoped<IUserRepository, EFUserRepository>();
 builder.Services.AddScoped<IConferenceSpeakerRepository, EFConferenceSpeakerRepository>();
 builder.Services.AddScoped<IFavoriteRepository, EFFavoriteRepository>();
 builder.Services.AddScoped<IRegistrationRepository, EFRegistrationRepository>();
-
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 
 // 5. Middleware

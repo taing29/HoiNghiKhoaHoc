@@ -5,8 +5,11 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-4">
-    <h2 class="mb-4 text-center text-success"> Danh sách đăng ký📅</h2>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+<link rel="stylesheet" href="/css/style.css" />
+
+<div class="container-fluid px-0">
+    <h2 class="text-center my-4 fw-bold">@ViewData["Title"]</h2>
 
     @if (!Model.Any())
     {
@@ -14,24 +17,30 @@
     }
     else
     {
-        <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="row g-4 mx-0 px-3">
             @foreach (var reg in Model)
             {
                 var item = reg.Conference;
-                <div class="col">
-                    <div class="card h-100 shadow-sm border-success">
-                        <img src="@Url.Content("~/uploads/" + item.BannerImage)" class="card-img-top" alt="@item.Title">
-                        <div class="card-body">
-                            <h5 class="card-title">@item.Title</h5>
-                            <p class="card-text"><strong>Địa điểm:</strong> @item.Location</p>
-                            <p class="card-text"><strong>Thời gian:</strong> @item.StartDate.ToString("dd/MM/yyyy") - @item.EndDate.ToString("dd/MM/yyyy")</p>
+                <div class="col-sm-6 col-md-4 col-lg-4 d-flex">
+                    <div class="conference-card w-100 d-flex flex-column p-0">
+                        <div class="card-image-wrapper">
+                            <img src="@Url.Content("~/uploads/" + item.BannerImage)" class="conference-image" alt="@item.Title" />
                         </div>
-                        <div class="card-footer d-flex justify-content-between">
-                            <a asp-controller="Conferences" asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm">Xem chi tiết</a>
-                            <form asp-controller="Conferences" asp-action="CancelRegistration" method="post" class="d-inline">
-                                <input type="hidden" name="conferenceId" value="@item.Id" />
-                                <button type="submit" class="btn btn-outline-danger btn-sm">Hủy đăng ký</button>
-                            </form>
+                        <div class="p-3 flex-grow-1 d-flex flex-column">
+                            <h5 class="conference-title">@item.Title</h5>
+                            <p class="conference-info">
+                                @item.StartDate.ToString("dd/MM/yyyy hh:mm tt") - @item.EndDate.ToString("dd/MM/yyyy hh:mm tt")
+                            </p>
+                            <p class="conference-description text-muted">@item.Description</p>
+                            <p class="conference-info pb-4">@item.Location</p>
+
+                            <div class="mt-auto d-flex justify-content-between align-items-center">
+                                <form asp-controller="Conferences" asp-action="CancelRegistration" method="post" class="d-inline">
+                                    <input type="hidden" name="conferenceId" value="@item.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Hủy đăng ký</button>
+                                </form>
+                                <a asp-controller="Conferences" asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Xem chi tiết</a>
+                            </div>
                         </div>
                     </div>
                 </div>

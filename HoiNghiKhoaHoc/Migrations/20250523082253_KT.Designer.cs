@@ -12,8 +12,13 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HoiNghiKhoaHoc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
+<<<<<<<< HEAD:HoiNghiKhoaHoc/Migrations/20250523082253_KT.Designer.cs
     [Migration("20250523082253_KT")]
     partial class KT
+========
+    [Migration("20250522174748_KhoiTao")]
+    partial class KhoiTao
+>>>>>>>> fd8a21c636c9404fc0b48992daafc81bbd0289d1:HoiNghiKhoaHoc/Migrations/20250522174748_KhoiTao.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
