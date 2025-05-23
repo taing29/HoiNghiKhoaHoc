@@ -1,5 +1,6 @@
 ﻿using HoiNghiKhoaHoc.Areas.Admin.Models.ViewModels;
 using HoiNghiKhoaHoc.Models;
+using HoiNghiKhoaHoc.Models.ViewModels;
 using HoiNghiKhoaHoc.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -18,15 +19,16 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
         private readonly IConferenceRepository _conferenceRepository;
         private readonly ICategoryRepository _categoryRepository;
 		private readonly IWebHostEnvironment _env;
+        private readonly ApplicationDbContext _context;
 
-		public ConferencesController(IConferenceRepository conferenceRepository, ICategoryRepository categoryRepository, IWebHostEnvironment env)
+        public ConferencesController(IConferenceRepository conferenceRepository, ICategoryRepository categoryRepository, IWebHostEnvironment env, ApplicationDbContext context)
         {
-            _conferenceRepository = conferenceRepository ?? throw new ArgumentNullException(nameof(conferenceRepository));
-            _categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
+            _conferenceRepository = conferenceRepository;
+            _categoryRepository = categoryRepository;
             _env = env;
+            _context = context;
         }
 
-        // Hiển thị danh sách hội nghị
         public async Task<IActionResult> Index()
         {
             var conferences = await _conferenceRepository.GetAllConferencesAsync();
@@ -35,58 +37,46 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
             return View(conferences);
         }
 
-        // Hiển thị form tạo mới
         public async Task<IActionResult> Create()
         {
             var categories = await _categoryRepository.GetAllCategoriesAsync();
 			ViewBag.Categories = new SelectList(categories, "Id", "Name");
-			return View();
+            return View();
         }
 
-        // Xử lý tạo mới
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ConferenceCreateViewModel model)
+        public async Task<IActionResult> Create(Conference conference, IFormFile imageFile)
         {
             if (ModelState.IsValid)
             {
-                string? fileName = null;
-                if (model.BannerImage != null)
+                if (imageFile != null && imageFile.Length > 0)
                 {
-                    fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.BannerImage.FileName);
-                    var path = Path.Combine(_env.WebRootPath, "uploads", fileName);
-                    using (var stream = new FileStream(path, FileMode.Create))
+                    string uploadsFolder = Path.Combine(_env.WebRootPath, "Image");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
                     {
-                        await model.BannerImage.CopyToAsync(stream);
+                        await imageFile.CopyToAsync(stream);
                     }
+
+                    conference.BannerImage = "/Image/" + uniqueFileName;
                 }
 
-                var conference = new Conference
-                {
-                    Title = model.Title,
-                    Description = model.Description,
-                    Content = model.Content,
-                    StartDate = model.StartDate,
-                    EndDate = model.EndDate,
-                    Location = model.Location,
-                    Organizer = model.Organizer,
-                    IsActive = model.IsActive,
-                    CreatedDate = DateTime.Now,
-                    CategoryId = model.CategoryId,
-                    BannerImage = fileName
-                };
-
+                conference.CreatedDate = DateTime.Now;
                 await _conferenceRepository.AddConferenceAsync(conference);
-
-                TempData["SuccessMessage"] = "Tạo hội nghị thành công!";
-                return RedirectToAction("Index");
+                TempData["SuccessMessage"] = "Tạo hội nghị thành công.";
+                return RedirectToAction(nameof(Index));
             }
-			var categories = await _categoryRepository.GetAllCategoriesAsync();
-			ViewBag.Categories = new SelectList(categories, "Id", "Name", model.CategoryId);
-            return View(model);
+
+            var categories = await _categoryRepository.GetAllCategoriesAsync();
+            ViewBag.Categories = new SelectList(categories, "Id", "Name", conference.CategoryId);
+            return View(conference);
         }
 
-        // Hiển thị chi tiết hội nghị
         public async Task<IActionResult> ConferenceDetails(int id)
         {
             var conference = await _conferenceRepository.GetConferenceByIdAsync(id);
@@ -98,96 +88,58 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
             return View(conference);
         }
 
-		// Hiển thị form chỉnh sửa
-		[HttpGet]
-		public async Task<IActionResult> Update(int id)
-		{
-			var conference = await _conferenceRepository.GetConferenceByIdAsync(id);
-			if (conference == null)
-			{
-				return NotFound();
-			}
+        public async Task<IActionResult> Update(int id)
+        {
+            var conference = await _conferenceRepository.GetConferenceByIdAsync(id);
+            if (conference == null)
+            {
+                TempData["ErrorMessage"] = "Không tìm thấy hội nghị.";
+                return RedirectToAction(nameof(Index));
+            }
 
-			var viewModel = new ConferenceEditViewModel
-			{
-				Id = conference.Id,
-				Title = conference.Title,
-				Description = conference.Description,
-				Content = conference.Content,
-				StartDate = conference.StartDate,
-				EndDate = conference.EndDate,
-				Location = conference.Location,
-				Organizer = conference.Organizer,
-				IsActive = conference.IsActive,
-				CategoryId = conference.CategoryId,
-				ExistingBannerImage = conference.BannerImage
-			};
+            var categories = await _categoryRepository.GetAllCategoriesAsync();
+            ViewBag.Categories = new SelectList(categories, "Id", "Name", conference.CategoryId);
+            return View(conference);
+        }
 
-			var categories = await _categoryRepository.GetAllCategoriesAsync();
-			ViewBag.Categories = new SelectList(categories, "Id", "Name", viewModel.CategoryId);
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Update(int id, Conference conference, IFormFile imageFile)
+        {
+            ModelState.Remove("imageFile");
+            if (id != conference.Id)
+            {
+                return NotFound();
+            }
 
-			return View(viewModel);
-		}
+            if (ModelState.IsValid)
+            {
+                if (imageFile != null && imageFile.Length > 0)
+                {
+                    string uploadsFolder = Path.Combine(_env.WebRootPath, "Image");
+                    Directory.CreateDirectory(uploadsFolder);
 
+                    string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-		// Xử lý chỉnh sửa
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Update(ConferenceEditViewModel model)
-		{
-			if (!ModelState.IsValid)
-			{
-				// Load lại danh sách danh mục để hiển thị dropdown nếu có lỗi
-				ViewBag.Categories = new SelectList(await _categoryRepository.GetAllCategoriesAsync(), "Id", "Name", model.CategoryId);
-				return View(model);
-			}
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await imageFile.CopyToAsync(stream);
+                    }
 
-			var conference = await _conferenceRepository.GetConferenceByIdAsync(model.Id);
-			if (conference == null) return NotFound();
+                    conference.BannerImage = "/Image/" + uniqueFileName;
+                }
 
-			// Cập nhật các trường cơ bản
-			conference.Title = model.Title;
-			conference.Description = model.Description;
-			conference.Content = model.Content;
-			conference.StartDate = model.StartDate;
-			conference.EndDate = model.EndDate;
-			conference.Location = model.Location;
-			conference.Organizer = model.Organizer;
-			conference.IsActive = model.IsActive;
-			conference.CategoryId = model.CategoryId;
+                await _conferenceRepository.UpdateConferenceAsync(conference);
+                TempData["SuccessMessage"] = "Cập nhật hội nghị thành công.";
+                return RedirectToAction(nameof(Index));
+            }
 
-			// Xử lý ảnh mới nếu có
-			if (model.BannerImage != null && model.BannerImage.Length > 0)
-			{
-				var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads");
-				var uniqueFileName = Guid.NewGuid().ToString() + "_" + model.BannerImage.FileName;
-				var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+            var categories = await _categoryRepository.GetAllCategoriesAsync();
+            ViewBag.Categories = new SelectList(categories, "Id", "Name", conference.CategoryId);
+            return View(conference);
+        }
 
-				using (var fileStream = new FileStream(filePath, FileMode.Create))
-				{
-					await model.BannerImage.CopyToAsync(fileStream);
-				}
-
-				// Xóa ảnh cũ nếu cần
-				if (!string.IsNullOrEmpty(model.ExistingBannerImage))
-				{
-					var oldPath = Path.Combine(uploadsFolder, model.ExistingBannerImage);
-					if (System.IO.File.Exists(oldPath))
-					{
-						System.IO.File.Delete(oldPath);
-					}
-				}
-
-				// Cập nhật đường dẫn ảnh mới
-				conference.BannerImage = uniqueFileName;
-			}
-
-			await _conferenceRepository.UpdateConferenceAsync(conference);
-			return RedirectToAction("Index");
-		}
-
-
-        // Hiển thị xác nhận xóa
         public async Task<IActionResult> Delete(int id)
         {
             var conference = await _conferenceRepository.GetConferenceByIdAsync(id);
@@ -196,7 +148,75 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
                 TempData["ErrorMessage"] = "Không tìm thấy hội nghị.";
                 return RedirectToAction(nameof(Index));
             }
-            return View(conference);
+            else
+            {
+                await _conferenceRepository.DeleteConferenceAsync(id);
+                TempData["SuccessMessage"] = "Xóa hội nghị thành công.";
+                return RedirectToAction(nameof(Index));
+            }
+                return View(conference);
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var conference = await _conferenceRepository.GetConferenceByIdAsync(id);
+            if (conference == null)
+            {
+                return NotFound();
+            }
+
+            var registrations = await _context.ConferenceRegistrations
+                .Where(r => r.ConferenceId == id)
+                .Include(r => r.User)
+                .ToListAsync();
+
+            var viewModel = new ConferenceDetailsViewModel
+            {
+                Conference = conference,
+                Registrations = registrations
+            };
+
+            return View(viewModel);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ApproveRegistration(int id)
+        {
+            var registration = await _context.ConferenceRegistrations.FindAsync(id);
+            if (registration != null)
+            {
+                registration.IsApproved = true;
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("Details", new { id = registration.ConferenceId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RejectRegistration(int id)
+        {
+            var registration = await _context.ConferenceRegistrations.FindAsync(id);
+            if (registration != null)
+            {
+                _context.ConferenceRegistrations.Remove(registration);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("Details", new { id = registration.ConferenceId });
+        }
+        [HttpPost]
+        public async Task<IActionResult> ToggleStatus(int id)
+        {
+            var conference = await _conferenceRepository.GetConferenceByIdAsync(id);
+            if (conference == null)
+            {
+                TempData["ErrorMessage"] = "Không tìm thấy hội nghị.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            //đổi trạng thái kích hoạt của hội nghị
+            conference.IsActive = !conference.IsActive;
+            await _conferenceRepository.UpdateConferenceAsync(conference);
+
+            TempData["SuccessMessage"] = "Cập nhật trạng thái hội nghị thành công.";
+            return RedirectToAction(nameof(Index));
         }
     }
 }

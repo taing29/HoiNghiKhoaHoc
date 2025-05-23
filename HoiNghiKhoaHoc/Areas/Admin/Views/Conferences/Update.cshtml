@@ -1,111 +1,152 @@
-﻿@using HoiNghiKhoaHoc.Areas.Admin.Models.ViewModels
-@model ConferenceEditViewModel
+﻿@model HoiNghiKhoaHoc.Models.Conference
+
+<script src="~/ckeditor5-build-classic-19.0.0/build/ckeditor.js"></script>
 
 @{
-    ViewData["Title"] = "Chỉnh sửa hội nghị";
-    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+    ViewData["Title"] = "Cập Nhật Hội Nghị";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>@ViewData["Title"]</h2>
+<h2>Cập Nhật Hội Nghị</h2>
 
-@* Hiển thị lỗi chung nếu có *@
-@Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-<form asp-area="Admin"
-      asp-controller="Conferences"
-      asp-action="Update"
-      method="post"
-      enctype="multipart/form-data">
-
-    @Html.AntiForgeryToken()
-    @Html.HiddenFor(m => m.Id)
-    @Html.HiddenFor(m => m.ExistingBannerImage)
+<form asp-action="Update" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="Id" />
 
     <div class="form-group">
-        <label asp-for="Title"></label>
+        <label asp-for="BannerImage" class="form-label">Ảnh chủ đề</label>
+        <input type="file" name="imageFile" class="form-control" />
+        <input type="hidden" name="OldBannerImage" value="@Model.BannerImage" />
+        @if (!string.IsNullOrEmpty(Model.BannerImage))
+        {
+            <div class="mt-2">
+                <img src="@Url.Content(Model.BannerImage)" style="max-height: 200px;" />
+            </div>
+        }
+    </div>
+    <input type="hidden" name="OldBannerImage" value="@Model.BannerImage" />
+
+    <div class="form-group">
+        <label asp-for="Title">Tiêu đề</label>
         <input asp-for="Title" class="form-control" />
         <span asp-validation-for="Title" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Description"></label>
-        <textarea asp-for="Description" class="form-control"></textarea>
+        <label asp-for="Description">Mô tả</label>
+        <input asp-for="Description" class="form-control" />
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Content"></label>
-        <textarea asp-for="Content" class="form-control" rows="5"></textarea>
+        <label asp-for="Content">Nội dung</label>
+        <textarea asp-for="Content" id="Content" class="form-control"></textarea>
         <span asp-validation-for="Content" class="text-danger"></span>
     </div>
 
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label asp-for="StartDate"></label>
-            <input asp-for="StartDate" class="form-control" type="date" />
-            <span asp-validation-for="StartDate" class="text-danger"></span>
-        </div>
-        <div class="form-group col-md-6">
-            <label asp-for="EndDate"></label>
-            <input asp-for="EndDate" class="form-control" type="date" />
-            <span asp-validation-for="EndDate" class="text-danger"></span>
-        </div>
+    <div class="form-group">
+        <label asp-for="StartDate">Ngày bắt đầu</label>
+        <input asp-for="StartDate" class="form-control" type="datetime-local" />
+        <span asp-validation-for="StartDate" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Location"></label>
-        <input asp-for="Location" class="form-control" />
-        <span asp-validation-for="Location" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Organizer"></label>
-        <input asp-for="Organizer" class="form-control" />
-        <span asp-validation-for="Organizer" class="text-danger"></span>
-    </div>
-
-    <div class="form-group form-check">
-        <input asp-for="IsActive" class="form-check-input" />
-        <label asp-for="IsActive" class="form-check-label"></label>
-        <span asp-validation-for="IsActive" class="text-danger"></span>
+        <label asp-for="EndDate">Ngày kết thúc</label>
+        <input asp-for="EndDate" class="form-control" type="datetime-local" />
+        <span asp-validation-for="EndDate" class="text-danger"></span>
     </div>
 
     <div class="form-group">
         <label asp-for="CategoryId">Danh mục</label>
-        <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.Categories">
-            <option value="">-- Chọn danh mục --</option>
-        </select>
-        <span asp-validation-for="CategoryId" class="text-danger"></span>
+        <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-control"></select>
     </div>
 
-    <div class="form-group">
-        <label>Ảnh banner hiện tại:</label><br />
-        @if (!string.IsNullOrEmpty(Model.ExistingBannerImage))
-        {
-            <img src="@Url.Content("~/uploads/" + Model.ExistingBannerImage)"
-                 width="200" class="img-thumbnail" alt="Banner hiện tại" />
-        }
-        else
-        {
-            <p><em>Chưa có ảnh banner</em></p>
-        }
-    </div>
-
-    <div class="form-group">
-        <label asp-for="BannerImage">Thay ảnh mới:</label>
-        <input asp-for="BannerImage" type="file" class="form-control-file" />
-        <span asp-validation-for="BannerImage" class="text-danger"></span>
+    <div class="form-group form-check">
+        <input asp-for="IsInternational" class="form-check-input" type="checkbox" />
+        <label asp-for="IsInternational" class="form-check-label">Hội nghị quốc tế</label>
     </div>
 
     <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
-    <a asp-area="Admin"
-       asp-controller="Conferences"
-       asp-action="Index"
-       class="btn btn-secondary ml-2">Hủy</a>
+    <a asp-controller="Conferences" asp-action="Index" asp-area="Admin" class="btn btn-success">Trở về</a>
 </form>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+<!-- Kích hoạt CKEditor -->
+<script>
+    class MyUploadAdapter {
+        constructor(loader) {
+            this.loader = loader;
+        }
+
+        upload() {
+            return this.loader.file
+                .then(file => new Promise((resolve, reject) => {
+                    this._initRequest();
+                    this._initListeners(resolve, reject, file);
+                    this._sendRequest(file);
+                }));
+        }
+
+        abort() {
+            if (this.xhr) {
+                this.xhr.abort();
+            }
+        }
+
+        _initRequest() {
+            const xhr = this.xhr = new XMLHttpRequest();
+            xhr.open('POST', '@Url.Action("UploadImage", "ImageUpload", new { area = "Admin" })', true);
+            xhr.responseType = 'json';
+        }
+
+        _initListeners(resolve, reject, file) {
+            const xhr = this.xhr;
+            const loader = this.loader;
+            const genericErrorText = `Couldn't upload file: ${file.name}.`;
+
+            xhr.addEventListener('error', () => reject(genericErrorText));
+            xhr.addEventListener('abort', () => reject());
+            xhr.addEventListener('load', () => {
+                const response = xhr.response;
+
+                if (!response || response.error) {
+                    return reject(response && response.error ? response.error.message : genericErrorText);
+                }
+
+                resolve({
+                    default: response.url
+                });
+            });
+
+            if (xhr.upload) {
+                xhr.upload.addEventListener('progress', evt => {
+                    if (evt.lengthComputable) {
+                        loader.uploadTotal = evt.total;
+                        loader.uploaded = evt.loaded;
+                    }
+                });
+            }
+        }
+
+        _sendRequest(file) {
+            const data = new FormData();
+            data.append('upload', file);
+            this.xhr.send(data);
+        }
     }
-}
+
+    function MyCustomUploadAdapterPlugin(editor) {
+        editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+            return new MyUploadAdapter(loader);
+        };
+    }
+
+    ClassicEditor
+        .create(document.querySelector('#Content'), {
+            extraPlugins: [MyCustomUploadAdapterPlugin]
+        })
+        .then(editor => {
+            window.editor = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+</script>

@@ -13,17 +13,15 @@ namespace HoiNghiKhoaHoc.Models
 		public string? BannerImage { get; set; }
 		public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string Location { get; set; }
-        public string Address { get; set; }
-        public string Organizer { get; set; } 
+        public string? Location { get; set; }
+        public string? Address { get; set; }
+        public string? Organizer { get; set; }
         public bool IsActive { get; set; } = true;
         //để phân biệt trong nước hay quốc tế
         public bool IsInternational { get; set; }
         //
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public int CategoryId { get; set; }
-		public int CountryId { get; set; } 
 		public Category? Category { get; set; }
-		public Country Country { get; set; }
 	}
 }

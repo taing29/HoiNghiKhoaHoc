@@ -13,6 +13,7 @@ namespace HoiNghiKhoaHoc.Models
 
         [Required]
         public int ConferenceId { get; set; }
+        public bool IsApproved { get; set; } = false;
 
         public DateTime RegisteredDate { get; set; } = DateTime.Now;
 

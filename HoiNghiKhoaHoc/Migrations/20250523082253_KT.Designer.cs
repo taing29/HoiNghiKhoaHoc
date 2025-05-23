@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HoiNghiKhoaHoc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250522171040_KhoiTao")]
-    partial class KhoiTao
+    [Migration("20250523082253_KT")]
+    partial class KT
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -142,9 +142,6 @@ namespace HoiNghiKhoaHoc.Migrations
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CountryId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -181,8 +178,6 @@ namespace HoiNghiKhoaHoc.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("CountryId");
-
                     b.ToTable("Conferences");
                 });
 
@@ -196,6 +191,9 @@ namespace HoiNghiKhoaHoc.Migrations
 
                     b.Property<int>("ConferenceId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("RegisteredDate")
                         .HasColumnType("datetime2");
@@ -243,27 +241,6 @@ namespace HoiNghiKhoaHoc.Migrations
                     b.HasIndex("SpeakerId");
 
                     b.ToTable("ConferenceSpeakers");
-                });
-
-            modelBuilder.Entity("HoiNghiKhoaHoc.Models.Country", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsVietnam")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Countries");
                 });
 
             modelBuilder.Entity("HoiNghiKhoaHoc.Models.Favorite", b =>
@@ -500,15 +477,7 @@ namespace HoiNghiKhoaHoc.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HoiNghiKhoaHoc.Models.Country", "Country")
-                        .WithMany("Conferences")
-                        .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Category");
-
-                    b.Navigation("Country");
                 });
 
             modelBuilder.Entity("HoiNghiKhoaHoc.Models.ConferenceRegistration", b =>
@@ -622,11 +591,6 @@ namespace HoiNghiKhoaHoc.Migrations
             modelBuilder.Entity("HoiNghiKhoaHoc.Models.Category", b =>
                 {
                     b.Navigation("Conference");
-                });
-
-            modelBuilder.Entity("HoiNghiKhoaHoc.Models.Country", b =>
-                {
-                    b.Navigation("Conferences");
                 });
 
             modelBuilder.Entity("HoiNghiKhoaHoc.Models.Speaker", b =>

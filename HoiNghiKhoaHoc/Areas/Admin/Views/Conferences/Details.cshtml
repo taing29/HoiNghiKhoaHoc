@@ -1,0 +1,58 @@
+﻿@using HoiNghiKhoaHoc.Areas.Admin.Models.ViewModels
+@model ConferenceDetailsViewModel
+
+@{
+    ViewData["Title"] = "Chi tiết hội nghị";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Chi tiết hội nghị: @Model.Conference.Title</h2>
+
+<p><strong>Ngày:</strong> @Model.Conference.StartDate.ToShortDateString() - @Model.Conference.EndDate.ToShortDateString()</p>
+<p><strong>Địa điểm:</strong> @Model.Conference.Location</p>
+
+<h3>Danh sách đăng ký</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Họ tên</th>
+            <th>Email</th>
+            <th>Ngày đăng ký</th>
+            <th>Trạng thái</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var reg in Model.Registrations)
+        {
+            <tr>
+                <td>@reg.User.FullName</td>
+                <td>@reg.User.Email</td>
+                <td>@reg.RegisteredDate.ToString("dd/MM/yyyy")</td>
+                <td>
+                    @if (reg.IsApproved)
+                    {
+                        <span class="text-success">Đã duyệt</span>
+                    }
+                    else
+                    {
+                        <span class="text-warning">Chờ duyệt</span>
+                    }
+                </td>
+                <td>
+                    @if (!reg.IsApproved)
+                    {
+                        <form asp-action="ApproveRegistration" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@reg.Id" />
+                            <button type="submit" class="btn btn-success btn-sm">Duyệt</button>
+                        </form>
+                    }
+                    <form asp-action="RejectRegistration" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@reg.Id" />
+                        <button type="submit" class="btn btn-danger btn-sm">Từ chối</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

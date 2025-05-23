@@ -7,7 +7,7 @@ namespace HoiNghiKhoaHoc.Repositories
         Task<IEnumerable<Conference>> GetAllConferencesAsync();
         Task<IEnumerable<Conference>> GetAllConferencesPastAsync();
 		Task<IEnumerable<Conference>> GetAllConferencesUpcomingAsync();
-		Task<IEnumerable<Conference>> GetAllConferencesGlobalAsync();
+		//Task<IEnumerable<Conference>> GetAllConferencesGlobalAsync();
 		Task<IEnumerable<Conference>> GetConferenceByIdCategoryAsync(Conference conference);
 		Task<Conference?> GetPastConferenceDetailsByIdAsync(int id);
 

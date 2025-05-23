@@ -12,7 +12,6 @@ namespace HoiNghiKhoaHoc.Models
     
         public DbSet<Conference> Conferences { get; set; }
         public DbSet<Category> Categories { get; set; }
-		public DbSet<Country> Countries { get; set; }
 		public DbSet<HoiNghiKhoaHoc.Models.UserView> UserView { get; set; } = default!;
 		public DbSet<Speaker> Speakers { get; set; }
 		public DbSet<ConferenceSpeaker> ConferenceSpeakers { get; set; }

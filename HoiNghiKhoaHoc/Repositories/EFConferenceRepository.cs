@@ -38,14 +38,14 @@ namespace HoiNghiKhoaHoc.Repositories
                 .ToListAsync();
         }
 
-		public async Task<IEnumerable<Conference>> GetAllConferencesGlobalAsync()
-		{
-			return await _context.Conferences
-				.Include(c => c.Country)
-				.Where(c => c.Country != null && !c.Country.IsVietnam)
-				.OrderByDescending(c => c.StartDate)
-				.ToListAsync();
-		}
+		//public async Task<IEnumerable<Conference>> GetAllConferencesGlobalAsync()
+		//{
+		//	return await _context.Conferences
+		//		.Include(c => c.Country)
+		//		.Where(c => c.Country != null && !c.Country.IsVietnam)
+		//		.OrderByDescending(c => c.StartDate)
+		//		.ToListAsync();
+		//}
 
 		public async Task<IEnumerable<Conference>> GetAllConferencesPastAsync()
 		{
@@ -90,7 +90,7 @@ namespace HoiNghiKhoaHoc.Repositories
 		{
 			return await _context.Conferences
 				.Include(c => c.Category)
-				.Include(c => c.Country)
+				//.Include(c => c.Country)
 				.FirstOrDefaultAsync(c => c.Id == id && c.EndDate < DateTime.Now);
 		}
 
@@ -123,13 +123,13 @@ namespace HoiNghiKhoaHoc.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Conference>> GetInternationalConferencesAsync()
-        {
-            return await _context.Conferences
-                .Where(c => c.IsInternational)
-                .Include(c => c.Category)
-                .ToListAsync();
-        }
+        //public async Task<IEnumerable<Conference>> GetInternationalConferencesAsync()
+        //{
+        //    return await _context.Conferences
+        //        .Where(c => c.IsInternational)
+        //        .Include(c => c.Category)
+        //        .ToListAsync();
+        //}
 
         public async Task<IEnumerable<Conference>> SearchConferencesAsync(string searchTerm)
         {
@@ -165,9 +165,6 @@ namespace HoiNghiKhoaHoc.Repositories
 
             return sb.ToString().Normalize(System.Text.NormalizationForm.FormC);
         }
-
-
-
 
     }
 }

@@ -33,7 +33,7 @@ namespace HoiNghiKhoaHoc.Repositories
 
         public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
         {
-            return await _context.Categories.ToListAsync();
+            return await _context.Categories.Include(c => c.Conference).ToListAsync();
         }
 
         public async Task<Category> GetCategoryByIdAsync(int id)
