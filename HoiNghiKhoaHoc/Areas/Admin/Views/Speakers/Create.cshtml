@@ -7,6 +7,7 @@
 <h2>Thêm diễn giả</h2>
 
 <form asp-action="Create" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="mb-3">
         <label asp-for="FullName" class="form-label">Họ tên</label>
@@ -18,7 +19,7 @@
         <input asp-for="Title" class="form-control" />
         <span asp-validation-for="Title" class="text-danger"></span>
     </div>
-    <div class="mb-3">
+    <div class="mb-3">  
         <label asp-for="Affiliation" class="form-label">Đơn vị công tác</label>
         <input asp-for="Affiliation" class="form-control" />
         <span asp-validation-for="Affiliation" class="text-danger"></span>

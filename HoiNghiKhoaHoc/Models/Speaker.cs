@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.ComponentModel.DataAnnotations;
 
 namespace HoiNghiKhoaHoc.Models
 {
@@ -23,6 +24,7 @@ namespace HoiNghiKhoaHoc.Models
 		public DateTime CreatedAt { get; set; } = DateTime.Now;
 
 		// Navigation
-		public ICollection<ConferenceSpeaker> ConferenceSpeakers { get; set; }
+		[BindNever]
+		public ICollection<ConferenceSpeaker>? ConferenceSpeakers { get; set; }
 	}
 }

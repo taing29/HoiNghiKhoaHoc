@@ -45,10 +45,15 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-                Console.WriteLine($"ModelState errors: {string.Join("; ", errors)}");
+				foreach (var kv in ModelState)
+				{
+					foreach (var error in kv.Value.Errors)
+					{
+						Console.WriteLine($"Field: {kv.Key} - Error: {error.ErrorMessage}");
+					}
+				}
                 return View(speaker);
-            }
+			}
 
             try
             {
@@ -67,6 +72,7 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
                 return View(speaker);
             }
         }
+
         private async Task<string> SaveImage(IFormFile image)
         {
             try

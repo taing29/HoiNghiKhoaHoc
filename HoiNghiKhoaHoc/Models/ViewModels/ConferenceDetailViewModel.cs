@@ -8,7 +8,8 @@ namespace HoiNghiKhoaHoc.Models.ViewModels
 		public List<ConferenceSpeaker>? Speakers { get; set; }
         public bool IsFavorite { get; set; }
         public bool IsRegistered { get; internal set; }
-        public bool IsPastConference => CurrentConference.EndDate < DateTime.Now;
+		public bool IsActive { get; set; } = true;
+		public bool IsPastConference => CurrentConference.EndDate < DateTime.Now;
 
 	}
 }

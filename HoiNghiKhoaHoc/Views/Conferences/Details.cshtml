@@ -52,22 +52,30 @@
             margin-top: 0.5rem;
         }
 
+    .conference-description {
+        font-size: 16px;
+        color: #444;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        font-style: italic;
+    }
+
 </style>
 <body>
     <div class="container-fluid">
         <!-- Banner -->
         <img src="@Url.Content(Model.CurrentConference.BannerImage)" class="img-fluid mb-4" width="100%" alt="Banner" />
-
         <div class="row px-3 px-md-4">
             <!-- Nội dung chính -->
             <div class="col-md-8">
+                <h1><strong>@Model.CurrentConference.Title</strong></h1>
+                <p class="conference-description">@Model.CurrentConference.Description</p>
                 @if (!string.IsNullOrEmpty(Model.CurrentConference.Content))
                 {
                     <div class="conference-content mb-4">
                         @Html.Raw(Model.CurrentConference.Content)
                     </div>
                 }
-
                 @if (User.Identity.IsAuthenticated && User.IsInRole("User"))
                 {
                     <!-- Nút yêu thích -->
@@ -109,8 +117,11 @@
 
                 <!-- Thông tin bổ sung -->
                 <div class="mt-4">
+                    <p><strong>Thời gian bắt đầu:</strong> @Model.CurrentConference.StartDate.ToString("dd/MM/yyyy")</p>
                     <p><strong>Thời gian kết thúc:</strong> @Model.CurrentConference.EndDate.ToString("dd/MM/yyyy")</p>
-                    <p><strong>Ngày tạo:</strong> @Model.CurrentConference.CreatedDate.ToString("dd/MM/yyyy")</p>
+                    @* <p><strong>Đia chỉ:</strong> @Model.CurrentConference.Address</p>
+                    <p><strong>Địa điểm:</strong> @Model.CurrentConference.Location</p> *@
+                    @* <p><strong>Ngày tạo:</strong> @Model.CurrentConference.CreatedDate.ToString("dd/MM/yyyy")</p> *@
                     @* <p>
                         <strong>Trạng thái:</strong>
                         @if (Model.CurrentConference.IsActive)
