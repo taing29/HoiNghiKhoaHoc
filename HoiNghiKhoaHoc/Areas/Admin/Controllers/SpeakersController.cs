@@ -64,6 +64,7 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
                 return View(speaker);
             }
         }
+
         private async Task<string> SaveImage(IFormFile image)
         {
             try

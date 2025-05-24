@@ -53,8 +53,6 @@ namespace HoiNghiKhoaHoc.Controllers
             ViewBag.FavoriteIds = favoriteIds;
             ViewBag.Search = searchString;
             return View(results);
-
-          
         }
 
         public async Task<IActionResult> Upcoming()

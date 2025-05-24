@@ -16,8 +16,7 @@
             <div class="card h-100 shadow-sm conference-card">
                 @if (!string.IsNullOrEmpty(item.BannerImage))
                 {
-                    @* <img src=@Url.Content(item.BannerImage)" class="card-img-top" alt="@item.BannerImage" style="height: 200px; object-fit: cover;" />  *@
-                    <img src="@Url.Content(item.BannerImage)" class="conference-image" alt="Conference Image" style="height: 200px; object-fit: cover;" class="card-img-top" /> 
+                    <img src="@Url.Content(item.BannerImage)" class="conference-image card-img-top" alt="Conference Image" style="height: 200px; object-fit: cover;" />
                 }
                 <div class="card-body">
                     <h5 class="card-title">@item.Title</h5>

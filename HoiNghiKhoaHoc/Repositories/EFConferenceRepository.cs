@@ -153,5 +153,11 @@ namespace HoiNghiKhoaHoc.Repositories
             return sb.ToString().Normalize(System.Text.NormalizationForm.FormC);
         }
 
-    }
+        //Lay nhung hoi nghi dang hoat dong
+		public async Task<IEnumerable<Conference>> GetActiveConferencesAsync()
+		{
+			return await _context.Conferences.Where(c => c.IsActive).ToListAsync();
+		}
+
+	}
 }
