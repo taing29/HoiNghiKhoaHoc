@@ -154,7 +154,6 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
                 TempData["SuccessMessage"] = "Xóa hội nghị thành công.";
                 return RedirectToAction(nameof(Index));
             }
-                return View(conference);
         }
 
         public async Task<IActionResult> Details(int id)

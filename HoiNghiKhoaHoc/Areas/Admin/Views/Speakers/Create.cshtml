@@ -1,0 +1,33 @@
+﻿@model HoiNghiKhoaHoc.Models.Speaker
+@{
+    ViewData["Title"] = "Thêm diễn giả";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+<h2>Thêm diễn giả</h2>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label asp-for="FullName" class="form-label"></label>
+        <input asp-for="FullName" class="form-control" />
+        <span asp-validation-for="FullName" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Affiliation" class="form-label"></label>
+        <input asp-for="Affiliation" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="PhotoUrl" class="form-label">Ảnh đại diện</label>
+        <input type="file" name="imageFile" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Bio" class="form-label"></label>
+        <textarea asp-for="Bio" class="form-control" rows="4"></textarea>
+    </div>
+    <button type="submit" class="btn btn-success">Lưu</button>
+    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+</form>

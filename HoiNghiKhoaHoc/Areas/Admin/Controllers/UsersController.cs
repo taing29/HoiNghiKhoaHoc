@@ -1,4 +1,5 @@
 ﻿using HoiNghiKhoaHoc.Models;
+using HoiNghiKhoaHoc.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -10,11 +11,13 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
 	[Authorize(Roles = "Admin")]
 	public class UsersController : Controller
 	{
-		private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUserRepository _userRepository;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-		public UsersController(UserManager<ApplicationUser> userManager)
+		public UsersController(UserManager<ApplicationUser> userManager, IUserRepository userRepository)
 		{
 			_userManager = userManager;
+            _userRepository = userRepository;
 		}
 
 		// GET: /Admin/Users
@@ -24,7 +27,8 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
 
 			var userViews = users.Select(u => new UserView
 			{
-				UserName = u.UserName,
+				Id = u.Id,
+                UserName = u.UserName,
 				Email = u.Email,
 				PhoneNumber = u.PhoneNumber,
 				FullName = u.FullName,
@@ -34,7 +38,6 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
 			return View(userViews);
 		}
 
-		// GET: /Admin/EditUser/id
 		public async Task<IActionResult> EditUser(string id)
 		{
 			var user = await _userManager.FindByIdAsync(id);
@@ -53,7 +56,6 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
 			return View(model);
 		}
 
-		// POST: /Admin/EditUser
 		[HttpPost]
 		public async Task<IActionResult> EditUser(UserView model)
 		{
@@ -61,39 +63,22 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
 			if (user == null) return NotFound();
 
 			user.FullName = model.FullName;
+			user.Age = model.Age;
 			user.Email = model.Email;
 			user.PhoneNumber = model.PhoneNumber;
 
 			await _userManager.UpdateAsync(user);
 
-			return RedirectToAction("Users");
-		}
+            return RedirectToAction(nameof(Index));
+        }
 
 		public async Task<IActionResult> Delete(string id)
 		{
-			var user = await _userManager.FindByIdAsync(id);
-			if (user == null) return NotFound();
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null) return NotFound();
 
-			var model = new UserView
-			{
-				UserName = user.UserName,
-				FullName = user.FullName,
-				Email = user.Email,
-				PhoneNumber = user.PhoneNumber,
-				Age = user.Age
-			};
-
-			return View(model);
-		}
-		[HttpPost]
-		public async Task<IActionResult> DeleteConfirmed(string id)
-		{
-			var user = await _userManager.FindByIdAsync(id);
-			if (user != null)
-			{
-				await _userManager.DeleteAsync(user);
-			}
-			return RedirectToAction("Index");
-		}
+            await _userRepository.DeleteUserAsync(id);
+            return RedirectToAction("Index");
+        }
 	}
 }

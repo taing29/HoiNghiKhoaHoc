@@ -29,6 +29,7 @@ builder.Services.AddScoped<IUserRepository, EFUserRepository>();
 builder.Services.AddScoped<IConferenceSpeakerRepository, EFConferenceSpeakerRepository>();
 builder.Services.AddScoped<IFavoriteRepository, EFFavoriteRepository>();
 builder.Services.AddScoped<IRegistrationRepository, EFRegistrationRepository>();
+builder.Services.AddScoped<ISpeakerRepository, EFSpeakerRepository>();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 

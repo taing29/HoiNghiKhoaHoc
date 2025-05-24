@@ -6,7 +6,7 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h2 mb-0">@ViewData["Title"]</h1>
+    <h1 class="h2 mb-4">@ViewData["Title"]</h1>
     <a asp-controller="Conferences" asp-action="Create" asp-area="Admin" class="btn btn-success">Thêm hội nghị</a>
 </div>
 
@@ -34,7 +34,7 @@
                     <div class="card-footer d-flex justify-content-between">
                         <form asp-controller="Conferences" asp-action="Details" asp-area="Admin" method="post" class="d-inline">
                             <input type="hidden" name="id" value="@item.Id" />
-                            <button type="submit" class="btn btn-danger btn-sm">Duyệt hội nghị</button>
+                            <button type="submit" class="btn btn-success btn-sm">Duyệt hội nghị</button>
                         </form>
                         <a asp-controller="Conferences" asp-action="Update" asp-area="Admin" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Sửa</a>
                         <form asp-controller="Conferences" asp-action="ToggleStatus" asp-area="Admin" method="post" class="d-inline">

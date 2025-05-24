@@ -31,7 +31,7 @@ namespace HoiNghiKhoaHoc.Repositories
 
 		public async Task UpdateUserAsync(ApplicationUser user)
 		{
-			await _userManager.UpdateAsync(user); // OK
+			await _userManager.UpdateAsync(user);
 		}
 
 		public async Task DeleteUserAsync(string id)

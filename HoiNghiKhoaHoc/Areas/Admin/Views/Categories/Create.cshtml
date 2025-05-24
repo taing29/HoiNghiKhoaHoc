@@ -1,0 +1,23 @@
+﻿@model HoiNghiKhoaHoc.Models.Category
+
+@{
+    ViewData["Title"] = "Thêm danh mục";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+<h2>Create Category</h2>
+
+<div class="text-success">
+    @TempData["SuccessMessage"]
+</div>
+
+<form asp-action="Create" method="post">
+    <div class="form-group mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

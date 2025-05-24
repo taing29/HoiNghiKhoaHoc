@@ -1,8 +1,13 @@
 ﻿@model HoiNghiKhoaHoc.Models.UserView
 
+@{
+    ViewData["Title"] = "Chỉnh sửa người dùng";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
 <h2>Chỉnh sửa người dùng</h2>
 
-<form asp-action="Edit" method="post">
+<form asp-action="EditUser" method="post">
     <input type="hidden" asp-for="Id" />
 
     <div class="mb-3">
