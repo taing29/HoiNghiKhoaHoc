@@ -4,6 +4,8 @@ using HoiNghiKhoaHoc.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Net; 
+
 
 namespace HoiNghiKhoaHoc.Controllers
 {
@@ -76,8 +78,10 @@ namespace HoiNghiKhoaHoc.Controllers
         {
             var conference = await _conferenceRepository.GetConferenceByIdAsync(id);
             if (conference == null) return NotFound();
+            //decode html 
+			conference.Content = WebUtility.HtmlDecode(conference.Content);
 
-            var related = await _conferenceRepository.GetConferenceByIdCategoryAsync(conference);
+			var related = await _conferenceRepository.GetConferenceByIdCategoryAsync(conference);
             var speakers = await _conferenceSpeakerRepository.GetSpeakersByConferenceIdAsync(id);
             var userId = _userManager.GetUserId(User);
             var isFavorite = false;

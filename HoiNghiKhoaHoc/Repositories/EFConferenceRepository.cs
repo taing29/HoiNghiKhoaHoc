@@ -64,16 +64,12 @@ namespace HoiNghiKhoaHoc.Repositories
 		}
 
 		public async Task<Conference> GetConferenceByIdAsync(int id)
-        {
-            var conference = await _context.Conferences
-                .Include(c => c.Category) // Load thông tin Category
-                .FirstOrDefaultAsync(c => c.Id == id);
-            if (conference == null)
-            {
-                throw new Exception("Conference not found.");
-            }
-            return conference;
-        }
+		{
+			return await _context.Conferences
+				.Include(c => c.Category)
+				.FirstOrDefaultAsync(c => c.Id == id);
+		}
+
 
 		public async Task<IEnumerable<Conference>> GetConferenceByIdCategoryAsync(Conference conference)
 		{

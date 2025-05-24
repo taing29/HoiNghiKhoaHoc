@@ -23,9 +23,11 @@
 				var client = new SmtpClient(_emailSettings.SmtpServer)
 				{
 					Port = _emailSettings.SmtpPort,
-					Credentials = new NetworkCredential(_emailSettings.Username, _emailSettings.Password),
-					EnableSsl = true
+					EnableSsl = true,
+					UseDefaultCredentials = false, // 🔥 Thêm dòng này
+					Credentials = new NetworkCredential(_emailSettings.Username, _emailSettings.Password)
 				};
+
 
 				var mailMessage = new MailMessage
 				{
@@ -38,9 +40,9 @@
 
 				await client.SendMailAsync(mailMessage);
 			}
-			catch (Exception ex)
+			catch (SmtpException smtpEx)
 			{
-				Console.WriteLine($"Email send failed: {ex.Message}");
+				Console.WriteLine($"SMTP error: {smtpEx.StatusCode} - {smtpEx.Message}");
 				throw;
 			}
 		}
