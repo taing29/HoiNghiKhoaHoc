@@ -19,6 +19,8 @@ namespace HoiNghiKhoaHoc.Models
 
 		[MaxLength(300)]
 		public string? PhotoUrl { get; set; }
+        [Required]
+        public string Email { get; set; }
 
 		public DateTime CreatedAt { get; set; } = DateTime.Now;
 

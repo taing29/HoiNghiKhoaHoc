@@ -17,14 +17,12 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
             _env = env;
         }
 
-        // GET: Admin/Speakers
         public async Task<IActionResult> Index()
         {
             var speakers = await _speakerRepository.GetAllSpeakersAsync();
             return View(speakers);
         }
 
-        // GET: Admin/Speakers/Details/5
         public async Task<IActionResult> Details(int id)
         {
             var speaker = await _speakerRepository.GetSpeakerByIdAsync(id);
@@ -32,24 +30,23 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
             return View(speaker);
         }
 
-        // GET: Admin/Speakers/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Admin/Speakers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Speaker speaker, IFormFile imageFile)
         {
+            ModelState.Remove("imageFile");
             if (!ModelState.IsValid)
             {
-                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-                Console.WriteLine($"ModelState errors: {string.Join("; ", errors)}");
-                return View(speaker);
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    Console.WriteLine($"ModelState Error: {error.ErrorMessage}");
+                }
             }
-
             try
             {
                 if (imageFile != null)
@@ -94,7 +91,6 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
             }
         }
 
-        // GET: Admin/Speakers/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
             var speaker = await _speakerRepository.GetSpeakerByIdAsync(id);
@@ -102,7 +98,6 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
             return View(speaker);
         }
 
-        // POST: Admin/Speakers/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Speaker speaker)
@@ -117,21 +112,15 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
             return View(speaker);
         }
 
-        // GET: Admin/Speakers/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
             var speaker = await _speakerRepository.GetSpeakerByIdAsync(id);
             if (speaker == null) return NotFound();
-            return View(speaker);
-        }
-
-        // POST: Admin/Speakers/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            await _speakerRepository.DeleteSpeakerAsync(id);
-            return RedirectToAction(nameof(Index));
+            else
+            {
+                await _speakerRepository.DeleteSpeakerAsync(id);
+                return RedirectToAction(nameof(Index));
+            }
         }
     }
 }

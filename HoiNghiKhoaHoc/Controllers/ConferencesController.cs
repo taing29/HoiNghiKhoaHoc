@@ -129,7 +129,19 @@ namespace HoiNghiKhoaHoc.Controllers
                     DateAdded = DateTime.Now
                 });
             }
-            return RedirectToAction("Details", new { id = conferenceId });
+            //kiểm tra đang ở trang nào để redirect về đúng trang
+            var referer = Request.Headers["Referer"].ToString();
+            var conferenceIdFromReferer = referer.Split('/').LastOrDefault();
+            if (int.TryParse(conferenceIdFromReferer, out int conferenceIdFromRefererInt) && conferenceIdFromRefererInt == conferenceId)
+            {
+                //thêm thông báo thành công
+                TempData["SuccessMessage"] = "Đã thêm vào yêu thích thành công!";
+                return Redirect(referer); // Redirect back to the same page
+            }
+            else
+            {
+                return RedirectToAction("Index", new { id = conferenceId });
+            }
         }
 
         [Authorize(Roles = "User")]
@@ -142,7 +154,18 @@ namespace HoiNghiKhoaHoc.Controllers
             {
                 await _favoriteRepository.RemoveFavoriteAsync(favorite.Id);
             }
-            return RedirectToAction("Details", new { id = conferenceId });
+            var referer = Request.Headers["Referer"].ToString();
+            var conferenceIdFromReferer = referer.Split('/').LastOrDefault();
+            if (int.TryParse(conferenceIdFromReferer, out int conferenceIdFromRefererInt) && conferenceIdFromRefererInt == conferenceId)
+            {
+                //thêm thông báo thành công
+                TempData["SuccessMessage"] = "Đã xóa khỏi danh sách yêu thích.";
+                return Redirect(referer); // Redirect back to the same page
+            }
+            else
+            {
+                return RedirectToAction("Details", new { id = conferenceId });
+            }
         }
 
         [Authorize(Roles = "User")]
