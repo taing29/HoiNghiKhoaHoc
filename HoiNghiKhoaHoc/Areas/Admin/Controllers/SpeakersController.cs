@@ -43,33 +43,55 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Speaker speaker, IFormFile imageFile)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                // Xử lý upload ảnh nếu có
-                if (imageFile != null && imageFile.Length > 0)
-                {
-                    string uploadsFolder = Path.Combine(_env.WebRootPath, "Image");
-                    Directory.CreateDirectory(uploadsFolder); // Tạo thư mục nếu chưa có
-
-                    string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await imageFile.CopyToAsync(stream);
-                    }
-
-                    speaker.PhotoUrl = "/Image/" + uniqueFileName; // Lưu đường dẫn tương đối
-                }
-
-                speaker.CreatedAt = DateTime.Now;
-
-                await _speakerRepository.AddSpeakerAsync(speaker);
-                TempData["SuccessMessage"] = "Thêm diễn giả thành công.";
-                return RedirectToAction(nameof(Index));
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                Console.WriteLine($"ModelState errors: {string.Join("; ", errors)}");
+                return View(speaker);
             }
 
-            return View(speaker);
+            try
+            {
+                if (imageFile != null)
+                {
+                    speaker.PhotoUrl = await SaveImage(imageFile);
+                }
+                speaker.CreatedAt = DateTime.Now;
+                await _speakerRepository.AddSpeakerAsync(speaker);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi khi tạo diễn giả: {ex.Message}");
+                ModelState.AddModelError("", "Đã xảy ra lỗi khi lưu diễn giả. Vui lòng thử lại.");
+                return View(speaker);
+            }
+        }
+        private async Task<string> SaveImage(IFormFile image)
+        {
+            try
+            {
+                var imageFolder = Path.Combine(_env.WebRootPath, "Image");
+                if (!Directory.Exists(imageFolder))
+                {
+                    Directory.CreateDirectory(imageFolder);
+                }
+
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+                var savePath = Path.Combine(imageFolder, fileName);
+
+                using (var fileStream = new FileStream(savePath, FileMode.Create))
+                {
+                    await image.CopyToAsync(fileStream);
+                }
+
+                return "/Image/" + fileName;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi khi lưu ảnh: {ex.Message}");
+                throw;
+            }
         }
 
         // GET: Admin/Speakers/Edit/5

@@ -7,26 +7,30 @@
 <h2>Thêm diễn giả</h2>
 
 <form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="mb-3">
-        <label asp-for="FullName" class="form-label"></label>
+        <label asp-for="FullName" class="form-label">Họ tên</label>
         <input asp-for="FullName" class="form-control" />
         <span asp-validation-for="FullName" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Title" class="form-label"></label>
+        <label asp-for="Title" class="form-label">Chức danh</label>
         <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Affiliation" class="form-label"></label>
+        <label asp-for="Affiliation" class="form-label">Đơn vị công tác</label>
         <input asp-for="Affiliation" class="form-control" />
+        <span asp-validation-for="Affiliation" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="PhotoUrl" class="form-label">Ảnh đại diện</label>
+        <label class="form-label">Ảnh đại diện</label>
         <input type="file" name="imageFile" class="form-control" />
     </div>
     <div class="mb-3">
-        <label asp-for="Bio" class="form-label"></label>
+        <label asp-for="Bio" class="form-label">Tiểu sử</label>
         <textarea asp-for="Bio" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Bio" class="text-danger"></span>
     </div>
     <button type="submit" class="btn btn-success">Lưu</button>
     <a asp-action="Index" class="btn btn-secondary">Hủy</a>
