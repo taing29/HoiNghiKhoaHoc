@@ -84,14 +84,14 @@
                         {
                             <form asp-action="RemoveFromFavorites" method="post" class="d-inline">
                                 <input type="hidden" name="conferenceId" value="@Model.CurrentConference.Id" />
-                                <button type="submit" class="btn btn-outline-danger">❤ Đã yêu thích – Bỏ</button>
+                                <button type="submit" class="btn btn-outline-danger">Đã yêu thích – Bỏ</button>
                             </form>
                         }
                         else
                         {
                             <form asp-action="AddToFavorites" method="post" class="d-inline">
                                 <input type="hidden" name="conferenceId" value="@Model.CurrentConference.Id" />
-                                <button type="submit" class="btn btn-outline-danger">🤍 Thêm vào yêu thích</button>
+                                <button type="submit" class="btn btn-outline-danger">Thêm vào yêu thích</button>
                             </form>
                         }
 
@@ -101,14 +101,14 @@
                             {
                                 <form asp-action="CancelRegistration" method="post" class="d-inline">
                                     <input type="hidden" name="conferenceId" value="@Model.CurrentConference.Id" />
-                                    <button type="submit" class="btn btn-danger">❌ Hủy đăng ký</button>
+                                    <button type="submit" class="btn btn-danger">Hủy đăng ký</button>
                                 </form>
                             }
                             else
                             {
                                 <form asp-action="Register" method="post" class="d-inline">
                                     <input type="hidden" name="conferenceId" value="@Model.CurrentConference.Id" />
-                                    <button type="submit" class="btn btn-success">✅ Đăng ký tham gia</button>
+                                    <button type="submit" class="btn btn-success">Đăng ký tham gia</button>
                                 </form>
                             }
                         </div>
@@ -181,7 +181,7 @@
                         @foreach (var item in Model.Speakers)
                         {
                             <div class="text-center mb-4">
-                                <img src="@(!string.IsNullOrEmpty(item.Speaker.PhotoUrl) ? Url.Content("~/uploads/" + item.Speaker.PhotoUrl) : "https://bootdey.com/img/Content/avatar/avatar1.png")"
+                                <img src="@(!string.IsNullOrEmpty(item.Speaker.PhotoUrl) ? @Url.Content(item.Speaker.PhotoUrl) : "https://bootdey.com/img/Content/avatar/avatar1.png")"
                                      alt="Ảnh diễn giả"
                                      class="rounded-circle mb-2"
                                      style="width: 80px; height: 80px; object-fit: cover;" />

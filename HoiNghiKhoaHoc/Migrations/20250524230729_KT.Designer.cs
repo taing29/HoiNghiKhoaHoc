@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HoiNghiKhoaHoc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250524185659_updateSpeaker")]
-    partial class updateSpeaker
+    [Migration("20250524230729_KT")]
+    partial class KT
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -284,6 +284,10 @@ namespace HoiNghiKhoaHoc.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FullName")
                         .IsRequired()

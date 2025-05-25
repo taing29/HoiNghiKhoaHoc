@@ -20,10 +20,9 @@
                 }
                 <div class="card-body">
                     <h5 class="card-title">@item.Title</h5>
-                    <p class="card-text">
-                        <strong>Mô tả:</strong> @item.Description<br />
+                    <p class="card-text text-sm-left text-secondary">
+                        @* <strong>Mô tả:</strong> @item.Description<br /> *@
                         <strong>Thời gian:</strong> @item.StartDate.ToShortDateString() - @item.EndDate.ToShortDateString()<br />
-                        <strong>Địa điểm:</strong> @item.Location<br />
                         <strong>Trạng thái:</strong>
                         <span class="badge @(item.IsActive ? "bg-success" : "bg-secondary")">
                             @(item.IsActive ? "Đang hoạt động" : "Ngưng hoạt động")
