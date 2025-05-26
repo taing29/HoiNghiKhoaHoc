@@ -16,7 +16,7 @@ namespace HoiNghiKhoaHoc.Models
         public string? Location { get; set; }
         public string? Address { get; set; }
         public string? Organizer { get; set; }
-        public bool IsActive { get; set; } = true;
+        public bool IsActive { get; set; } = true;  
         ////để phân biệt trong nước hay quốc tế
         public bool IsInternational { get; set; }   
         

@@ -164,44 +164,27 @@ namespace HoiNghiKhoaHoc.Controllers
                     RegisteredDate = DateTime.Now
                 });
             }
-            return RedirectToAction("Details", new { id = conferenceId });
+
+            return RedirectToAction("RegistrationConfirmation", new { conferenceId });
         }
 
-        //[Authorize(Roles = "User")]
-        //[HttpPost]
-        //public async Task<IActionResult> Registerr(int conferenceId)
-        //{
-        //    var userId = _userManager.GetUserId(User);
-        //    var existing = await _registrationRepository.GetRegistrationAsync(userId, conferenceId);
-        //    if (existing == null)
-        //    {
-        //        await _registrationRepository.RegisterAsync(new ConferenceRegistration
-        //        {
-        //            UserId = userId,
-        //            ConferenceId = conferenceId,
-        //            RegisteredDate = DateTime.Now
-        //        });
-        //    }
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> RegistrationConfirmation(int conferenceId)
+        {
+            var userId = _userManager.GetUserId(User);
+            var registration = await _registrationRepository.GetRegistrationAsync(userId, conferenceId);
+            if (registration == null)
+                return RedirectToAction("Details", new { id = conferenceId });
 
-           
-        //    return RedirectToAction("RegistrationConfirmation", new { conferenceId });
-        //}
-        //[Authorize(Roles = "User")]
-        //public async Task<IActionResult> RegistrationConfirmation(int conferenceId)
-        //{
-        //    var userId = _userManager.GetUserId(User);
-        //    var registration = await _registrationRepository.GetRegistrationAsync(userId, conferenceId);
+            var conference = await _conferenceRepository.GetConferenceByIdAsync(conferenceId);
+            if (conference == null) return NotFound();
 
-        //    if (registration == null)
-        //        return RedirectToAction("Details", new { id = conferenceId }); 
+            ViewBag.RegisteredDate = registration.RegisteredDate;
+            return View(conference); 
+        }
 
-        //    var conference = await _conferenceRepo.GetConferenceByIdAsync(conferenceId);
-        //    if (conference == null) return NotFound();
 
-        //    ViewBag.RegisteredDate = registration.RegisteredDate;
-        //    return View(conference); 
-        //}
-
+       
         [Authorize(Roles = "User")]
         [HttpPost]
         public async Task<IActionResult> CancelRegistration(int conferenceId)
