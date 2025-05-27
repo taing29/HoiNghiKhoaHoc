@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HoiNghiKhoaHoc.Migrations
 {
     /// <inheritdoc />
-    public partial class New : Migration
+    public partial class News : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

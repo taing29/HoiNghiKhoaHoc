@@ -4,7 +4,7 @@ using HoiNghiKhoaHoc.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-
+using Rotativa.AspNetCore;  // thêm để sinh PDF
 namespace HoiNghiKhoaHoc.Controllers
 {
     public class ConferencesController : Controller
@@ -183,8 +183,29 @@ namespace HoiNghiKhoaHoc.Controllers
             return View(conference); 
         }
 
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> DownloadConfirmation(int conferenceId)
+        {
+            var userId = _userManager.GetUserId(User);
+            var registration = await _registrationRepository.GetRegistrationAsync(userId, conferenceId);
+            if (registration == null) return RedirectToAction("Details", new { id = conferenceId });
 
-       
+            var conference = await _conferenceRepository.GetConferenceByIdAsync(conferenceId);
+            if (conference == null) return NotFound();
+
+            ViewBag.RegisteredDate = registration.RegisteredDate;
+            return new ViewAsPdf("RegistrationConfirmation", conference)
+            {
+                FileName = $"GiayXacNhan_{conferenceId}.pdf",
+                PageSize = Rotativa.AspNetCore.Options.Size.A4,
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait
+            };
+        }
+
+
+
+
+
         [Authorize(Roles = "User")]
         [HttpPost]
         public async Task<IActionResult> CancelRegistration(int conferenceId)
