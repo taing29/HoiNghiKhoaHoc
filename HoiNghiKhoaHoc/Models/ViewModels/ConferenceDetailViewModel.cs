@@ -9,9 +9,8 @@ namespace HoiNghiKhoaHoc.Models.ViewModels
         public bool IsFavorite { get; set; }
         public bool IsRegistered { get; internal set; }
 		public bool IsActive { get; set; } = true;
-		public IEnumerable<ConferenceReview> Reviews { get; set; }
+		public IEnumerable<Comment>? Comments { get; set; }
 		public bool IsPastConference => CurrentConference.EndDate < DateTime.Now;
-
 
 	}
 }

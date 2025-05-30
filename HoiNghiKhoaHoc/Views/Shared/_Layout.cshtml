@@ -3,8 +3,6 @@
 @inject UserManager<ApplicationUser> UserManager﻿
 
 <!DOCTYPE html>
-
-<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta name="viewport" content="width=device-width" />
@@ -48,10 +46,7 @@
             </form>
 
             <div class="user-icon" onclick="toggleDropdown()">
-                <img src="@(
-                                         SignInManager.IsSignedIn(User)
-                                             ? UserManager.GetUserAsync(User).Result?.AvatarPath ?? "https://cdn-icons-png.flaticon.com/512/747/747376.png"
-                                             : "https://cdn-icons-png.flaticon.com/512/747/747376.png"
+                <img src="@(SignInManager.IsSignedIn(User) ? UserManager.GetUserAsync(User).Result?.AvatarPath ?? "https://cdn-icons-png.flaticon.com/512/747/747376.png" : "https://cdn-icons-png.flaticon.com/512/747/747376.png"
                                 )" alt="Avatar" />
                 <div class="dropdown" id="userDropdown">
                     @if (SignInManager.IsSignedIn(User))
