@@ -91,16 +91,16 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
             return View(conference);
         }
 
-        public async Task<IActionResult> ConferenceDetails(int id)
-        {
-            var conference = await _conferenceRepository.GetConferenceByIdAsync(id);
-            if (conference == null)
-            {
-                TempData["ErrorMessage"] = "Không tìm thấy hội nghị.";
-                return RedirectToAction(nameof(Index));
-            }
-            return View(conference);
-        }
+        //public async Task<IActionResult> ConferenceDetails(int id)
+        //{
+        //    var conference = await _conferenceRepository.GetConferenceByIdAsync(id);
+        //    if (conference == null)
+        //    {
+        //        TempData["ErrorMessage"] = "Không tìm thấy hội nghị.";
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(conference);
+        //}
 
         public async Task<IActionResult> Update(int id)
         {
@@ -113,12 +113,25 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
 
             var categories = await _categoryRepository.GetAllCategoriesAsync();
             ViewBag.Categories = new SelectList(categories, "Id", "Name", conference.CategoryId);
+
+            // Lấy danh sách Speaker đã gán cho hội nghị
+            var speakerIds = await _context.ConferenceSpeakers
+                .Where(cs => cs.ConferenceId == id)
+                .Select(cs => cs.SpeakerId)
+                .ToListAsync();
+
+            var speakers = await _context.Speakers
+                .Where(s => speakerIds.Contains(s.Id))
+                .ToListAsync();
+
+            ViewBag.ExistingSpeakers = speakers;
+
             return View(conference);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Update(int id, Conference conference, IFormFile imageFile)
+        public async Task<IActionResult> Update(int id, Conference conference, IFormFile imageFile, List<int> SpeakerIds)
         {
             ModelState.Remove("imageFile");
             if (id != conference.Id)
@@ -128,6 +141,12 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
+                //giữ nguyên thông tin hình ảnh hiện tại
+                var existingConference = await _conferenceRepository.GetConferenceByIdAsync(id);
+                if (existingConference != null)
+                {
+                    conference.BannerImage = existingConference.BannerImage;
+                }
                 if (imageFile != null && imageFile.Length > 0)
                 {
                     string uploadsFolder = Path.Combine(_env.WebRootPath, "Image");
@@ -143,8 +162,31 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
 
                     conference.BannerImage = "/Image/" + uniqueFileName;
                 }
+                // Xóa diễn giả cũ trước khi thêm mới
+                var existingSpeakers = await _context.ConferenceSpeakers
+                    .Where(cs => cs.ConferenceId == conference.Id)
+                    .ToListAsync();
+
+                if (existingSpeakers.Any())
+                {
+                    _context.ConferenceSpeakers.RemoveRange(existingSpeakers);
+                    await _context.SaveChangesAsync();
+                }
+
+                // Thêm diễn giả mới
+                if (SpeakerIds != null && SpeakerIds.Any())
+                {
+                    var list = SpeakerIds.Select(id => new ConferenceSpeaker
+                    {
+                        ConferenceId = conference.Id,
+                        SpeakerId = id
+                    }).ToList();
+
+                    await _conferenceRepository.AddConferenceSpeakersAsync(list);
+                }
 
                 await _conferenceRepository.UpdateConferenceAsync(conference);
+
                 TempData["SuccessMessage"] = "Cập nhật hội nghị thành công.";
                 return RedirectToAction(nameof(Index));
             }
@@ -209,8 +251,17 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
             var registration = await _context.ConferenceRegistrations.FindAsync(id);
             if (registration != null)
             {
-                _context.ConferenceRegistrations.Remove(registration);
-                await _context.SaveChangesAsync();
+                if(registration.IsApproved)
+                {
+                    registration.IsApproved = false;
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    _context.ConferenceRegistrations.Remove(registration);
+                    await _context.SaveChangesAsync();
+                }
+                
             }
             return RedirectToAction("Details", new { id = registration.ConferenceId });
         }

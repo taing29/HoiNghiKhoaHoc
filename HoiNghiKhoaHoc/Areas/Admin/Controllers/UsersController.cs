@@ -20,7 +20,6 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
             _userRepository = userRepository;
 		}
 
-		// GET: /Admin/Users
 		public IActionResult Index()
 		{
 			var users = _userManager.Users.ToList();

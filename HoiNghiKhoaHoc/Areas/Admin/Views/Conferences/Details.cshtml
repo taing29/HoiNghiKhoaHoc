@@ -6,58 +6,92 @@
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
 
-@* <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h2 mb-0">@ViewData["Title"]</h1>
-    <a asp-controller="Conferences" asp-action="Create" asp-area="Admin" class="btn btn-success">Thêm hội nghị</a>
-</div> *@
+<div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Chi tiết hội nghị</h2>
+        <a asp-controller="Conferences" asp-action="Update" asp-route-id="@Model.Conference.Id" asp-area="Admin" class="btn btn-primary">
+            <i class="bi bi-pencil-square"></i> Chỉnh sửa
+        </a>
+    </div>
 
-<h2>Chi tiết hội nghị: @Model.Conference.Title</h2>
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h4 class="card-title">@Model.Conference.Title</h4>
+            <p>
+                <strong>Thời gian:</strong>
+                <span class="badge bg-info text-dark">@Model.Conference.StartDate.ToString("dd/MM/yyyy")</span> –
+                <span class="badge bg-info text-dark">@Model.Conference.EndDate.ToString("dd/MM/yyyy")</span>
+            </p>
+            <div>
+                <strong>Mô tả:</strong>
+                <div class="border rounded p-2 bg-light mt-1" style="white-space: pre-line;">
+                    @Html.Raw(Model.Conference.Description)
+                </div>
+            </div>
+        </div>
+    </div>
 
-<p><strong>Ngày:</strong> @Model.Conference.StartDate.ToShortDateString() - @Model.Conference.EndDate.ToShortDateString()</p>
-<p><strong>Mô tả:</strong> @Model.Conference.Description</p>
+    <h3 class="mb-3">Danh sách đăng ký</h3>
 
-<h3>Danh sách đăng ký</h3>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Họ tên</th>
-            <th>Email</th>
-            <th>Ngày đăng ký</th>
-            <th>Trạng thái</th>
-            <th>Hành động</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var reg in Model.Registrations)
-        {
-            <tr>
-                <td>@reg.User.FullName</td>
-                <td>@reg.User.Email</td>
-                <td>@reg.RegisteredDate.ToString("dd/MM/yyyy")</td>
-                <td>
-                    @if (reg.IsApproved)
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Họ tên</th>
+                    <th>Email</th>
+                    <th>Ngày đăng ký</th>
+                    <th>Trạng thái</th>
+                    <th class="text-center">Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Registrations != null && Model.Registrations.Any())
+                {
+                    foreach (var reg in Model.Registrations)
                     {
-                        <span class="text-success">Đã duyệt</span>
+                        <tr>
+                            <td>@reg.User.FullName</td>
+                            <td>@reg.User.Email</td>
+                            <td>@reg.RegisteredDate.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                @if (reg.IsApproved)
+                                {
+                                    <span class="badge bg-success">Đã duyệt</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">Chờ duyệt</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-1">
+                                    @if (!reg.IsApproved)
+                                    {
+                                        <form asp-action="ApproveRegistration" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@reg.Id" />
+                                            <button type="submit" class="btn btn-sm btn-success">
+                                                <i class="bi bi-check-circle"></i> Duyệt
+                                            </button>
+                                        </form>
+                                    }
+                                    <form asp-action="RejectRegistration" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@reg.Id" />
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="bi bi-x-circle"></i> Từ chối
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
                     }
-                    else
-                    {
-                        <span class="text-warning">Chờ duyệt</span>
-                    }
-                </td>
-                <td>
-                    @if (!reg.IsApproved)
-                    {
-                        <form asp-action="ApproveRegistration" method="post" style="display:inline;">
-                            <input type="hidden" name="id" value="@reg.Id" />
-                            <button type="submit" class="btn btn-success btn-sm">Duyệt</button>
-                        </form>
-                    }
-                    <form asp-action="RejectRegistration" method="post" style="display:inline;">
-                        <input type="hidden" name="id" value="@reg.Id" />
-                        <button type="submit" class="btn btn-danger btn-sm">Từ chối</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">Chưa có người đăng ký.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

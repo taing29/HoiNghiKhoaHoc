@@ -104,12 +104,23 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Speaker speaker)
+        public async Task<IActionResult> Edit(int id, Speaker speaker, IFormFile imageUrl)
         {
-            if (id != speaker.Id) return BadRequest();
+            ModelState.Remove("imageUrl");
+            if (id != speaker.Id) 
+                return NotFound();
 
             if (ModelState.IsValid)
             {
+                var existingSpeaker = await _speakerRepository.GetSpeakerByIdAsync(id);
+                if(imageUrl == null)
+                {
+                    speaker.PhotoUrl = existingSpeaker.PhotoUrl;
+                }
+                else
+                {
+                    speaker.PhotoUrl = await SaveImage(imageUrl);
+                }
                 await _speakerRepository.UpdateSpeakerAsync(speaker);
                 return RedirectToAction(nameof(Index));
             }

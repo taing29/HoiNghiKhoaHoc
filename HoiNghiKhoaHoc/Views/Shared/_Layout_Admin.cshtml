@@ -11,10 +11,11 @@
     <div class="sidebar col-md-2">
         <h4 class="px-3 text-dark">Quản trị</h4>
         <a class="active" href="#">Bảng điều khiển</a>
-        <a href="/Admin/Conferences">Quản lý hội nghị</a>
+        <a href="@Url.Action("Index", "Conferences", new { area = "Admin" })">Quản lý hội nghị</a>
         <a href="@Url.Action("Index", "Users", new { area = "Admin" })">Quản lý người dùng</a>
-        <a href="/Admin/Categories">Quản lý danh mục</a>
-        <a href="/Admin/Speakers">Quản lý diễn giả</a>
+        <a href="@Url.Action("Index", "Categories", new { area = "Admin" })">Quản lý danh mục</a>
+        <a href="@Url.Action("Index", "Speakers", new { area = "Admin" })">Quản lý diễn giả</a>
+        @* <a href="@Url.Action("Index", "Speakers", new { area = "Admin" })">Thống kê</a> *@
     </div>
 
     <!-- Content -->
@@ -22,7 +23,7 @@
         <header class="d-flex justify-content-between mb-4">
             <h2>@ViewData["Title"]</h2>
             <div>
-                <span class="me-3"><i class="fas fa-user-circle"></i> Admin</span>
+                <span class="me-3"><i class="fas fa-user-circle"></i>Admin</span>
                 <a href="@Url.Action("Login", "Account", new { area = "Identity" })">Đăng xuất</a>
             </div>
         </header>

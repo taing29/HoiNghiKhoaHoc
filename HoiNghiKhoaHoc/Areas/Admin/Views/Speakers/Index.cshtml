@@ -4,41 +4,65 @@
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="h2 mb-4">@ViewData["Title"]</h2>
-    <a asp-controller="Speakers" asp-action="Create" asp-area="Admin" class="btn btn-success">Thêm mới</a>
+<div class="container-fluid py-4">
+    <div class="card shadow-lg rounded">
+        <div class="card-header bg-warning text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">@ViewData["Title"]</h4>
+            <a asp-controller="Speakers" asp-action="Create" asp-area="Admin" class="btn btn-light">
+                <i class="bi bi-plus-circle"></i> Thêm mới
+            </a>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle mb-0">
+                    <thead class="table-light text-center">
+                        <tr>
+                            <th>Họ tên</th>
+                            <th>Học vị</th>
+                            <th>Đơn vị</th>
+                            <th>Email</th>
+                            <th>Ảnh</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var speaker in Model)
+                        {
+                            <tr class="text-center">
+                                <td>@speaker.FullName</td>
+                                <td>@speaker.Title</td>
+                                <td>@speaker.Affiliation</td>
+                                <td>@speaker.Email</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(speaker.PhotoUrl))
+                                    {
+                                        <img src="@speaker.PhotoUrl" alt="Ảnh diễn giả" class="rounded-circle" width="60" height="60" style="object-fit: cover;" />
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Không có ảnh</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a asp-action="Edit"
+                                           asp-route-id="@speaker.Id"
+                                           class="btn btn-sm btn-outline-primary me-1">
+                                            <i class="bi bi-pencil-square"></i> Sửa
+                                        </a>
+                                        <a asp-action="Delete"
+                                           asp-route-id="@speaker.Id"
+                                           class="btn btn-sm btn-outline-danger"
+                                           onclick="return confirm('Bạn có chắc chắn muốn xoá diễn giả này?');">
+                                            <i class="bi bi-trash"></i> Xoá
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
-
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Họ tên</th>
-            <th>Học vị</th>
-            <th>Đơn vị</th>
-            <th>Email</th>
-            <th>Ảnh</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var speaker in Model)
-        {
-            <tr>
-                <td>@speaker.FullName</td>
-                <td>@speaker.Title</td>
-                <td>@speaker.Affiliation</td>
-                <td>@speaker.Email</td>
-                <td>
-                    @if (!string.IsNullOrEmpty(speaker.PhotoUrl))
-                    {
-                        <img src="@speaker.PhotoUrl" alt="Ảnh" width="60" />
-                    }
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@speaker.Id" class="btn btn-warning btn-sm">Sửa</a>
-                    <a asp-action="Delete" asp-route-id="@speaker.Id" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xoá người dùng này?');">Xóa</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
