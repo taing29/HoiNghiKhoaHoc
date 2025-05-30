@@ -16,6 +16,7 @@ namespace HoiNghiKhoaHoc.Models
 		public DbSet<ConferenceSpeaker> ConferenceSpeakers { get; set; }
         public DbSet<Favorite> Favorites { get; set; }
         public DbSet<ConferenceRegistration> ConferenceRegistrations { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
-    }
+	}
 }

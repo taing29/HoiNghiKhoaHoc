@@ -15,6 +15,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+//builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
+
 
 // 3. Cấu hình Identity với ApplicationUser
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -32,6 +34,7 @@ builder.Services.AddScoped<IRegistrationRepository, EFRegistrationRepository>();
 builder.Services.AddScoped<ISpeakerRepository, EFSpeakerRepository>();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.AddScoped<ICommentRepository, EFCommentRepository>();
 
 
 // 5. Middleware

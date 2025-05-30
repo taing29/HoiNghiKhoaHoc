@@ -1,0 +1,11 @@
+﻿@model HoiNghiKhoaHoc.Models.ViewModels.AddCommentViewModel
+
+<form asp-action="AddComment" method="post">
+    <input type="hidden" asp-for="ConferenceId" />
+    <div class="form-group">
+        <textarea asp-for="Content"
+                  class="form-control"
+                  placeholder="Viết bình luận..." required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary mt-2">Gửi bình luận</button>
+</form>

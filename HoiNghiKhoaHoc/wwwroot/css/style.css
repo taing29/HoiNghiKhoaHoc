@@ -172,10 +172,9 @@ footer.footer-tl {
     }
 
 /* Ảnh hội nghị */
-.conference-image {
+.conference-image{
     height: 350px;
     object-fit: cover;
-    border-radius: 12px 12px 0 0;
 }
 
 /* Tiêu đề */

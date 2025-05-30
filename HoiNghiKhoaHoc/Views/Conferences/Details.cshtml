@@ -1,9 +1,19 @@
 ﻿@using System.Text.RegularExpressions
+@using HoiNghiKhoaHoc.Models.ViewModels
 @model HoiNghiKhoaHoc.Models.ViewModels.ConferenceDetailViewModel
 
 @{
     ViewData["Title"] = Model.CurrentConference.Title;
     Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">@TempData["Message"]</div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
 }
 
 <!DOCTYPE html>
@@ -62,9 +72,9 @@
 
 </style>
 <body>
+    <!-- Banner -->
+    <img src="@Url.Content(Model.CurrentConference.BannerImage)" class="img-fluid mb-4" width="100%" alt="Banner" />
     <div class="container-fluid">
-        <!-- Banner -->
-        <img src="@Url.Content(Model.CurrentConference.BannerImage)" class="img-fluid mb-4" width="100%" alt="Banner" />
         <div class="row px-3 px-md-4">
             <!-- Nội dung chính -->
             <div class="col-md-8">
@@ -154,23 +164,31 @@
                     }
                 </div> *@
 
-                <!-- Form bình luận -->
-                <h4 class="mt-5 mb-3">Gửi bình luận</h4>
-                <form>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <input type="text" class="form-control" placeholder="Tên *" required>
-                        </div>
-                        <div class="col-md-6">
-                            <input type="email" class="form-control" placeholder="Email *" required>
+                <h2>Bình luận</h2>
+
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <partial name="_AddCommentPartial" model="new AddCommentViewModel { ConferenceId = Model.CurrentConference.Id }" />
+                }
+                else
+                {
+                    <p><a asp-area="Identity" asp-page="/Account/Login">Đăng nhập</a> để bình luận.</p>
+                }
+
+                <hr />
+                @foreach (var c in Model.Comments)
+                {
+                    <div class="mb-3 d-flex">
+                        <img src="@c.User.AvatarPath" class="rounded-circle me-2" width="40" height="40" alt="Avatar" />
+                        <div>
+                            <strong>@c.User.UserName</strong>
+                            <small class="text-muted">@c.CreatedAt.ToString("dd/MM/yyyy HH:mm")</small>
+                            <p class="mb-0">@c.Content</p>
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <textarea class="form-control" rows="4" placeholder="Nội dung *" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Gửi</button>
-                </form>
-            </div>
+                    <hr />
+                }
+            </div> 
 
             <!-- Diễn giả hội nghị -->
             @if (Model.Speakers?.Any() == true)
@@ -211,18 +229,22 @@
 
     <!-- Hội nghị liên quan -->
     <div class="container mt-5">
-        <h4 class="mb-4 text-center">Hội nghị liên quan</h4>
-        <div class="row g-3 justify-content-center">
+        <h4 class="mb-4 text-center fw-bold text-primary">Hội nghị liên quan</h4>
+        <div class="row g-4 justify-content-center">
             @foreach (var item in Model.RelatedConferences)
             {
-                <div class="col-6 col-md-3">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                     <a asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none text-dark">
-                        <div class="card h-100 shadow-sm">
-                            <img src="@Url.Content(item.BannerImage)" class="card-img-top" alt="@item.Title">
-                            <div class="card-body p-2">
-                                <h6 class="card-title mb-1">@item.Title</h6>
-                                <small class="text-muted d-block">@item.StartDate.ToString("dd/MM/yyyy")</small>
-                                <small class="text-muted">@item.Location</small>
+                        <div class="card h-100 border-0 shadow-sm hover-shadow transition">
+                            <div class="ratio ratio-16x9">
+                                <img src="@Url.Content(item.BannerImage)" class="card-img-top object-fit-cover rounded-top" alt="@item.Title">
+                            </div>
+                            <div class="card-body p-3">
+                                <h6 class="card-title fw-semibold">@item.Title</h6>
+                                <small class="text-muted d-block mb-1">
+                                    <i class="bi bi-calendar-event me-1"></i> @item.StartDate.ToString("dd/MM/yyyy")
+                                </small>
+                                <p class="text-muted small mb-0 text-truncate-3">@item.Description</p>
                             </div>
                         </div>
                     </a>
@@ -231,7 +253,12 @@
         </div>
     </div>
 
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

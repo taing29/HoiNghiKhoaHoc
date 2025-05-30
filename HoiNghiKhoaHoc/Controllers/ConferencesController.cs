@@ -17,6 +17,7 @@ namespace HoiNghiKhoaHoc.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConferenceSpeakerRepository _conferenceSpeakerRepository;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly ICommentRepository _commentRepository;
 
         public ConferencesController(
             IConferenceRepository conferenceRepository,
@@ -24,7 +25,8 @@ namespace HoiNghiKhoaHoc.Controllers
             IRegistrationRepository registrationRepository,
             UserManager<ApplicationUser> userManager,
             ICategoryRepository categoryRepository,
-            IConferenceSpeakerRepository conferenceSpeakerRepository
+            IConferenceSpeakerRepository conferenceSpeakerRepository,
+            ICommentRepository commentRepository
             )
         {
             _conferenceRepository = conferenceRepository;
@@ -33,6 +35,7 @@ namespace HoiNghiKhoaHoc.Controllers
             _userManager = userManager;
             _categoryRepository = categoryRepository;
             _conferenceSpeakerRepository = conferenceSpeakerRepository;
+            _commentRepository = commentRepository;
         }
         public async Task<IActionResult> Index(string? searchString)
         {
@@ -60,11 +63,11 @@ namespace HoiNghiKhoaHoc.Controllers
             var list = await _conferenceRepository.GetAllConferencesUpcomingAsync();
             return View(list);
         }
-		public async Task<IActionResult> Past()
-		{
-			var conferences = await _conferenceRepository.GetAllConferencesPastAsync();
-			return View(conferences);
-		}
+        public async Task<IActionResult> Past()
+        {
+            var conferences = await _conferenceRepository.GetAllConferencesPastAsync();
+            return View(conferences);
+        }
         public async Task<IActionResult> Global()
         {
             var globalConferences = await _conferenceRepository.GetAllConferencesGlobalAsync();
@@ -77,11 +80,12 @@ namespace HoiNghiKhoaHoc.Controllers
             var conference = await _conferenceRepository.GetConferenceByIdAsync(id);
             if (conference == null) return NotFound();
             //decode html 
-			conference.Content = WebUtility.HtmlDecode(conference.Content);
+            conference.Content = WebUtility.HtmlDecode(conference.Content);
 
-			var related = await _conferenceRepository.GetConferenceByIdCategoryAsync(conference);
+            var related = await _conferenceRepository.GetConferenceByIdCategoryAsync(conference);
             var speakers = await _conferenceSpeakerRepository.GetSpeakersByConferenceIdAsync(id);
             var userId = _userManager.GetUserId(User);
+            var comments = await _commentRepository.GetCommentsByConferenceIdAsync(id);
             var isFavorite = false;
             var isRegistered = false;
 
@@ -92,6 +96,7 @@ namespace HoiNghiKhoaHoc.Controllers
 
                 var registration = await _registrationRepository.GetRegistrationAsync(userId, id);
                 isRegistered = registration != null;
+
             }
 
             return View(new ConferenceDetailViewModel
@@ -100,7 +105,8 @@ namespace HoiNghiKhoaHoc.Controllers
                 RelatedConferences = related,
                 Speakers = speakers,
                 IsFavorite = isFavorite,
-                IsRegistered = isRegistered
+                IsRegistered = isRegistered,
+                Comments = comments
             });
         }
 
@@ -208,7 +214,7 @@ namespace HoiNghiKhoaHoc.Controllers
         //        });
         //    }
 
-           
+
         //    return RedirectToAction("RegistrationConfirmation", new { conferenceId });
         //}
         //[Authorize(Roles = "User")]
@@ -238,6 +244,30 @@ namespace HoiNghiKhoaHoc.Controllers
                 await _registrationRepository.CancelAsync(reg.Id);
             }
             return RedirectToAction("Details", new { id = conferenceId });
+        }
+
+        public async Task<IActionResult> AddComment(AddCommentViewModel model)
+        {
+			if (!ModelState.IsValid)
+			{
+				TempData["Error"] = "Nội dung bình luận không được để trống.";
+				return RedirectToAction("Details", new { id = model.ConferenceId });
+			}
+
+			if (User.Identity.IsAuthenticated)
+            {
+                var userId = _userManager.GetUserId(User);
+                var comment = new Comment
+                {
+                    ConferenceId = model.ConferenceId,
+                    UserId = userId,
+                    Content = model.Content,
+                    CreatedAt = DateTime.Now
+                };
+                await _commentRepository.AddCommentAsync(comment);
+				TempData["Message"] = "Bình luận đã được gửi thành công!";
+			}
+            return RedirectToAction("Details", new { id = model.ConferenceId });
         }
     }
 }
