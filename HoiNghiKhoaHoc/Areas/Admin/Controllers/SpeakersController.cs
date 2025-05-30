@@ -2,6 +2,7 @@
 using HoiNghiKhoaHoc.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
 {
@@ -11,10 +12,12 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
     {
         private readonly ISpeakerRepository _speakerRepository;
         private readonly IWebHostEnvironment _env;
-        public SpeakersController(ISpeakerRepository speakerRepository, IWebHostEnvironment env)
+        private readonly ApplicationDbContext _context;
+        public SpeakersController(ISpeakerRepository speakerRepository, IWebHostEnvironment env, ApplicationDbContext context)
         {
             _speakerRepository = speakerRepository;
             _env = env;
+            _context = context;
         }
 
         public async Task<IActionResult> Index()
@@ -122,6 +125,24 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
                 await _speakerRepository.DeleteSpeakerAsync(id);
                 return RedirectToAction(nameof(Index));
             }
+        }
+        [HttpGet]
+        public async Task<IActionResult> SearchByName(string name)
+        {
+            var speakers = await _context.Speakers
+                .Where(s => s.FullName.Contains(name))
+                .Select(s => new
+                {
+                    s.Id,
+                    s.FullName,
+                    s.Title,
+                    s.Affiliation,
+                    s.Email,
+                    PhotoUrl = Url.Content(s.PhotoUrl ?? "~/Image/default-avatar.jpg")
+                })
+                .ToListAsync();
+
+            return Json(speakers);
         }
     }
 }

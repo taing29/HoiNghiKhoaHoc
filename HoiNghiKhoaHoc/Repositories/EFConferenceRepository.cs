@@ -158,6 +158,14 @@ namespace HoiNghiKhoaHoc.Repositories
 		{
 			return await _context.Conferences.Where(c => c.IsActive).ToListAsync();
 		}
+        public async Task AddConferenceSpeakersAsync(List<ConferenceSpeaker> conferenceSpeakers)
+        {
+            if (conferenceSpeakers == null || conferenceSpeakers.Count == 0)
+                return;
 
-	}
+            await _context.ConferenceSpeakers.AddRangeAsync(conferenceSpeakers);
+            await _context.SaveChangesAsync();
+        }
+
+    }
 }

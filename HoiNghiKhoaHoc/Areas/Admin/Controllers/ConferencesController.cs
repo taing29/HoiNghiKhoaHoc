@@ -46,8 +46,10 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Conference conference, IFormFile imageFile)
+        public async Task<IActionResult> Create(Conference conference, IFormFile imageFile, List<int> SpeakerIds)
         {
+            if (SpeakerIds == null || !SpeakerIds.Any())
+                ModelState.AddModelError("SpeakerIds", "Vui lòng chọn ít nhất một diễn giả.");
             if (ModelState.IsValid)
             {
                 if (imageFile != null && imageFile.Length > 0)
@@ -68,6 +70,18 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
 
                 conference.CreatedDate = DateTime.Now;
                 await _conferenceRepository.AddConferenceAsync(conference);
+
+                // Gán các diễn giả đã chọn
+                if (SpeakerIds != null && SpeakerIds.Any())
+                {
+                    var list = SpeakerIds.Select(id => new ConferenceSpeaker
+                    {
+                        ConferenceId = conference.Id,
+                        SpeakerId = id
+                    }).ToList();
+                    await _conferenceRepository.AddConferenceSpeakersAsync(list);
+                }
+
                 TempData["SuccessMessage"] = "Tạo hội nghị thành công.";
                 return RedirectToAction(nameof(Index));
             }

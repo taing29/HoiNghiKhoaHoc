@@ -9,7 +9,28 @@
 
 <h2>Tạo Hội Nghị Mới</h2>
 
+
+
 <form asp-action="Create" method="post" enctype="multipart/form-data">
+    @* thêm diễn giả nếu chưa có trong danh sách *@
+    <a asp-controller="Speakers" asp-action="Create" asp-area="Admin" class="btn btn-warning">Thêm diễn giả</a>
+    @* chọn số lượng diễn giả bằng cách nhập vào số lượng và ấn enter*@
+    <div class="form-group">
+        <label for="speakerCount">Chọn số lượng diễn giả:</label>
+        <select id="speakerCount" class="form-control">
+            <option value="0">-- Chọn --</option>
+            @for (int i = 1; i <= 10; i++)
+            {
+                <option value="@i">@i</option>
+            }
+        </select>
+    </div>
+    <div id="speakersContainer"></div>
+    @if (ViewData.ModelState["SpeakerIds"]?.Errors.Count > 0)
+    {
+        <span class="text-danger">@ViewData.ModelState["SpeakerIds"].Errors[0].ErrorMessage</span>
+    }
+
      <div class="form-group">
         <label asp-for="BannerImage" class="form-label">Ảnh chủ đề</label>
         <input type="file" asp-for="BannerImage" name="imageFile" class="form-control" />
@@ -146,3 +167,75 @@
         });
 </script>
 
+<script>
+    document.getElementById("speakerCount").addEventListener("change", function () {
+        const count = parseInt(this.value);
+        const container = document.getElementById("speakersContainer");
+        container.innerHTML = "";
+
+        for (let i = 1; i <= count; i++) {
+            const wrapper = document.createElement("div");
+            wrapper.classList.add("form-group");
+            wrapper.innerHTML = `
+                <label>Diễn giả ${i}:</label>
+                <input type="text" class="form-control speaker-search" data-index="${i}" placeholder="Nhập tên diễn giả...">
+                <div class="search-results border rounded mt-1 p-2" id="results-${i}" style="max-height: 200px; overflow-y: auto;"></div>
+                <input type="hidden" name="SpeakerIds[]" id="speaker-id-${i}" />
+            `;
+            container.appendChild(wrapper);
+        }
+    });
+
+    document.addEventListener("input", function (e) {
+        if (e.target.classList.contains("speaker-search")) {
+            const index = e.target.dataset.index;
+            const query = e.target.value.trim();
+
+            if (query.length < 2) {
+                document.getElementById(`results-${index}`).innerHTML = "";
+                return;
+            }
+
+            fetch(`/Admin/Speakers/SearchByName?name=${encodeURIComponent(query)}`)
+                .then(res => res.json())
+                .then(data => {
+                    const resultsDiv = document.getElementById(`results-${index}`);
+                    resultsDiv.innerHTML = "";
+
+                    if (data.length === 0) {
+                        resultsDiv.innerHTML = `<div>Không tìm thấy diễn giả nào.</div>`;
+                        return;
+                    }
+
+                    data.forEach(speaker => {
+                        const speakerDiv = document.createElement("div");
+                        speakerDiv.classList.add("p-2", "border", "rounded", "mb-1");
+                        speakerDiv.style.cursor = "pointer";
+                        speakerDiv.innerHTML = `
+                            <div class="d-flex align-items-center">
+                                <img src="${speaker.photoUrl}" alt="Ảnh" width="50" class="mr-2 rounded-circle">
+                                <div>
+                                    <strong>${speaker.fullName}</strong><br>
+                                    ${speaker.title}, ${speaker.affiliation}<br>
+                                    <small>${speaker.email}</small>
+                                </div>
+                            </div>
+                        `;
+
+                        speakerDiv.addEventListener("click", () => {
+                            // Đặt tên diễn giả vào ô input
+                            e.target.value = speaker.fullName;
+
+                            // Ẩn danh sách gợi ý
+                            resultsDiv.innerHTML = "";
+
+                            // Lưu ID vào hidden input
+                            document.getElementById(`speaker-id-${index}`).value = speaker.id;
+                        });
+
+                        resultsDiv.appendChild(speakerDiv);
+                    });
+                });
+        }
+    });
+</script>
