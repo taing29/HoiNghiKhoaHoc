@@ -1,6 +1,7 @@
 ﻿@using System.Text.RegularExpressions
 @using HoiNghiKhoaHoc.Models.ViewModels
 @model HoiNghiKhoaHoc.Models.ViewModels.ConferenceDetailViewModel
+
 @{
     ViewData["Title"] = Model.CurrentConference.Title;
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -8,6 +9,11 @@
 @if (TempData["Message"] != null)
 {
     <div class="alert alert-success">@TempData["Message"]</div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
 }
 
 <!DOCTYPE html>
@@ -65,16 +71,15 @@
     }
 
 </style>
-<div class="container-fluid">
+<body>
     <!-- Banner -->
-    <img src="@Url.Content(Model.CurrentConference.BannerImage)" class="img-fluid mb-4" alt="Banner" />
-
-    <div class="row px-3 px-md-4">
-        <!-- Nội dung chính -->
-        <div class="col-md-8 mb-4">
-            <div class="bg-white rounded shadow p-4 h-100">
-                <h2 class="mb-4">@Model.CurrentConference.Title</h2>
-
+    <img src="@Url.Content(Model.CurrentConference.BannerImage)" class="img-fluid mb-4" width="100%" alt="Banner" />
+    <div class="container-fluid">
+        <div class="row px-3 px-md-4">
+            <!-- Nội dung chính -->
+            <div class="col-md-8">
+                <h1><strong>@Model.CurrentConference.Title</strong></h1>
+                <p class="conference-description">@Model.CurrentConference.Description</p>
                 @* Chỉ hiển thị Yêu thích & Đăng ký khi hội nghị chưa kết thúc *@
                 @if (User.Identity.IsAuthenticated && User.IsInRole("User") && Model.CurrentConference.EndDate > DateTime.Now)
                 {
@@ -98,26 +103,25 @@
                         {
                             <form asp-action="CancelRegistration" method="post">
                                 <input type="hidden" name="conferenceId" value="@Model.CurrentConference.Id" />
-                                <button type="submit" class="btn btn-danger">❌ Hủy đăng ký</button>
+                                <button type="submit" class="btn btn-danger">Hủy đăng ký</button>
                             </form>
                         }
                         else
                         {
                             <form asp-action="Register" method="post">
                                 <input type="hidden" name="conferenceId" value="@Model.CurrentConference.Id" />
-                                <button type="submit" class="btn btn-success">✅ Đăng ký tham gia</button>
+                                <button type="submit" class="btn btn-success">Đăng ký tham gia</button>
                             </form>
                         }
                     </div>
                 }
-
-                @* Nội dung chi tiết *@
                 @if (!string.IsNullOrEmpty(Model.CurrentConference.Content))
                 {
                     <div class="conference-content mb-4">
                         @Html.Raw(Model.CurrentConference.Content)
                     </div>
                 }
+                
 
                 <!-- Thông tin bổ sung -->
                 <div class="mt-4">
@@ -182,7 +186,7 @@
                     </div>
                     <hr />
                 }
-            </div> 
+            </div>
 
             <!-- Diễn giả hội nghị -->
             @if (Model.Speakers?.Any() == true)
