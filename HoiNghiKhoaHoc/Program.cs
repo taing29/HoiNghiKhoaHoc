@@ -4,6 +4,8 @@ using HoiNghiKhoaHoc.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Rotativa.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,16 +17,13 @@ builder.Services.AddRazorPages();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-//builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
-
-
 // 3. Cấu hình Identity với ApplicationUser
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddDefaultTokenProviders()
     .AddDefaultUI()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-// 4. Đăng ký Repository
+// 4. Đăng ký Repository và Service
 builder.Services.AddScoped<IConferenceRepository, EFConferenceRepository>();
 builder.Services.AddScoped<ICategoryRepository, EFCategoryRepository>();
 builder.Services.AddScoped<IUserRepository, EFUserRepository>();
@@ -32,12 +31,18 @@ builder.Services.AddScoped<IConferenceSpeakerRepository, EFConferenceSpeakerRepo
 builder.Services.AddScoped<IFavoriteRepository, EFFavoriteRepository>();
 builder.Services.AddScoped<IRegistrationRepository, EFRegistrationRepository>();
 builder.Services.AddScoped<ISpeakerRepository, EFSpeakerRepository>();
+
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddScoped<ICommentRepository, EFCommentRepository>();
 
+// 5. Cấu hình Rotativa (phải trước builder.Build())
+RotativaConfiguration.Setup(
+    builder.Environment.WebRootPath,   // IWebHostEnvironment có WebRootPath
+    "Rotativa"                       // thư mục con trong wwwroot chứa wkhtmltopdf
+);
 
-// 5. Middleware
+// 6. Middleware
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -48,14 +53,12 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-//thêm đường dẫn đến thư mục wwwroot
 app.UseWebSockets();
-
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// 6. Cấu hình định tuyến
+// 7. Định tuyến
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Conferences}/{action=Index}/{id?}");

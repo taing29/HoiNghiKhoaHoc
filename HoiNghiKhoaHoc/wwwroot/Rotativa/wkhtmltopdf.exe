@@ -1,0 +1,6 @@
+﻿namespace HoiNghiKhoaHoc.wwwroot.Rotativa
+{
+    public class wkhtmltopdf
+    {
+    }
+}

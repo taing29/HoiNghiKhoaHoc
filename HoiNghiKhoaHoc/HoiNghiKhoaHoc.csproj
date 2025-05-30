@@ -45,12 +45,14 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
     <PackageReference Include="MimeKit" Version="4.12.0" />
+    <PackageReference Include="Rotativa.AspNetCore" Version="1.4.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Views\Admin\" />
     <Folder Include="Migrations\" />
+	  <Folder Include="wwwroot\Image\" />
   </ItemGroup>
 
   <ItemGroup>

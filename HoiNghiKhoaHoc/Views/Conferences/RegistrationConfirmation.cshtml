@@ -15,5 +15,12 @@
     <hr />
     <p>💡 Vui lòng lưu lại hoặc in giấy xác nhận này khi tham dự hội nghị.</p>
 
-    <a asp-action="Index" class="btn btn-outline-primary mt-3">⬅ Quay lại danh sách</a>
+    <div class="d-flex justify-content-center gap-2 mt-3">
+        <a asp-action="Index" class="btn btn-outline-primary">⬅ Quay lại danh sách</a>
+        <a asp-action="DownloadConfirmation"
+           asp-route-conferenceId="@Model.Id"
+           class="btn btn-primary">
+            📥 Tải giấy xác nhận (PDF)
+        </a>
+    </div>
 </div>

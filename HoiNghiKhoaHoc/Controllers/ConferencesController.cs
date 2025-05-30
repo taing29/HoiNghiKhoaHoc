@@ -4,6 +4,7 @@ using HoiNghiKhoaHoc.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Rotativa.AspNetCore;  // thêm để sinh PDF
 using System.Net; 
 
 
@@ -195,43 +196,47 @@ namespace HoiNghiKhoaHoc.Controllers
                     RegisteredDate = DateTime.Now
                 });
             }
-            return RedirectToAction("Details", new { id = conferenceId });
+
+            return RedirectToAction("RegistrationConfirmation", new { conferenceId });
         }
 
-        //[Authorize(Roles = "User")]
-        //[HttpPost]
-        //public async Task<IActionResult> Registerr(int conferenceId)
-        //{
-        //    var userId = _userManager.GetUserId(User);
-        //    var existing = await _registrationRepository.GetRegistrationAsync(userId, conferenceId);
-        //    if (existing == null)
-        //    {
-        //        await _registrationRepository.RegisterAsync(new ConferenceRegistration
-        //        {
-        //            UserId = userId,
-        //            ConferenceId = conferenceId,
-        //            RegisteredDate = DateTime.Now
-        //        });
-        //    }
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> RegistrationConfirmation(int conferenceId)
+        {
+            var userId = _userManager.GetUserId(User);
+            var registration = await _registrationRepository.GetRegistrationAsync(userId, conferenceId);
+            if (registration == null)
+                return RedirectToAction("Details", new { id = conferenceId });
+
+            var conference = await _conferenceRepository.GetConferenceByIdAsync(conferenceId);
+            if (conference == null) return NotFound();
+
+            ViewBag.RegisteredDate = registration.RegisteredDate;
+            return View(conference); 
+        }
+
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> DownloadConfirmation(int conferenceId)
+        {
+            var userId = _userManager.GetUserId(User);
+            var registration = await _registrationRepository.GetRegistrationAsync(userId, conferenceId);
+            if (registration == null) return RedirectToAction("Details", new { id = conferenceId });
+
+            var conference = await _conferenceRepository.GetConferenceByIdAsync(conferenceId);
+            if (conference == null) return NotFound();
+
+            ViewBag.RegisteredDate = registration.RegisteredDate;
+            return new ViewAsPdf("RegistrationConfirmation", conference)
+            {
+                FileName = $"GiayXacNhan_{conferenceId}.pdf",
+                PageSize = Rotativa.AspNetCore.Options.Size.A4,
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait
+            };
+        }
 
 
-        //    return RedirectToAction("RegistrationConfirmation", new { conferenceId });
-        //}
-        //[Authorize(Roles = "User")]
-        //public async Task<IActionResult> RegistrationConfirmation(int conferenceId)
-        //{
-        //    var userId = _userManager.GetUserId(User);
-        //    var registration = await _registrationRepository.GetRegistrationAsync(userId, conferenceId);
 
-        //    if (registration == null)
-        //        return RedirectToAction("Details", new { id = conferenceId }); 
 
-        //    var conference = await _conferenceRepo.GetConferenceByIdAsync(conferenceId);
-        //    if (conference == null) return NotFound();
-
-        //    ViewBag.RegisteredDate = registration.RegisteredDate;
-        //    return View(conference); 
-        //}
 
         [Authorize(Roles = "User")]
         [HttpPost]

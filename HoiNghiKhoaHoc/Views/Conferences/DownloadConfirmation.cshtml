@@ -1,0 +1,28 @@
+﻿
+@{
+    ViewData["Title"] = "DownloadConfirmation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card p-4">
+    <h3 class="text-center">Giấy xác nhận đăng ký Hội nghị</h3>
+    <hr />
+    <!-- Thông tin giấy -->
+    <p><strong>Hội nghị:</strong> @Model.CurrentConference.Title</p>
+    <p><strong>Người đăng ký:</strong> @User.Identity.Name</p>
+    <p><strong>Ngày đăng ký:</strong> @ViewBag.RegisteredDate:dd/MM/yyyy</p>
+    <p><strong>Địa điểm:</strong> @Model.CurrentConference.Location</p>
+
+    <div class="mt-4 d-flex justify-content-center gap-2">
+        <button onclick="window.print()" class="btn btn-primary">
+            In giấy
+        </button>
+
+        <a asp-action="DownloadConfirmation"
+           asp-route-conferenceId="@Model.CurrentConference.Id"
+           class="btn btn-secondary">
+            Tải giấy về (PDF)
+        </a>
+    </div>
+</div>
+
