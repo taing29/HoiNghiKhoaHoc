@@ -282,5 +282,6 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
             TempData["SuccessMessage"] = "Cập nhật trạng thái hội nghị thành công.";
             return RedirectToAction(nameof(Index));
         }
+
     }
 }
