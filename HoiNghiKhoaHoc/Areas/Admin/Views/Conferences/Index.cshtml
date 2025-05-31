@@ -35,6 +35,10 @@
                             <input type="hidden" name="id" value="@item.Id" />
                             <button type="submit" class="btn btn-outline-success btn-sm action-btn text-dark">Duyệt</button>
                         </form>
+                        <form asp-controller="Conferences" asp-action="Comment" asp-area="Admin" method="post">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" class="btn btn-outline-info btn-sm action-btn text-dark">Bình luận</button>
+                        </form>
                         <form asp-controller="Conferences" asp-action="Update" asp-route-id="@item.Id" asp-area="Admin" method="get">
                             <input type="hidden" name="id" value="@item.Id" />
                             <button type="submit" class="btn btn-outline-primary btn-sm action-btn text-dark">Sửa</button>

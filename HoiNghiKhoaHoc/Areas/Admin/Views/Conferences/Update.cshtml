@@ -8,88 +8,177 @@
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
 
-<h2>Cập Nhật Hội Nghị</h2>
+<div class="container mt-4">
+    <h2 class="mb-4 text-primary">Cập Nhật Hội Nghị</h2>
 
-<form asp-action="Update" method="post" enctype="multipart/form-data">
-    <input type="hidden" asp-for="Id" />
+    <form asp-action="Update" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Id" />
 
-    <div class="form-group">
-        <label for="speakerCount">Chọn số lượng diễn giả:</label>
-        <select id="speakerCount" class="form-control">
-            <option value="0">-- Chọn --</option>
-            @for (int i = 1; i <= 10; i++)
-            {
-                <option value="@i">@i</option>
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <span>Chọn Diễn Giả</span>
+                <a asp-controller="Speakers" asp-action="Create" asp-area="Admin" class="btn btn-warning btn-sm">+ Thêm diễn giả</a>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="speakerCount" class="form-label">Số lượng diễn giả:</label>
+                    <select id="speakerCount" class="form-select w-auto d-inline-block">
+                        <option value="0">-- Chọn --</option>
+                        @for (int i = 1; i <= 10; i++)
+                        {
+                            <option value="@i">@i</option>
+                        }
+                    </select>
+                </div>
+                <div id="speakersContainer"></div>
+
+                @if (ViewData.ModelState["SpeakerIds"]?.Errors.Count > 0)
+                {
+                    <span class="text-danger">@ViewData.ModelState["SpeakerIds"].Errors[0].ErrorMessage</span>
+                }
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header bg-secondary text-white">
+                Thông tin cơ bản
+            </div>
+            <div class="card-body row g-3">
+                <div class="col-md-6">
+                    <label asp-for="Location" class="form-label">Địa điểm</label>
+                    <input asp-for="Location" class="form-control" />
+                    <span asp-validation-for="Location" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="CategoryId" class="form-label">Danh mục</label>
+                    <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select"></select>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="StartDate" class="form-label">Ngày bắt đầu</label>
+                    <input asp-for="StartDate" type="datetime-local" class="form-control" />
+                    <span asp-validation-for="StartDate" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="EndDate" class="form-label">Ngày kết thúc</label>
+                    <input asp-for="EndDate" type="datetime-local" class="form-control" />
+                    <span asp-validation-for="EndDate" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="BannerImage" class="form-label">Ảnh bìa</label>
+                    <input type="file" id="imageInput" asp-for="BannerImage" name="imageFile" class="form-control" />
+                    <span class="form-text">Nếu không chọn ảnh mới, ảnh cũ sẽ được giữ nguyên.</span>
+                    @if (!string.IsNullOrEmpty(Model.BannerImage))
+                    {
+                        <div class="mt-3">
+                            <label class="form-label fw-semibold">Ảnh hiện tại:</label><br />
+                            <img id="previewImage" src="@Model.BannerImage" alt="Ảnh diễn giả" class="img-thumbnail" style="max-height: 150px;" />
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="mt-3 d-none" id="previewContainer">
+                            <label class="form-label fw-semibold">Ảnh xem trước:</label><br />
+                            <img id="previewImage" class="img-thumbnail" style="max-height: 150px;" />
+                        </div>
+                    }
+                </div>
+
+                <div class="col-12">
+                    <div class="form-check mt-2">
+                        <input asp-for="IsInternational" class="form-check-input" type="checkbox" />
+                        <label asp-for="IsInternational" class="form-check-label">Hội nghị quốc tế</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-check mt-2">
+                        <input asp-for="IsPaid" class="form-check-input" type="checkbox" />
+                        <label asp-for="IsPaid" class="form-check-label">Hội nghị có phí</label>
+                    </div>
+                </div>
+                <div class="col-md-6 mt-2" id="priceField" style="display: @(Model.IsPaid ? "block" : "none")">
+                    <label asp-for="Price" class="form-label">Giá vé (VNĐ)</label>
+                    <input asp-for="Price" class="form-control" type="number" step="1000" min="0" />
+                    <span asp-validation-for="Price" class="text-danger small"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                Mô tả và nội dung
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label">Tiêu đề</label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger small"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label">Mô tả</label>
+                    <input asp-for="Description" class="form-control" />
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Content" class="form-label">Nội dung</label>
+                    <textarea asp-for="Content" id="Content" class="form-control" rows="6"></textarea>
+                    <span asp-validation-for="Content" class="text-danger small"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Cập nhật hội nghị</button>
+            <a asp-controller="Conferences" asp-action="Index" asp-area="Admin" class="btn btn-secondary">Trở về</a>
+        </div>
+    </form>
+</div>
+
+
+
+<script>
+    document.getElementById('imageInput')?.addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        const previewImage = document.getElementById('previewImage');
+        const previewContainer = document.getElementById('previewContainer');
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                previewImage.src = e.target.result;
+                previewImage.classList.remove('d-none');
+                if (previewContainer) {
+                    previewContainer.classList.remove('d-none');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const isPaidCheckbox = document.querySelector("input[name='IsPaid']");
+        const priceField = document.getElementById("priceField");
+
+        function togglePriceField() {
+            if (isPaidCheckbox.checked) {
+                priceField.style.display = "block";
+            } else {
+                priceField.style.display = "none";
+                // Nếu không có phí, xóa giá trị nhập
+                const priceInput = priceField.querySelector("input[name='Price']");
+                if (priceInput) priceInput.value = '';
             }
-        </select>
-    </div>
-    <div id="speakersContainer"></div>
-
-    <div class="form-group">
-        <label asp-for="BannerImage" class="form-label">Ảnh chủ đề</label>
-        <input type="file" name="imageFile" class="form-control" />
-        <input type="hidden" name="OldBannerImage" value="@Model.BannerImage" />
-        @if (!string.IsNullOrEmpty(Model.BannerImage))
-        {
-            <div class="mt-2">
-                <label class="form-label fw-semibold">Ảnh hiện tại:</label>
-                <img id="previewImage" src="@Model.BannerImage" alt="Ảnh hội nghị" class="img-thumbnail" style="max-height: 150px;" />
-            </div>
         }
-        else
-        {
-            <div class="mt-2 d-none" id="previewContainer">
-                <label class="form-label fw-semibold">Ảnh xem trước:</label>
-                <img id="previewImage" class="img-thumbnail" style="max-height: 150px;" />
-            </div>
-        }
-    </div>
-    <input type="hidden" name="OldBannerImage" value="@Model.BannerImage" />
 
-    <div class="form-group">
-        <label asp-for="Title">Tiêu đề</label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title" class="text-danger"></span>
-    </div>
+        isPaidCheckbox.addEventListener("change", togglePriceField);
 
-    <div class="form-group">
-        <label asp-for="Description">Mô tả</label>
-        <input asp-for="Description" class="form-control" />
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Content">Nội dung</label>
-        <textarea asp-for="Content" id="Content" class="form-control"></textarea>
-        <span asp-validation-for="Content" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="StartDate">Ngày bắt đầu</label>
-        <input asp-for="StartDate" class="form-control" type="datetime-local" />
-        <span asp-validation-for="StartDate" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="EndDate">Ngày kết thúc</label>
-        <input asp-for="EndDate" class="form-control" type="datetime-local" />
-        <span asp-validation-for="EndDate" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="CategoryId">Danh mục</label>
-        <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-control"></select>
-    </div>
-
-    <div class="form-group form-check">
-        <input asp-for="IsInternational" class="form-check-input" type="checkbox" />
-        <label asp-for="IsInternational" class="form-check-label">Hội nghị quốc tế</label>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
-    <a asp-controller="Conferences" asp-action="Index" asp-area="Admin" class="btn btn-success">Trở về</a>
-</form>
-
+        // Gọi khi trang load (để hỗ trợ khi reload do ModelState invalid)
+        togglePriceField();
+    });
+</script>
 <!-- Kích hoạt CKEditor -->
 <script>
     class MyUploadAdapter {

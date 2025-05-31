@@ -10,7 +10,7 @@
 
 <h1 class="mb-4">Trang thống kê</h1>
 
-<div class="row mb-4">
+@* <div class="row mb-4">
     <div class="col-md-4">
         <div class="card bg-light shadow-sm">
             <div class="card-body text-center">
@@ -19,51 +19,41 @@
             </div>
         </div>
     </div>
-</div>
-
-@* <div class="row">
-    <div class="col-md-6">
-        <h4>Top 3 hội nghị có nhiều lượt đăng ký nhất</h4>
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Tiêu đề hội nghị</th>
-                    <th>Lượt đăng ký</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.Top5Registered)
-                {
-                    <tr>
-                        <td>@item.Conference.Title</td>
-                        <td>@item.Count</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-
-    <div class="col-md-6">
-        <h4>Top 3 hội nghị được yêu thích nhất</h4>
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Tiêu đề hội nghị</th>
-                    <th>Lượt yêu thích</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.Top5Favorited)
-                {
-                    <tr>
-                        <td>@item.Conference.Title</td>
-                        <td>@item.Count</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
 </div> *@
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-light shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="card-title">Tổng số hội nghị</h6>
+                <h3>@Model.TotalConferences</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="card-title">Hội nghị sắp diễn ra</h6>
+                <h3>@Model.UpcomingConferences</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-secondary text-white shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="card-title">Hội nghị đã diễn ra</h6>
+                <h3>@Model.PastConferences</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-primary text-white shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="card-title">Hội nghị quốc tế</h6>
+                <h3>@Model.InternationalConferences</h3>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="row mt-5">
     <div class="col-md-6">
@@ -112,8 +102,8 @@
         scales: {
             x: {
                 ticks: {
-                    maxRotation: 30,
-                    minRotation: 30,
+                    maxRotation: 0,
+                    minRotation: 0,
                     autoSkip: false
                 }
             },

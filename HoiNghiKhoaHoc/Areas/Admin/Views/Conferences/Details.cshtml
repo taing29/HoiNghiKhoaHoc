@@ -40,7 +40,8 @@
                     <th>Họ tên</th>
                     <th>Email</th>
                     <th>Ngày đăng ký</th>
-                    <th>Trạng thái</th>
+                    <th>Trạng thái duyệt</th>
+                    <th>Trạng thái thanh toán</th>
                     <th class="text-center">Hành động</th>
                 </tr>
             </thead>
@@ -61,6 +62,16 @@
                                 else
                                 {
                                     <span class="badge bg-warning text-dark">Chờ duyệt</span>
+                                }
+                            </td>
+                            <td>
+                                @if (reg.IsPaid)
+                                {
+                                    <span class="badge bg-success">Đã thanh toán</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">Chưa thanh toán</span>
                                 }
                             </td>
                             <td class="text-center">

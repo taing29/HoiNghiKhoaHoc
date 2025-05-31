@@ -17,6 +17,9 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
         public async Task<IActionResult> Index()
         {
             var totalConferences = await _context.Conferences.CountAsync();
+            var upcomingConferences = await _context.Conferences.CountAsync(c => c.StartDate > DateTime.Now);
+            var pastConferences = await _context.Conferences.CountAsync(c => c.EndDate < DateTime.Now);
+            var internationalConferences = await _context.Conferences.CountAsync(c => c.IsInternational);
 
             var topFavoritedConferences = await _context.Favorites
                 .GroupBy(f => f.ConferenceId)
@@ -59,6 +62,9 @@ namespace HoiNghiKhoaHoc.Areas.Admin.Controllers
             var vm = new DashboardViewModel
             {
                 TotalConferences = totalConferences,
+                UpcomingConferences = upcomingConferences,
+                PastConferences = pastConferences,
+                InternationalConferences = internationalConferences,
                 Top5Registered = topRegisteredConferences,
                 Top5Favorited = topFavoritedConferences
             };
