@@ -26,7 +26,7 @@
                 <div class="col-sm-6 col-md-4 col-lg-4 d-flex">
                     <div class="conference-card w-100 d-flex flex-column p-0 shadow-sm rounded">
                         <div class="card-image-wrapper">
-                            <img src="@Url.Content(item.BannerImage)" class="conference-image" alt="@item.Title" />
+                            <img src="@Url.Content(item.BannerImage)" class="conference-image w-100" style=" height: 270px; object-fit: fill" " alt="@item.Title" />
                             
                         </div>
                         <div class="p-3 flex-grow-1 d-flex flex-column">
@@ -34,7 +34,7 @@
                             <small class="text-muted">
                                 @item.StartDate.ToString("dd/MM/yyyy HH:mm") - @item.EndDate.ToString("dd/MM/yyyy HH:mm")
                             </small>
-                            <p class="conference-description text-truncate mt-2 mb-3">@item.Description</p>
+                            <p class="conference-description mt-2 mb-3 text-muted" style="font-size:14px" >@item.Description</p>
                                 <div class="mt-auto d-flex gap-2">
                                 <form asp-controller="Conferences"
                                       asp-action="CancelRegistration"
