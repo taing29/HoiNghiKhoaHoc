@@ -28,7 +28,7 @@
             <div class="col-sm-6 col-md-4 col-lg-4 d-flex ">
                 <div class="conference-card w-100 d-flex flex-column p-0">
                     <div class="card-image-wrapper">
-                        <img src="@Url.Content(item.BannerImage)" class="conference-image" alt="Conference Image" />
+                        <img src="@Url.Content(item.BannerImage)" class="conference-image w-100" style="height: 270px; object-fit: fill" alt="Conference Image" />
                     </div>
                     <div class="p-3 flex-grow-1 d-flex flex-column">
                         <h5 class="conference-title">@item.Title</h5>
@@ -36,8 +36,7 @@
                             @item.StartDate.ToString("dd/MM/yyyy hh:mm tt") - @item.EndDate.ToString("dd/MM/yyyy hh:mm tt")
                         </p>
 
-                        <p class="conference-description text-muted">@item.Description</p>
-                        <p class="conference-info"><i class="bi bi-geo-alt"></i> @item.Location</p>
+                        <p class="conference-description text-muted mt-2 mb-3" style="font-size:14px">@item.Description</p>
                         <div class="mt-auto d-flex justify-content-between align-items-center">
                             @if (isFavorite)
                             {

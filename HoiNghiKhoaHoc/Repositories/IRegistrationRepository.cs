@@ -9,6 +9,8 @@ namespace HoiNghiKhoaHoc.Repositories
         Task<ConferenceRegistration> GetRegistrationAsync(string userId, int conferenceId);
         Task RegisterAsync(ConferenceRegistration registration);
         Task CancelAsync(int registrationId);
-        Task<IEnumerable<ConferenceRegistration>> GetRegistrationsByUserIdAsync(string userId);
+		Task UpdateAsync(ConferenceRegistration registration);
+
+		Task<IEnumerable<ConferenceRegistration>> GetRegistrationsByUserIdAsync(string userId);
     }
 }

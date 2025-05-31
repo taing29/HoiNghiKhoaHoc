@@ -76,7 +76,6 @@ namespace HoiNghiKhoaHoc.Areas.Identity.Pages.Account
 					Input.Email,
 					"Reset Password",
 					$"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-				//_logger.LogInformation("Send reset link to: {Email} - Link: {Link}", Input.Email, callbackUrl);
 				return RedirectToPage("./ForgotPasswordConfirmation");
 			}
 

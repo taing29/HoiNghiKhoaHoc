@@ -35,11 +35,7 @@
                                 @item.StartDate.ToString("dd/MM/yyyy HH:mm") - @item.EndDate.ToString("dd/MM/yyyy HH:mm")
                             </small>
                             <p class="conference-description text-truncate mt-2 mb-3">@item.Description</p>
-                            <p class="conference-info mb-3">
-                                <i class="bi bi-geo-alt-fill"></i> @item.Location
-                            </p>
-
-                            <div class="mt-auto d-flex gap-2">
+                                <div class="mt-auto d-flex gap-2">
                                 <form asp-controller="Conferences"
                                       asp-action="CancelRegistration"
                                       method="post"

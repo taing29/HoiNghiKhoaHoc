@@ -11,5 +11,7 @@ namespace HoiNghiKhoaHoc.Models
         public string? Age { get; set; }
         public string? PhoneNumber { get; set; }
         public string? AvatarPath { get; set; }
+        [Required]
+        public string Email { get; set; }
     }
 }

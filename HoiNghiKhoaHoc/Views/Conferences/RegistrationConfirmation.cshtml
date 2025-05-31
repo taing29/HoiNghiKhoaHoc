@@ -3,24 +3,41 @@
 @{
     ViewData["Title"] = "Giấy xác nhận đăng ký";
     var date = (DateTime?)ViewBag.RegisteredDate ?? DateTime.Now;
+    bool isApproved = ViewBag.IsApproved;
 }
 
-<div class="container mt-5 text-center border p-4 shadow rounded" style="max-width: 650px;">
-    <h3 class="text-success mb-4">🎉 BẠN ĐÃ ĐĂNG KÝ THÀNH CÔNG</h3>
+<div class="container mt-5 border p-4 shadow rounded" style="max-width: 650px;">
+    @if (ViewBag.IsApproved)
+{
+    <h3 class="text-success mb-4 text-center">BẠN ĐÃ ĐĂNG KÝ THÀNH CÔNG</h3>
 
     <p><strong>Hội nghị:</strong> @Model.Title</p>
-    <p><strong>Thời gian:</strong> @Model.StartDate:dd/MM/yyyy - @Model.EndDate:dd/MM/yyyy</p>
+    <p><strong>Thời gian:</strong> @Model.StartDate.ToString("dd/MM/yyyy HH:mm tt") - @Model.EndDate.ToString("dd/MM/yyyy HH:mm tt")</p>
     <p><strong>Địa điểm:</strong> @Model.Location</p>
-    <p><strong>Ngày đăng ký:</strong> @date.ToString("dd/MM/yyyy HH:mm")</p>
-    <hr />
-    <p>💡 Vui lòng lưu lại hoặc in giấy xác nhận này khi tham dự hội nghị.</p>
+    <p><strong>Ngày đăng ký:</strong> @ViewBag.RegisteredDate.ToString("dd/MM/yyyy")</p>
+    
+    <h5>Thông tin người đăng ký:</h5>
+    <p><strong>Họ tên:</strong> @ViewBag.UserFullName</p>
+    <p><strong>Email:</strong> @ViewBag.UserEmail</p>
+    <p><strong>Số điện thoại:</strong> @ViewBag.UserPhoneNumber</p>
 
+    <hr />
+    <p class="text-center">Vui lòng lưu lại hoặc in giấy xác nhận này khi tham dự hội nghị.</p>
     <div class="d-flex justify-content-center gap-2 mt-3">
-        <a asp-action="Index" class="btn btn-outline-primary">⬅ Quay lại danh sách</a>
-        <a asp-action="DownloadConfirmation"
-           asp-route-conferenceId="@Model.Id"
-           class="btn btn-primary">
-            📥 Tải giấy xác nhận (PDF)
+        <a asp-action="Index" class="btn btn-outline-primary">Quay lại danh sách</a>
+        <a asp-action="DownloadConfirmation" asp-route-conferenceId="@Model.Id" class="btn btn-primary">
+            Tải giấy xác nhận (PDF)
         </a>
     </div>
+}
+else
+{
+    <h3 class="text-warning mb-4 text-center">Chờ admin duyệt đăng ký</h3>
+    <p>Đăng ký của bạn đang được chờ xét duyệt. Vui lòng quay lại sau hoặc liên hệ ban tổ chức để biết thêm chi tiết.</p>
+    <div class="d-flex justify-content-center gap-2 mt-3">
+        <a asp-action="Index" class="btn btn-outline-primary">Quay lại danh sách</a>
+    </div>
+}
+
 </div>
+    
