@@ -1,0 +1,58 @@
+﻿@using HoiNghiKhoaHoc.Models.ViewModels
+@model Conference
+@{
+    var regInfo = ViewBag.Registration as ConferenceRegistrationView;
+}
+
+<div class="card shadow rounded-4 mt-4" style="max-width: 700px; margin: auto;">
+    <div class="card-header bg-primary text-white rounded-top-4">
+        <h4 class="mb-0 text-center">Thanh toán</h4>
+    </div>
+    <div class="card-body p-4">
+        <h5 class="text-secondary mb-3">Thông tin hội nghị:</h5>
+        <ul class="list-group list-group-flush mb-4">
+            <li class="list-group-item">
+                <h2>@Model.Title</h2>
+            </li>
+            <li class="list-group-item">
+                <strong>Thời gian:</strong> @Model.StartDate.ToString("dd/MM/yyyy")
+            </li>
+            <li class="list-group-item">
+                <strong>Địa điểm:</strong> @Model.Location
+            </li>
+            <li class="list-group-item">
+                <strong>Phí tham dự:</strong> @(Model.Price.HasValue ? $"{Model.Price:N0} VND" : "Miễn phí")
+            </li>
+        </ul>
+
+        @if (regInfo != null)
+        {
+            <h5 class="text-secondary mb-3">Thông tin người đăng ký:</h5>
+            <ul class="list-group list-group-flush mb-4">
+                <li class="list-group-item"><strong>Họ tên:</strong> @regInfo.FullName</li>
+                <li class="list-group-item"><strong>Email:</strong> @regInfo.Email</li>
+                <li class="list-group-item"><strong>Số điện thoại:</strong> @regInfo.PhoneNumber</li>
+            </ul>
+        }
+        else
+        {
+            <div class="alert alert-warning">Không tìm thấy thông tin người đăng ký.</div>
+        }
+        <div id="bankTransferInfo" class="alert alert-info">
+            <p><strong>Thông tin chuyển khoản:</strong></p>
+            <ul>
+                <li>Ngân hàng: Vietcombank</li>
+                <li>Số tài khoản: 0123456789</li>
+                <li>Chủ tài khoản: Công ty ABC</li>
+                <li>Nội dung chuyển khoản: Thanh toán hội nghị @Model.Title</li>
+            </ul>
+        </div>
+        <form asp-action="ConfirmPayment" method="post" class="mt-4">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="conferenceId" value="@Model.Id" />
+            <button type="submit" class="btn btn-success w-100 py-2 fs-5 rounded-pill">
+                💳 Xác nhận thanh toán
+            </button>
+        </form>
+    </div>
+</div>

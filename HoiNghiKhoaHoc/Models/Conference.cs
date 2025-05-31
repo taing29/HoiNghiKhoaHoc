@@ -19,9 +19,12 @@ namespace HoiNghiKhoaHoc.Models
         public bool IsActive { get; set; } = true;  
         ////để phân biệt trong nước hay quốc tế
         public bool IsInternational { get; set; }   
-        
         public DateTime CreatedDate { get; set; } = DateTime.Now;
-        public int CategoryId { get; set; }
+        //phân biệt hội nghi miễn phí và có trả phí
+        public bool IsPaid { get; set; } = false;
+        //Phí tham gia hội nghị
+		public decimal? Price { get; set; }
+		public int CategoryId { get; set; }
 		public Category? Category { get; set; }
 	}
 }

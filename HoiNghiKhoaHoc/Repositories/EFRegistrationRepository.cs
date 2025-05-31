@@ -44,5 +44,11 @@ namespace HoiNghiKhoaHoc.Repositories
                 .Where(r => r.UserId == userId)
                 .ToListAsync();
         }
-    }
+
+		public async Task UpdateAsync(ConferenceRegistration registration)
+		{
+            _context.ConferenceRegistrations.Update(registration);
+            await _context.SaveChangesAsync();
+		}
+	}
 }

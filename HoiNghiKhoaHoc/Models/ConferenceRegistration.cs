@@ -19,8 +19,12 @@ namespace HoiNghiKhoaHoc.Models
 
         [ForeignKey(nameof(UserId))]
         public virtual ApplicationUser User { get; set; }
+        //kiểm tra thanh toán khi đăng ký
+        public bool IsPaid { get; set; } = false;
+		public DateTime? PaidDate { get; set; }
 
-        [ForeignKey(nameof(ConferenceId))]
+		[ForeignKey(nameof(ConferenceId))]
         public virtual Conference Conference { get; set; } 
+
     }
 }
