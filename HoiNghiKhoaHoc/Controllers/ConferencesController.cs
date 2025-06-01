@@ -435,7 +435,7 @@ namespace HoiNghiKhoaHoc.Controllers
 				</html>
 				";
 
-			//await _emailSender.SendEmailAsync(
+				//await _emailSender.SendEmailAsync(
 			//	user.Email,
 			//	"Xác nhận đăng ký hội nghị",
 			//	emailBody
