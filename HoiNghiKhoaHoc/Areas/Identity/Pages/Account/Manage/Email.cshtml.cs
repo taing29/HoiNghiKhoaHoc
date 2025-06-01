@@ -129,17 +129,17 @@ namespace HoiNghiKhoaHoc.Areas.Identity.Pages.Account.Manage
                     protocol: Request.Scheme);
 
 				await _emailSender.SendEmailAsync(
-	email,  // email cũ, nơi gửi xác nhận
-	"Xác nhận thay đổi địa chỉ email",
-	$@"
-        Xin chào,<br/><br/>
-        Bạn đã yêu cầu thay đổi địa chỉ email tài khoản sang: <strong>{Input.NewEmail}</strong>.<br/>
-        Vui lòng xác nhận thay đổi này bằng cách nhấn vào liên kết bên dưới:<br/>
-        <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Xác nhận thay đổi email</a><br/><br/>
-        Nếu bạn không yêu cầu việc này, vui lòng bỏ qua email này.<br/><br/>
-        Cảm ơn bạn!
-    "
-);
+	            email,  // email cũ, nơi gửi xác nhận
+	            "Xác nhận thay đổi địa chỉ email",
+	            $@"
+                    Xin chào,<br/><br/>
+                    Bạn đã yêu cầu thay đổi địa chỉ email tài khoản sang: <strong>{Input.NewEmail}</strong>.<br/>
+                    Vui lòng xác nhận thay đổi này bằng cách nhấn vào liên kết bên dưới:<br/>
+                    <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Xác nhận thay đổi email</a><br/><br/>
+                    Nếu bạn không yêu cầu việc này, vui lòng bỏ qua email này.<br/><br/>
+                    Cảm ơn bạn!
+                "
+                );
 				
 
 				StatusMessage = "Xác nhận thay đổi email đã được gửi. Vui lòng kiểm tra email";
@@ -173,11 +173,11 @@ namespace HoiNghiKhoaHoc.Areas.Identity.Pages.Account.Manage
                 pageHandler: null,
                 values: new { area = "Identity", userId = userId, code = code },
                 protocol: Request.Scheme);
-			await _emailSender.SendEmailAsync(
-		email,
-		"Xác nhận địa chỉ email của bạn",
-		$"Xin chào,<br/><br/>Vui lòng xác nhận địa chỉ email của bạn bằng cách nhấn vào liên kết bên dưới:<br/><a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Xác nhận email</a><br/><br/>Nếu bạn không yêu cầu việc này, vui lòng bỏ qua email này.<br/><br/>Cảm ơn bạn!"
-);
+			    await _emailSender.SendEmailAsync(
+		        email,
+		        "Xác nhận địa chỉ email của bạn",
+		        $"Xin chào,<br/><br/>Vui lòng xác nhận địa chỉ email của bạn bằng cách nhấn vào liên kết bên dưới:<br/><a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Xác nhận email</a><br/><br/>Nếu bạn không yêu cầu việc này, vui lòng bỏ qua email này.<br/><br/>Cảm ơn bạn!"
+                );
 
 
 
