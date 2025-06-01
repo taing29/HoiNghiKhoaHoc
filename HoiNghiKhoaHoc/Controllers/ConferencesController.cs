@@ -356,92 +356,6 @@ namespace HoiNghiKhoaHoc.Controllers
 				existing.PaidDate = DateTime.UtcNow;
 				await _registrationRepository.UpdateAsync(existing);
 			}
-			var user = await _userManager.GetUserAsync(User);
-			var conference = await _conferenceRepository.GetConferenceByIdAsync(conferenceId);
-			var emailBody = $@"
-				<!DOCTYPE html>
-				<html lang=""vi"">
-				<head>
-				  <meta charset=""UTF-8"">
-				  <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
-				  <style>
-					body {{
-					  font-family: Arial, sans-serif;
-					  background-color: #f6f9fc;
-					  margin: 0; padding: 0;
-					  color: #333;
-					}}
-					.container {{
-					  max-width: 600px;
-					  margin: 20px auto;
-					  background: #fff;
-					  border-radius: 8px;
-					  overflow: hidden;
-					  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-					}}
-					.banner {{
-					  width: 100%;
-					  height: 150px;
-					  background-image: url('https://yourdomain.com/images/conference-banner.jpg');
-					  background-size: cover;
-					  background-position: center;
-					}}
-					.content {{
-					  padding: 20px 30px;
-					}}
-					h2 {{
-					  color: #2c3e50;
-					  margin-top: 0;
-					}}
-					p {{
-					  font-size: 16px;
-					  line-height: 1.5;
-					  margin: 10px 0;
-					}}
-					strong {{
-					  color: #2980b9;
-					}}
-					hr {{
-					  border: none;
-					  border-top: 1px solid #eee;
-					  margin: 20px 0;
-					}}
-					.footer {{
-					  font-size: 14px;
-					  color: #999;
-					  text-align: center;
-					  padding: 10px 20px;
-					  background: #f1f1f1;
-					}}
-				  </style>
-				</head>
-				<body>
-				  <div class=""container"">
-					<div class=""banner""></div>
-					<div class=""content"">
-					  <h2>Xin chào {user.FullName},</h2>
-					  <p>Bạn đã đăng ký thành công hội nghị:</p>
-					  <p><strong>{conference.Title}</strong></p>
-					  <p><strong>Thời gian:</strong> {conference.StartDate:dd/MM/yyyy} đến {conference.EndDate:dd/MM/yyyy}</p>
-					  <p><strong>Địa điểm:</strong> {conference.Location}</p>
-					  <hr>
-					  <p>Cảm ơn bạn đã tham gia và hy vọng sẽ gặp bạn tại hội nghị!</p>
-					</div>
-					<div class=""footer"">
-					  &copy; {DateTime.Now.Year} Hội nghị khoa học - All rights reserved.
-					</div>
-				  </div>
-				</body>
-				</html>
-				";
-
-				//await _emailSender.SendEmailAsync(
-			//	user.Email,
-			//	"Xác nhận đăng ký hội nghị",
-			//	emailBody
-			//);
-
-
 			return RedirectToAction("RegistrationConfirmation", new { conferenceId });
 		}
 
@@ -451,9 +365,13 @@ namespace HoiNghiKhoaHoc.Controllers
 		[HttpGet]
 		public IActionResult RegisterInfo(int conferenceId)
 		{
+			var email = User.Identity?.IsAuthenticated == true
+				? _userManager.GetUserAsync(User).Result?.Email ?? ""
+				: "";
 			var model = new ConferenceRegistrationView
 			{
-				ConferenceId = conferenceId
+				ConferenceId = conferenceId,
+				Email = email
 			};
 			return View(model);
 		}

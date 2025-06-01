@@ -36,6 +36,11 @@
 					Body = htmlMessage,
 					IsBodyHtml = true,
 				};
+				if (string.IsNullOrWhiteSpace(email))
+				{
+					throw new ArgumentException("Địa chỉ email nhận không được để trống.", nameof(email));
+				}
+
 				mailMessage.To.Add(email);
 
 				await client.SendMailAsync(mailMessage);
