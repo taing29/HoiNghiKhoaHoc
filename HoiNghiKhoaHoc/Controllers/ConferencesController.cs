@@ -244,31 +244,71 @@ namespace HoiNghiKhoaHoc.Controllers
 			return View(conference);
 		}
 
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> DownloadConfirmation(int conferenceId)
+        {
+            var userId = _userManager.GetUserId(User);
+            var registration = await _registrationRepository.GetRegistrationAsync(userId, conferenceId);
+            if (registration == null)
+                return RedirectToAction("Details", new { id = conferenceId });
 
-		[Authorize(Roles = "User")]
-		public async Task<IActionResult> DownloadConfirmation(int conferenceId)
-		{
-			var userId = _userManager.GetUserId(User);
-			var registration = await _registrationRepository.GetRegistrationAsync(userId, conferenceId);
-			if (registration == null) return RedirectToAction("Details", new { id = conferenceId });
+            var conference = await _conferenceRepository.GetConferenceByIdAsync(conferenceId);
+            if (conference == null) return NotFound();
 
-			var conference = await _conferenceRepository.GetConferenceByIdAsync(conferenceId);
-			if (conference == null) return NotFound();
+            var user = await _userManager.FindByIdAsync(userId);
 
-			ViewBag.RegisteredDate = registration.RegisteredDate;
-			return new ViewAsPdf("RegistrationConfirmation", conference)
-			{
-				FileName = $"GiayXacNhan_{conferenceId}.pdf",
-				PageSize = Rotativa.AspNetCore.Options.Size.A4,
-				PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait
-			};
-		}
+            var vm = new ConferenceRegistrationView
+            {
+                ConferenceId = conferenceId,
+                FullName = user?.FullName ,
+                Email = user?.Email ,
+                PhoneNumber = user?.PhoneNumber,
+                Conference = conference
+            };
+            ViewBag.RegisteredDate = registration.RegisteredDate;
+            return View("DownloadConfirmation", vm);
+        }
+
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> DownloadPdf(int conferenceId)
+        {
+            var userId = _userManager.GetUserId(User);
+            var registration = await _registrationRepository
+                                    .GetRegistrationAsync(userId, conferenceId);
+            if (registration == null)
+                return RedirectToAction("Details", new { id = conferenceId });
+
+            var conference = await _conferenceRepository
+                                    .GetConferenceByIdAsync(conferenceId);
+            if (conference == null) return NotFound();
+
+            // Gán lại ViewBag.RegisteredDate để view có dữ liệu
+            ViewBag.RegisteredDate = registration.RegisteredDate;
+
+            var user = await _userManager.FindByIdAsync(userId);
+
+            var vm = new ConferenceRegistrationView
+            {
+                ConferenceId = conferenceId,
+                FullName = user?.FullName,
+                Email = user?.Email,
+                PhoneNumber = user?.PhoneNumber,
+                Conference = conference
+            };
+
+            // Đánh dấu PDF (nếu bạn đang dùng flag để ẩn footer)
+            ViewBag.IsPdf = true;
+
+            return new ViewAsPdf("DownloadConfirmation", vm)
+            {
+                FileName = $"GiayXacNhan_{conferenceId}.pdf",
+                PageSize = Rotativa.AspNetCore.Options.Size.A4,
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait
+            };
+        }
 
 
-
-
-
-		[Authorize(Roles = "User")]
+        [Authorize(Roles = "User")]
 		[HttpPost]
 		public async Task<IActionResult> CancelRegistration(int conferenceId)
 		{
@@ -319,7 +359,7 @@ namespace HoiNghiKhoaHoc.Controllers
 				return RedirectToAction("Details", new { id = conferenceId });
 
 			ViewBag.Registration = registration;
-			TempData["RegistrationInfo"] = regJson; // giữ lại sau khi load view
+			TempData["RegistrationInfo"] = regJson; 
 			return View(conference);
 		}
 
