@@ -42,6 +42,10 @@ RotativaConfiguration.Setup(
     builder.Environment.WebRootPath,   // IWebHostEnvironment có WebRootPath
     "Rotativa"                       // thư mục con trong wwwroot chứa wkhtmltopdf
 );
+//RotativaConfiguration.Setup(
+//    @"D:\Temp\C# - Web\dacs\HoiNghiKhoaHoc\wwwroot",  // path mới KHÔNG chứa dấu #
+//    "Rotativa"
+//);
 
 // 6. Middleware
 var app = builder.Build();

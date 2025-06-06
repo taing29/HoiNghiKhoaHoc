@@ -44,7 +44,6 @@ namespace HoiNghiKhoaHoc.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -484,7 +483,7 @@ namespace HoiNghiKhoaHoc.Migrations
             modelBuilder.Entity("HoiNghiKhoaHoc.Models.Comment", b =>
                 {
                     b.HasOne("HoiNghiKhoaHoc.Models.Conference", "Conference")
-                        .WithMany()
+                        .WithMany("Comments")
                         .HasForeignKey("ConferenceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -622,6 +621,11 @@ namespace HoiNghiKhoaHoc.Migrations
             modelBuilder.Entity("HoiNghiKhoaHoc.Models.Category", b =>
                 {
                     b.Navigation("Conference");
+                });
+
+            modelBuilder.Entity("HoiNghiKhoaHoc.Models.Conference", b =>
+                {
+                    b.Navigation("Comments");
                 });
 
             modelBuilder.Entity("HoiNghiKhoaHoc.Models.Speaker", b =>
