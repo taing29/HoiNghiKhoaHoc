@@ -25,7 +25,7 @@
 					Port = _emailSettings.SmtpPort,
 					EnableSsl = true,
 					UseDefaultCredentials = false, // 🔥 Thêm dòng này
-					Credentials = new NetworkCredential(_emailSettings.Username, "jbpixgffovpnscre")
+					Credentials = new NetworkCredential(_emailSettings.Username, "")
 				};
 
 

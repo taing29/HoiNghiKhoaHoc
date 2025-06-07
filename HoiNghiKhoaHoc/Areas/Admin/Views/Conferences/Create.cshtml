@@ -280,13 +280,10 @@
                         `;
 
                         speakerDiv.addEventListener("click", () => {
-                            // Đặt tên diễn giả vào ô input
                             e.target.value = speaker.fullName;
 
-                            // Ẩn danh sách gợi ý
                             resultsDiv.innerHTML = "";
 
-                            // Lưu ID vào hidden input
                             document.getElementById(`speaker-id-${index}`).value = speaker.id;
                         });
 
