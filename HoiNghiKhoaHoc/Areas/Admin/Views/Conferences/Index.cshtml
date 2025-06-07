@@ -1,0 +1,99 @@
+﻿@model IEnumerable<HoiNghiKhoaHoc.Models.Conference>
+
+@{
+    ViewData["Title"] = "Quản lý hội nghị";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h2 mb-0">@ViewData["Title"]</h1>
+    <a asp-controller="Conferences" asp-action="Create" asp-area="Admin" class="btn btn-success shadow">Thêm hội nghị</a>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    @foreach (var item in Model)
+    {
+        <div class="col">
+            <div class="card h-100 shadow-sm conference-card">
+                @if (!string.IsNullOrEmpty(item.BannerImage))
+                {
+                    <img src="@Url.Content(item.BannerImage)" class="conference-image card-img-top" alt="Conference Image" style="height: 200px; object-fit: cover;" />
+                }
+                <div class="card-body">
+                    <h5 class="card-title">@item.Title</h5>
+                    <p class="card-text text-sm-left text-secondary">
+                        @* <strong>Mô tả:</strong> @item.Description<br /> *@
+                        <strong>Thời gian:</strong> @item.StartDate.ToShortDateString() - @item.EndDate.ToShortDateString()<br />
+                        <strong>Trạng thái:</strong>
+                        <span class="badge @(item.IsActive ? "bg-success" : "bg-secondary")">
+                            @(item.IsActive ? "Đang hoạt động" : "Ngưng hoạt động")
+                        </span>
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between gap-2 flex-nowrap">
+                        <form asp-controller="Conferences" asp-action="Details" asp-area="Admin" method="post">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" class="btn btn-outline-success btn-sm action-btn text-dark">Duyệt</button>
+                        </form>
+                        <form asp-controller="Conferences" asp-action="Comment" asp-area="Admin" method="post">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" class="btn btn-outline-info btn-sm action-btn text-dark">Bình luận</button>
+                        </form>
+                        <form asp-controller="Conferences" asp-action="Update" asp-route-id="@item.Id" asp-area="Admin" method="get">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" class="btn btn-outline-primary btn-sm action-btn text-dark">Sửa</button>
+                        </form> 
+                        <form asp-controller="Conferences" asp-action="ToggleStatus" asp-area="Admin" method="post">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" class="btn btn-outline-warning btn-sm  action-btn text-dark">
+                                @(item.IsActive ? "Tắt" : "Bật")
+                            </button>
+                        </form>
+                        <form asp-controller="Conferences" asp-action="Delete" asp-area="Admin" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xoá hội nghị này?');">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" class="btn btn-outline-danger btn-sm action-btn text-dark">Xoá</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@section Scripts {
+    <style>
+        .conference-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .conference-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+            }
+
+        .card-footer .d-flex {
+            flex-wrap: nowrap;
+        }
+
+        .btn {
+            border-radius: 15px;
+        }
+
+        .card-footer form,
+        .card-footer a {
+            flex: 1;
+            text-align: center;
+        }
+
+        .card-footer .action-btn {
+            min-width: 60px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            padding: 0 12px;
+            font-size: 14px;
+        }
+    </style>
+}
+

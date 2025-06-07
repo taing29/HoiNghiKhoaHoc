@@ -1,0 +1,11 @@
+﻿@page
+@model AccessDeniedModel
+@{
+    ViewData["Title"] = "Truy cập bị từ chối";
+}
+
+<div class="d-flex flex-column justify-content-center align-items-center vh-100 bg-light text-center px-3">
+    <h1 class="text-danger mb-4" style="font-size: 5rem; font-weight: 700;">@ViewData["Title"]</h1>
+    <p class="fs-4 text-danger mb-4">Bạn không có quyền truy cập vào tài nguyên này.</p>
+    <a href="/" class="btn btn-outline-danger btn-lg">Quay về trang chủ</a>
+</div>

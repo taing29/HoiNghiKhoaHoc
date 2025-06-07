@@ -1,0 +1,35 @@
+﻿@model HoiNghiKhoaHoc.Models.Conference
+
+@{
+    ViewData["Title"] = "Chi tiết hội nghị";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@Model.Title</h2>
+
+<div class="mb-3">
+    <strong>Ngày bắt đầu:</strong> @Model.StartDate.ToString("dd/MM/yyyy")
+</div>
+
+<div class="mb-3">
+    <strong>Ngày kết thúc:</strong> @Model.EndDate.ToString("dd/MM/yyyy")
+</div>
+
+<div class="mb-3">
+    <strong>Địa điểm:</strong> @Model.Location
+</div>
+
+<div class="mb-3">
+    <strong>Danh mục:</strong> @Model.CategoryId
+</div>
+
+<div class="mb-3">
+    <strong>Mô tả:</strong>
+    <div>@Html.Raw(Model.Description)</div>
+</div>
+
+<div class="mb-3">
+    <strong>Trạng thái:</strong> @(Model.IsActive ? "Hoạt động" : "Không hoạt động")
+</div>
+
+<a asp-action="Index" class="btn btn-secondary">Quay lại danh sách</a>

@@ -1,0 +1,128 @@
+﻿@using Newtonsoft.Json
+@model HoiNghiKhoaHoc.Areas.Admin.Models.ViewModels.DashboardViewModel
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+@{
+    ViewData["Title"] = "Thống kê";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+<h1 class="mb-4">Trang thống kê</h1>
+
+@* <div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card bg-light shadow-sm">
+            <div class="card-body text-center">
+                <h5 class="card-title">Tổng số hội nghị</h5>
+                <h2 class="display-4">@Model.TotalConferences</h2>
+            </div>
+        </div>
+    </div>
+</div> *@
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-light shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="card-title">Tổng số hội nghị</h6>
+                <h3>@Model.TotalConferences</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="card-title">Hội nghị sắp diễn ra</h6>
+                <h3>@Model.UpcomingConferences</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-secondary text-white shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="card-title">Hội nghị đã diễn ra</h6>
+                <h3>@Model.PastConferences</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-primary text-white shadow-sm">
+            <div class="card-body text-center">
+                <h6 class="card-title">Hội nghị quốc tế</h6>
+                <h3>@Model.InternationalConferences</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-6">
+        <h4>Biểu đồ: Top 5 hội nghị có nhiều lượt đăng ký nhất</h4>
+        <canvas id="registeredChart" style="height: 400px;"></canvas>
+    </div>
+    <div class="col-md-6">
+        <h4>Biểu đồ: Top 5 hội nghị được yêu thích nhất</h4>
+        <canvas id="favoritedChart" style="height: 400px;"></canvas>
+    </div>
+</div>
+
+<script>
+    const registeredData = {
+        labels: @Html.Raw(JsonConvert.SerializeObject(
+                        Model.Top5Registered.Select(x => x.Conference.Title.Length > 40
+                                ? x.Conference.Title.Substring(0, 40) + "..."
+                                : x.Conference.Title)
+                )),
+        datasets: [{
+            label: 'Lượt đăng ký',
+            data: @Html.Raw(JsonConvert.SerializeObject(Model.Top5Registered.Select(x => x.Count))),
+            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        }]
+    };
+
+    const favoritedData = {
+        labels: @Html.Raw(JsonConvert.SerializeObject(
+                        Model.Top5Favorited.Select(x => x.Conference.Title.Length > 40
+                                ? x.Conference.Title.Substring(0, 40) + "..."
+                                : x.Conference.Title)
+                )),
+        datasets: [{
+            label: 'Lượt yêu thích',
+            data: @Html.Raw(JsonConvert.SerializeObject(Model.Top5Favorited.Select(x => x.Count))),
+            backgroundColor: 'rgba(255, 99, 132, 0.7)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1
+        }]
+    };
+
+    const chartOptions = {
+        responsive: true,
+        scales: {
+            x: {
+                ticks: {
+                    maxRotation: 30,
+                    minRotation: 30,
+                    autoSkip: false
+                }
+            },
+            y: {
+                beginAtZero: true
+            }
+        }
+    };
+
+    new Chart(document.getElementById('registeredChart'), {
+        type: 'bar',
+        data: registeredData,
+        options: chartOptions
+    });
+
+    new Chart(document.getElementById('favoritedChart'), {
+        type: 'bar',
+        data: favoritedData,
+        options: chartOptions
+    });
+</script>
+

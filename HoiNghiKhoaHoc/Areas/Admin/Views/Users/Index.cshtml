@@ -1,0 +1,62 @@
+﻿@model IEnumerable<HoiNghiKhoaHoc.Models.UserView>
+@{
+    ViewData["Title"] = "Quản lý người dùng";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="card shadow-lg rounded">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Quản lý người dùng</h4>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered align-middle mb-0">
+                    <thead class="table-light text-center">
+                        <tr>
+                            <th>Tên đăng nhập</th>
+                            <th>Họ tên</th>
+                            <th>Tuổi</th>
+                            <th>Email</th>
+                            <th>SĐT</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr class="text-center">
+                                <td>@item.UserName</td>
+                                <td>@item.FullName</td>
+                                <td>@item.Age</td>
+                                <td>@item.Email</td>
+                                <td>@item.PhoneNumber</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a asp-action="EditUser"
+                                           asp-route-id="@item.Id"
+                                           asp-controller="Users"
+                                           asp-area="Admin"
+                                           class="btn btn-sm btn-outline-primary me-1">
+                                            <i class="bi bi-pencil-square"></i>
+                                            Sửa
+                                        </a>
+                                        <a asp-action="Delete"
+                                           asp-route-id="@item.Id"
+                                           asp-controller="Users"
+                                           asp-area="Admin"
+                                           class="btn btn-sm btn-outline-danger"
+                                           onclick="return confirm('Bạn có chắc chắn muốn xoá người dùng này?');">
+                                            <i class="bi bi-trash"></i>
+                                            Xoá
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

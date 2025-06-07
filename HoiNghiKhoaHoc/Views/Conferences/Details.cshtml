@@ -1,0 +1,262 @@
+﻿@using System.Text.RegularExpressions
+@using HoiNghiKhoaHoc.Models.ViewModels
+@model HoiNghiKhoaHoc.Models.ViewModels.ConferenceDetailViewModel
+
+@{
+    ViewData["Title"] = Model.CurrentConference.Title;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">@TempData["Message"]</div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@Model.CurrentConference.Title</title>
+</head>
+<style>
+    .conference-content img {
+        display: block;
+        margin: 20px auto;
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .conference-content p {
+        text-align: justify;
+        margin-bottom: 1.2em;
+        line-height: 1.6;
+        figure .image
+    }
+
+    .conference-content figure.image {
+        display: table;
+        margin: 1.5rem auto;
+        text-align: center;
+    }
+
+        .conference-content figure.image img {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .conference-content figure.image figcaption {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+    .conference-description {
+        font-size: 16px;
+        color: #444;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        font-style: italic;
+    }
+
+</style>
+<body>
+    <!-- Banner -->
+    <img src="@Url.Content(Model.CurrentConference.BannerImage)" class="img-fluid mb-4" width="100%" alt="Banner" />
+    <div class="container-fluid">
+        <div class="row px-3 px-md-4">
+            <!-- Nội dung chính -->
+            <div class="col-md-8">
+                <h1><strong>@Model.CurrentConference.Title</strong></h1>
+                <p class="conference-description">@Model.CurrentConference.Description</p>
+                @* Chỉ hiển thị Yêu thích & Đăng ký khi hội nghị chưa kết thúc *@
+                @if (User.Identity.IsAuthenticated && User.IsInRole("User") && Model.CurrentConference.EndDate > DateTime.Now)
+                {
+                    <div class="mb-3 d-flex gap-2">
+                        @if (Model.IsFavorite)
+                        {
+                            <form asp-action="RemoveFromFavorites" method="post">
+                                <input type="hidden" name="conferenceId" value="@Model.CurrentConference.Id" />
+                                <button type="submit" class="btn btn-outline-danger">❤️ Đã yêu thích – Bỏ</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-action="AddToFavorites" method="post">
+                                <input type="hidden" name="conferenceId" value="@Model.CurrentConference.Id" />
+                                <button type="submit" class="btn btn-outline-danger">🤍 Thêm vào yêu thích</button>
+                            </form>
+                        }
+
+                        @if (Model.IsRegistered)
+                        {
+                            <form asp-action="CancelRegistration" method="post">
+                                <input type="hidden" name="conferenceId" value="@Model.CurrentConference.Id" />
+                                <button type="submit" class="btn btn-danger">Hủy đăng ký</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-action="RegisterInfo" method="get">
+                                <input type="hidden" name="conferenceId" value="@Model.CurrentConference.Id" />
+                                <button type="submit" class="btn btn-success">Đăng ký tham gia</button>
+                            </form>
+                        }
+                    </div>
+                }
+                @if (!string.IsNullOrEmpty(Model.CurrentConference.Content))
+                {
+                    <div class="conference-content mb-4">
+                        @Html.Raw(Model.CurrentConference.Content)
+                    </div>
+                }
+                
+
+                <!-- Thông tin bổ sung -->
+                <div class="mt-4">
+                    <p><strong>Thời gian bắt đầu:</strong> @Model.CurrentConference.StartDate.ToString("dd/MM/yyyy")</p>
+                    <p><strong>Thời gian kết thúc:</strong> @Model.CurrentConference.EndDate.ToString("dd/MM/yyyy")</p>
+                    @* <p><strong>Đia chỉ:</strong> @Model.CurrentConference.Address</p>
+                    <p><strong>Địa điểm:</strong> @Model.CurrentConference.Location</p> *@
+                    @* <p><strong>Ngày tạo:</strong> @Model.CurrentConference.CreatedDate.ToString("dd/MM/yyyy")</p> *@
+                    @* <p>
+                        <strong>Trạng thái:</strong>
+                        @if (Model.CurrentConference.IsActive)
+                        {
+                            <span class="text-success">Đang hoạt động</span>
+                        }
+                        else
+                        {
+                            <span class="text-danger">Ngưng hoạt động</span>
+                        }
+                    </p> *@
+                    <p><strong>Chuyên mục:</strong> @Model.CurrentConference.Category?.Name</p>
+                </div>
+
+                @* <!-- Từ khóa -->
+                <div class="conference-categories mb-3">
+                    <strong>Danh mục liên quan:</strong>
+                    @if (@Model.CurrentConference.Category != null && @Model.CurrentConference.Category.Any())
+                    {
+                        <ul class="list-inline">
+                            @foreach (var category in Model.Categories)
+                            {
+                                <li class="list-inline-item badge bg-secondary">@category.Name</li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p><em>Không có danh mục liên quan</em></p>
+                    }
+                </div> *@
+
+                <h2>Bình luận</h2>
+
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <partial name="_AddCommentPartial" model="new AddCommentViewModel { ConferenceId = Model.CurrentConference.Id }" />
+                }
+                else
+                {
+                    <p><a asp-area="Identity" asp-page="/Account/Login">Đăng nhập</a> để bình luận.</p>
+                }
+
+                <hr />
+                @foreach (var c in Model.Comments)
+                {
+                    <div class="mb-3 d-flex">
+                        <img src="@c.User.AvatarPath" class="rounded-circle me-2" width="40" height="40" alt="Avatar" />
+                        <div>
+                            <strong>@c.User.FullName</strong>
+                            <small class="text-muted">@c.CreatedAt.ToString("dd/MM/yyyy HH:mm")</small>
+                            <p class="mb-0">@c.Content</p>
+                        </div>
+                    </div>
+                    <hr />
+                }
+            </div>
+
+            <!-- Diễn giả hội nghị -->
+            @if (Model.Speakers?.Any() == true)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="p-4">
+                        <h4 class="mb-4 text-center">Diễn giả</h4>
+                        @foreach (var item in Model.Speakers)
+                        {
+                            <div class="text-center mb-4">
+                                <img src="@(!string.IsNullOrEmpty(item.Speaker.PhotoUrl) ? @Url.Content(item.Speaker.PhotoUrl) : "https://bootdey.com/img/Content/avatar/avatar1.png")"
+                                     alt="Ảnh diễn giả"
+                                     class="rounded-circle mb-2"
+                                     style="width: 80px; height: 80px; object-fit: cover;" />
+                                <h6 class="mb-1 text-primary">@item.Speaker.FullName</h6>
+                                @if (!string.IsNullOrWhiteSpace(item.Speaker.Title))
+                                {
+                                    <p class="text-muted mb-1" style="font-size: 0.9rem;">@item.Speaker.Title</p>
+                                }
+                                <div>
+                                    @if (item.IsKeynote)
+                                    {
+                                        <span class="badge bg-success mb-1">Keynote</span>
+                                    }
+                                    @if (item.IsPanelist)
+                                    {
+                                        <span class="badge bg-info text-dark mb-1">Panelist</span>
+                                    }
+                                </div>
+                                <hr />
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Hội nghị liên quan -->
+    <div class="container mt-5">
+        <h4 class="mb-4 text-center fw-bold text-primary">Hội nghị liên quan</h4>
+        <div class="row g-4 justify-content-center">
+            @foreach (var item in Model.RelatedConferences)
+            {
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <a asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none text-dark">
+                        <div class="card h-100 border-0 shadow-sm hover-shadow transition">
+                            <div class="ratio ratio-16x9">
+                                <img src="@Url.Content(item.BannerImage)" class="card-img-top object-fit-cover rounded-top" alt="@item.Title">
+                            </div>
+                            <div class="card-body p-3">
+                                <h6 class="card-title fw-semibold">@item.Title</h6>
+                                <small class="text-muted d-block mb-1">
+                                    <i class="bi bi-calendar-event me-1"></i> @item.StartDate.ToString("dd/MM/yyyy")
+                                </small>
+                                <p class="conference-descriptions mt-2 mb-3" style="font-size:12px">@item.Description</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

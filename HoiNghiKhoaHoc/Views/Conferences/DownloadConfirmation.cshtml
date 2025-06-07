@@ -1,0 +1,171 @@
+﻿@model HoiNghiKhoaHoc.Models.ViewModels.ConferenceRegistrationView
+
+@{
+    ViewData["Title"] = "Giấy xác nhận đăng ký";
+    Layout = null;
+
+    // DateTime? registeredDate = ViewBag.RegisteredDate as DateTime?;
+}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+
+<style>
+    /* Container giống chứng thư */
+    .certificate-container {
+        max-width: 700px;
+        margin: 40px auto;
+        padding: 30px 40px;
+        border: 2px solid #007bff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        background-color: #ffffff;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        color: #333333;
+    }
+
+    /* Header */
+    .certificate-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+        .certificate-header h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+
+        .certificate-header p.subtitle {
+            font-size: 1rem;
+            color: #555555;
+            margin: 0;
+        }
+
+    /* Các đoạn thông tin */
+    .certificate-section {
+        margin-bottom: 25px;
+    }
+
+        .certificate-section p {
+            margin: 0.5rem 0;
+            line-height: 1.5;
+        }
+
+            .certificate-section p strong {
+                width: 140px;
+                display: inline-block;
+                color: #0056b3;
+            }
+
+    /* Chân trang chứa nút */
+    .certificate-footer {
+        text-align: center;
+        margin-top: 40px;
+    }
+
+        .certificate-footer a,
+        .certificate-footer button {
+            min-width: 150px;
+        }
+
+    /* Ẩn phần footer khi in hoặc PDF */
+    media print {
+        .certificate-footer
+
+    {
+        display: none;
+    }
+
+    body {
+        margin: 0;
+        background-color: #fff;
+    }
+
+    .certificate-container {
+        box-shadow: none;
+        border: none;
+        margin: 0;
+        padding: 0;
+        max-width: none;
+    }
+
+    }
+</style>
+
+<div class="certificate-container">
+    <div class="certificate-header">
+        <h2>Giấy xác nhận đăng ký</h2>
+        <p class="subtitle">Hội nghị khoa học & Công nghệ</p>
+    </div>
+
+    <!-- Thông tin Hội nghị -->
+    <div class="certificate-section">
+        <p>
+            <strong>Hội nghị:</strong>
+            @Model.Conference?.Title
+        </p>
+ 
+   
+        <p>
+            <strong>Thời gian:</strong>
+            @Model.Conference?.StartDate.ToString("dd/MM/yyyy HH:mm")
+            &nbsp;–&nbsp;
+            @Model.Conference?.EndDate.ToString("dd/MM/yyyy HH:mm")
+        </p>
+    
+        <p>
+            <strong>Địa điểm:</strong>
+            @Model.Conference?.Location
+        </p>
+        @* <p>
+            <strong>Ngày đăng ký:</strong>
+            @(
+                        // Dùng cú pháp null-coalescing cho gọn:
+                        registeredDate?.ToString("dd/MM/yyyy") ?? "-"
+                        )
+        </p> *@
+        <p>
+            <strong>Ngày đăng ký:</strong>
+            @DateTime.Now.ToString("dd/MM/yyyy")
+        </p>
+
+    </div>
+
+    <hr />
+
+    <!-- Thông tin Người đăng ký -->
+    <div class="certificate-section">
+        <p>
+            <strong>Họ và tên:</strong>
+            @Model.FullName
+        </p>
+        <p>
+            <strong>Email:</strong>
+            @Model.Email
+        </p>
+        <p>
+            <strong>Số điện thoại:</strong>
+            @Model.PhoneNumber
+        </p>
+    </div>
+
+    <hr />
+
+    <div class="certificate-footer">
+        @* <!-- Nút In giấy -->
+        <button onclick="window.print();"
+                class="btn btn-primary btn-lg d-inline-flex align-items-center me-3">
+            <i class="bi bi-printer-fill me-2"></i>
+            In giấy
+        </button> *@
+
+        <!-- Nút Tải PDF -->
+        <a asp-action="DownloadPdf"
+           asp-route-conferenceId="@Model.Conference?.Id"
+           class="btn btn-danger btn-lg d-inline-flex align-items-center">
+            <i class="bi bi-file-earmark-pdf-fill me-2"></i>
+            Tải PDF
+        </a>
+    </div>
+</div>

@@ -1,0 +1,383 @@
+﻿@using HoiNghiKhoaHoc.Models
+@model HoiNghiKhoaHoc.Models.Conference
+
+<script src="~/ckeditor5-build-classic-19.0.0/build/ckeditor.js"></script>
+
+@{
+    ViewData["Title"] = "Cập Nhật Hội Nghị";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-primary">Cập Nhật Hội Nghị</h2>
+
+    <form asp-action="Update" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <span>Chọn Diễn Giả</span>
+                <a asp-controller="Speakers" asp-action="Create" asp-area="Admin" class="btn btn-warning btn-sm">+ Thêm diễn giả</a>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="speakerCount" class="form-label">Số lượng diễn giả:</label>
+                    <select id="speakerCount" class="form-select w-auto d-inline-block">
+                        <option value="0">-- Chọn --</option>
+                        @for (int i = 1; i <= 10; i++)
+                        {
+                            <option value="@i">@i</option>
+                        }
+                    </select>
+                </div>
+                <div id="speakersContainer"></div>
+
+                @if (ViewData.ModelState["SpeakerIds"]?.Errors.Count > 0)
+                {
+                    <span class="text-danger">@ViewData.ModelState["SpeakerIds"].Errors[0].ErrorMessage</span>
+                }
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header bg-secondary text-white">
+                Thông tin cơ bản
+            </div>
+            <div class="card-body row g-3">
+                <div class="col-md-6">
+                    <label asp-for="Location" class="form-label">Địa điểm</label>
+                    <input asp-for="Location" class="form-control" />
+                    <span asp-validation-for="Location" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="CategoryId" class="form-label">Danh mục</label>
+                    <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select"></select>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="StartDate" class="form-label">Ngày bắt đầu</label>
+                    <input asp-for="StartDate" type="datetime-local" class="form-control" />
+                    <span asp-validation-for="StartDate" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="EndDate" class="form-label">Ngày kết thúc</label>
+                    <input asp-for="EndDate" type="datetime-local" class="form-control" />
+                    <span asp-validation-for="EndDate" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="BannerImage" class="form-label">Ảnh bìa</label>
+                    <input type="file" id="imageInput" asp-for="BannerImage" name="imageFile" class="form-control" />
+                    <span class="form-text">Nếu không chọn ảnh mới, ảnh cũ sẽ được giữ nguyên.</span>
+                    @if (!string.IsNullOrEmpty(Model.BannerImage))
+                    {
+                        <div class="mt-3">
+                            <label class="form-label fw-semibold">Ảnh hiện tại:</label><br />
+                            <img id="previewImage" src="@Model.BannerImage" alt="Ảnh diễn giả" class="img-thumbnail" style="max-height: 150px;" />
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="mt-3 d-none" id="previewContainer">
+                            <label class="form-label fw-semibold">Ảnh xem trước:</label><br />
+                            <img id="previewImage" class="img-thumbnail" style="max-height: 150px;" />
+                        </div>
+                    }
+                </div>
+
+                <div class="col-12">
+                    <div class="form-check mt-2">
+                        <input asp-for="IsInternational" class="form-check-input" type="checkbox" />
+                        <label asp-for="IsInternational" class="form-check-label">Hội nghị quốc tế</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-check mt-2">
+                        <input asp-for="IsPaid" class="form-check-input" type="checkbox" />
+                        <label asp-for="IsPaid" class="form-check-label">Hội nghị có phí</label>
+                    </div>
+                </div>
+                <div class="col-md-6 mt-2" id="priceField" style="display: @(Model.IsPaid ? "block" : "none")">
+                    <label asp-for="Price" class="form-label">Giá vé (VNĐ)</label>
+                    <input asp-for="Price" class="form-control" type="number" step="1000" min="0" />
+                    <span asp-validation-for="Price" class="text-danger small"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                Mô tả và nội dung
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label">Tiêu đề</label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger small"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label">Mô tả</label>
+                    <input asp-for="Description" class="form-control" />
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Content" class="form-label">Nội dung</label>
+                    <textarea asp-for="Content" id="Content" class="form-control" rows="6"></textarea>
+                    <span asp-validation-for="Content" class="text-danger small"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Cập nhật hội nghị</button>
+            <a asp-controller="Conferences" asp-action="Index" asp-area="Admin" class="btn btn-secondary">Trở về</a>
+        </div>
+    </form>
+</div>
+
+
+
+<script>
+    document.getElementById('imageInput')?.addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        const previewImage = document.getElementById('previewImage');
+        const previewContainer = document.getElementById('previewContainer');
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                previewImage.src = e.target.result;
+                previewImage.classList.remove('d-none');
+                if (previewContainer) {
+                    previewContainer.classList.remove('d-none');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const isPaidCheckbox = document.querySelector("input[name='IsPaid']");
+        const priceField = document.getElementById("priceField");
+
+        function togglePriceField() {
+            if (isPaidCheckbox.checked) {
+                priceField.style.display = "block";
+            } else {
+                priceField.style.display = "none";
+                // Nếu không có phí, xóa giá trị nhập
+                const priceInput = priceField.querySelector("input[name='Price']");
+                if (priceInput) priceInput.value = '';
+            }
+        }
+
+        isPaidCheckbox.addEventListener("change", togglePriceField);
+
+        // Gọi khi trang load (để hỗ trợ khi reload do ModelState invalid)
+        togglePriceField();
+    });
+</script>
+<!-- Kích hoạt CKEditor -->
+<script>
+    class MyUploadAdapter {
+        constructor(loader) {
+            this.loader = loader;
+        }
+
+        upload() {
+            return this.loader.file
+                .then(file => new Promise((resolve, reject) => {
+                    this._initRequest();
+                    this._initListeners(resolve, reject, file);
+                    this._sendRequest(file);
+                }));
+        }
+
+        abort() {
+            if (this.xhr) {
+                this.xhr.abort();
+            }
+        }
+
+        _initRequest() {
+            const xhr = this.xhr = new XMLHttpRequest();
+            xhr.open('POST', '@Url.Action("UploadImage", "ImageUpload", new { area = "Admin" })', true);
+            xhr.responseType = 'json';
+        }
+
+        _initListeners(resolve, reject, file) {
+            const xhr = this.xhr;
+            const loader = this.loader;
+            const genericErrorText = `Couldn't upload file: ${file.name}.`;
+
+            xhr.addEventListener('error', () => reject(genericErrorText));
+            xhr.addEventListener('abort', () => reject());
+            xhr.addEventListener('load', () => {
+                const response = xhr.response;
+
+                if (!response || response.error) {
+                    return reject(response && response.error ? response.error.message : genericErrorText);
+                }
+
+                resolve({
+                    default: response.url
+                });
+            });
+
+            if (xhr.upload) {
+                xhr.upload.addEventListener('progress', evt => {
+                    if (evt.lengthComputable) {
+                        loader.uploadTotal = evt.total;
+                        loader.uploaded = evt.loaded;
+                    }
+                });
+            }
+        }
+
+        _sendRequest(file) {
+            const data = new FormData();
+            data.append('upload', file);
+            this.xhr.send(data);
+        }
+    }
+
+    function MyCustomUploadAdapterPlugin(editor) {
+        editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+            return new MyUploadAdapter(loader);
+        };
+    }
+
+    ClassicEditor
+        .create(document.querySelector('#Content'), {
+            extraPlugins: [MyCustomUploadAdapterPlugin]
+        })
+        .then(editor => {
+            window.editor = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+</script>
+
+<script>
+    document.getElementById("speakerCount").addEventListener("change", function () {
+        const count = parseInt(this.value);
+        const container = document.getElementById("speakersContainer");
+        container.innerHTML = "";
+
+        for (let i = 1; i <= count; i++) {
+            const wrapper = document.createElement("div");
+            wrapper.classList.add("form-group");
+            wrapper.innerHTML = `
+                <label>Diễn giả ${i}:</label>
+                <input type="text" class="form-control speaker-search" data-index="${i}" placeholder="Nhập tên diễn giả...">
+                <div class="search-results border rounded mt-1 p-2" id="results-${i}" style="max-height: 200px; overflow-y: auto;"></div>
+                <input type="hidden" name="SpeakerIds[]" id="speaker-id-${i}" />
+            `;
+            container.appendChild(wrapper);
+        }
+    });
+
+    document.addEventListener("input", function (e) {
+        if (e.target.classList.contains("speaker-search")) {
+            const index = e.target.dataset.index;
+            const query = e.target.value.trim();
+
+            if (query.length < 2) {
+                document.getElementById(`results-${index}`).innerHTML = "";
+                return;
+            }
+
+            fetch(`/Admin/Speakers/SearchByName?name=${encodeURIComponent(query)}`)
+                .then(res => res.json())
+                .then(data => {
+                    const resultsDiv = document.getElementById(`results-${index}`);
+                    resultsDiv.innerHTML = "";
+
+                    if (data.length === 0) {
+                        resultsDiv.innerHTML = `<div>Không tìm thấy diễn giả nào.</div>`;
+                        return;
+                    }
+
+                    data.forEach(speaker => {
+                        const speakerDiv = document.createElement("div");
+                        speakerDiv.classList.add("p-2", "border", "rounded", "mb-1");
+                        speakerDiv.style.cursor = "pointer";
+                        speakerDiv.innerHTML = `
+                            <div class="d-flex align-items-center">
+                                <img src="${speaker.photoUrl}" alt="Ảnh" width="50" class="mr-2 rounded-circle">
+                                <div>
+                                    <strong>${speaker.fullName}</strong><br>
+                                    ${speaker.title}, ${speaker.affiliation}<br>
+                                    <small>${speaker.email}</small>
+                                </div>
+                            </div>
+                        `;
+
+                        speakerDiv.addEventListener("click", () => {
+                            // Đặt tên diễn giả vào ô input
+                            e.target.value = speaker.fullName;
+
+                            // Ẩn danh sách gợi ý
+                            resultsDiv.innerHTML = "";
+
+                            // Lưu ID vào hidden input
+                            document.getElementById(`speaker-id-${index}`).value = speaker.id;
+                        });
+
+                        resultsDiv.appendChild(speakerDiv);
+                    });
+                });
+        }
+    });
+</script>
+<script>
+    // Danh sách diễn giả đã gán (render từ Razor)
+    const existingSpeakers = @Html.Raw(Json.Serialize(ViewBag.ExistingSpeakers ?? new List<Speaker>()));
+
+    // Tự động hiển thị các diễn giả cũ
+    window.addEventListener("DOMContentLoaded", () => {
+        const container = document.getElementById("speakersContainer");
+        const selectBox = document.getElementById("speakerCount");
+
+        if (existingSpeakers.length > 0) {
+            selectBox.value = existingSpeakers.length;
+
+            existingSpeakers.forEach((speaker, index) => {
+                const i = index + 1;
+                const wrapper = document.createElement("div");
+                wrapper.classList.add("form-group");
+                wrapper.innerHTML = `
+                    <label>Diễn giả ${i}:</label>
+                    <input type="text" class="form-control speaker-search" data-index="${i}" placeholder="Nhập tên diễn giả..." value="${speaker.fullName}">
+                    <div class="search-results border rounded mt-1 p-2" id="results-${i}" style="max-height: 200px; overflow-y: auto;"></div>
+                    <input type="hidden" name="SpeakerIds[]" id="speaker-id-${i}" value="${speaker.id}" />
+                `;
+                container.appendChild(wrapper);
+            });
+        }
+    });
+</script>
+@section Scripts {
+    <script>
+        document.getElementById('imageInput')?.addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            const previewImage = document.getElementById('previewImage');
+            const previewContainer = document.getElementById('previewContainer');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImage.src = e.target.result;
+                    previewImage.classList.remove('d-none');
+                    if (previewContainer) {
+                        previewContainer.classList.remove('d-none');
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+}
